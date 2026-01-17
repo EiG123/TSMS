@@ -1,0 +1,43 @@
+=========================================
+PROJECT SETUP GUIDE (Vue 3 + Hono + TS)
+=========================================
+
+--- [ STEP 1: FRONTEND SETUP (Vue 3) ] ---
+# 1. สร้างโปรเจกต์ Vue 3 (เลือก TypeScript)
+npm create vite@latest frontend -- --template vue-ts
+
+# 2. เข้าไปในโฟลเดอร์และลง Dependencies หลัก
+cd frontend
+npm install pinia vue-router axios
+
+# 3. ติดตั้ง TailwindCSS และ DaisyUI
+npm install -D tailwindcss postcss autoprefixer daisyui
+npx tailwindcss init -p
+
+# 4. คำสั่งรัน Frontend
+npm run dev
+
+
+--- [ STEP 2: BACKEND SETUP (Hono) ] ---
+# 1. สร้างโปรเจกต์ Hono (เลือกสถาปัตยกรรม nodejs)
+npm create hono@latest backend
+
+# 2. เข้าไปในโฟลเดอร์และลงเครื่องมือเสริม
+cd backend
+npm install @hono/node-server
+npm install pg                 # ตัวเชื่อมต่อ PostgreSQL
+npm install -D @types/pg       # Type สำหรับ PostgreSQL
+
+# 3. ติดตั้ง TypeScript สำหรับ Backend (ถ้าเครื่องยังไม่มี)
+npm install -D typescript @types/node
+
+# 4. คำสั่งรัน Backend
+npm run dev
+
+
+--- [ STEP 3: DATABASE & TOOLS ] ---
+# 1. ต้องติดตั้งในเครื่อง (Manual Install)
+- PostgreSQL (Database Server)
+- pgAdmin 4 (Database Management Tool)
+
+=========================================
