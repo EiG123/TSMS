@@ -1,0 +1,1235 @@
+CREATE TABLE pm_nodeb (
+    id SERIAL PRIMARY KEY,
+    site_id VARCHAR(50) NOT NULL,
+    node_type VARCHAR(50),
+    round VARCHAR(20),
+    cabinet_total INTEGER,
+    region VARCHAR(100),
+    pm_date TIMESTAMP,
+    status VARCHAR(50),
+    planwork VARCHAR(100),
+    created_by VARCHAR(100),
+    remark TEXT,
+    img_photo_preview VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
+);
+
+CREATE INDEX idx_pm_nodeb_site_id ON pm_nodeb (site_id);
+CREATE INDEX idx_pm_nodeb_pm_date ON pm_nodeb (pm_date);
+
+CREATE TABLE pm_site_information (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    photo_around_result VARCHAR(50),
+    photo_around_value VARCHAR(50),
+    photo_around_remark TEXT,
+
+    latitude_result VARCHAR(100),
+    latitude_value VARCHAR(100),
+    latitude_remark TEXT,
+
+    longitude_result VARCHAR(100),
+    longitude_value VARCHAR(100),
+    longitude_remark TEXT,
+
+    equipment_room_result VARCHAR(100),
+    equipment_room_value VARCHAR(100),
+    equipment_room_remark TEXT,
+
+    site_type_result VARCHAR(50),
+    site_type_value VARCHAR(50),
+    site_type_remark TEXT,
+
+    tower_type_result VARCHAR(50),
+    tower_type_value VARCHAR(50),
+    tower_type_remark TEXT,
+
+    tower_height_result VARCHAR(50),
+    tower_height_value DECIMAL(10,2),
+    tower_height_remark TEXT,
+
+    site_access_result VARCHAR(100),
+    site_access_value VARCHAR(100),
+    site_access_remark TEXT,
+
+    site_owner_result VARCHAR(100),
+    site_owner_value VARCHAR(100),
+    site_owner_remark TEXT,
+
+    site_owner_phone_result VARCHAR(50),
+    site_owner_phone_value VARCHAR(50),
+    site_owner_phone_remark TEXT,
+
+    site_key_result VARCHAR(50),
+    site_key_value DECIMAL(10,2),
+    site_key_remark TEXT,
+
+    manager_key_result VARCHAR(100),
+    manager_key_value VARCHAR(100),
+    manager_key_remark TEXT,
+
+    manager_phone_result VARCHAR(50),
+    manager_phone_value VARCHAR(50),
+    manager_phone_remark TEXT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_pm_site_information_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_site_information_pm_id
+ON pm_site_information(pm_id);
+
+
+CREATE TABLE pm_cabinets (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    cabinet_number VARCHAR(50),
+    network_type VARCHAR(100),
+    remark TEXT,
+
+    CONSTRAINT fk_pm_cabinets_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_cabinets_pm_id
+ON pm_cabinets(pm_id);
+
+
+CREATE TABLE pm_kwh_meter (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    mea_pea_result VARCHAR(50),
+    mea_pea_value VARCHAR(50),
+    mea_pea_remark TEXT,
+
+    meter_type_result VARCHAR(50),
+    meter_type_value VARCHAR(50),
+    meter_type_remark TEXT,
+
+    electric_system_result VARCHAR(50),
+    electric_system_value VARCHAR(50),
+    electric_system_remark TEXT,
+
+    kwh_size_result VARCHAR(50),
+    kwh_size_value VARCHAR(50),
+    kwh_size_remark TEXT,
+
+    p1_l_input_result VARCHAR(50),
+    p1_l_input_value VARCHAR(50),
+    p1_l_input_remark TEXT,
+
+    p1_l_output_result VARCHAR(50),
+    p1_l_output_value VARCHAR(50),
+    p1_l_output_remark TEXT,
+
+    p1_n_input_result VARCHAR(50),
+    p1_n_input_value VARCHAR(50),
+    p1_n_input_remark TEXT,
+
+    p1_n_output_result VARCHAR(50),
+    p1_n_output_value VARCHAR(50),
+    p1_n_output_remark TEXT,
+
+    ground_leak_result VARCHAR(50),
+    ground_leak_value VARCHAR(50),
+    ground_leak_remark TEXT,
+
+    p3_r_input_result VARCHAR(50),
+    p3_r_input_value VARCHAR(50),
+    p3_r_input_remark TEXT,
+
+    p3_r_output_result VARCHAR(50),
+    p3_r_output_value VARCHAR(50),
+    p3_r_output_remark TEXT,
+
+    p3_s_input_result VARCHAR(50),
+    p3_s_input_value VARCHAR(50),
+    p3_s_input_remark TEXT,
+
+    p3_s_output_result VARCHAR(50),
+    p3_s_output_value VARCHAR(50),
+    p3_s_output_remark TEXT,
+
+    p3_t_input_result VARCHAR(50),
+    p3_t_input_value VARCHAR(50),
+    p3_t_input_remark TEXT,
+
+    p3_t_output_result VARCHAR(50),
+    p3_t_output_value VARCHAR(50),
+    p3_t_output_remark TEXT,
+
+    p3_n_input_result VARCHAR(50),
+    p3_n_input_value VARCHAR(50),
+    p3_n_input_remark TEXT,
+
+    p3_n_output_result VARCHAR(50),
+    p3_n_output_value VARCHAR(50),
+    p3_n_output_remark TEXT,
+
+    kwh_physical_check_result VARCHAR(50),
+    kwh_physical_check_value VARCHAR(50),
+    kwh_physical_check_remark TEXT,
+
+    CONSTRAINT fk_pm_kwh_meter_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_kwh_meter_pm_id
+ON pm_kwh_meter(pm_id);
+
+CREATE TABLE pm_transformer (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    has_transformer_result VARCHAR(100),
+    has_transformer_value VARCHAR(100),
+    has_transformer_remark TEXT,
+
+    last_year_pm_date_result VARCHAR(50),
+    last_year_pm_date_value VARCHAR(50),
+    last_year_pm_date_remark TEXT,
+
+    plan_of_date_result VARCHAR(50),
+    plan_of_date_value VARCHAR(50),
+    plan_of_date_remark TEXT,
+
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_remark TEXT,
+
+    total_transformer_result VARCHAR(50),
+    total_transformer_value VARCHAR(50),
+    total_transformer_remark TEXT,
+
+    brand_result VARCHAR(100),
+    brand_value VARCHAR(100),
+    brand_remark TEXT,
+
+    series_no_result VARCHAR(100),
+    series_no_value VARCHAR(100),
+    series_no_remark TEXT,
+
+    system_phase_result VARCHAR(50),
+    system_phase_value VARCHAR(50),
+    system_phase_remark TEXT,
+
+    size_capacity_result VARCHAR(50),
+    size_capacity_value VARCHAR(50),
+    size_capacity_remark TEXT,
+
+    rated_voltage_hv_result VARCHAR(50),
+    rated_voltage_hv_value VARCHAR(50),
+    rated_voltage_hv_remark TEXT,
+
+    rated_voltage_lv_result VARCHAR(50),
+    rated_voltage_lv_value VARCHAR(50),
+    rated_voltage_lv_remark TEXT,
+
+    power_rating_result VARCHAR(50),
+    power_rating_value VARCHAR(50),
+    power_rating_remark TEXT,
+
+    power_actual_load_result VARCHAR(50),
+    power_actual_load_value VARCHAR(50),
+    power_actual_load_remark TEXT,
+
+    power_used_result VARCHAR(50),
+    power_used_value VARCHAR(50),
+    power_used_remark TEXT,
+
+    physical_check_result VARCHAR(50),
+    physical_check_value VARCHAR(50),
+    physical_check_remark TEXT,
+
+    CONSTRAINT fk_pm_transformer_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_transformer_pm_id
+ON pm_transformer(pm_id);
+
+CREATE TABLE pm_generator (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    has_generator_result VARCHAR(10),
+    has_generator_value VARCHAR(100),
+    has_generator_remark TEXT,
+
+    generator_last_year_pm_date_result VARCHAR(50),
+    generator_last_year_pm_date_value VARCHAR(50),
+    generator_last_year_pm_date_remark TEXT,
+
+    generator_plan_of_date_result VARCHAR(50),
+    generator_plan_of_date_value VARCHAR(50),
+    generator_plan_of_date_remark TEXT,
+
+    generator_actual_pm_date_result VARCHAR(50),
+    generator_actual_pm_date_result VARCHAR(50),
+    generator_actual_pm_date_remark TEXT,
+
+    generator_brand_result VARCHAR(100),
+    generator_brand_value VARCHAR(100),
+    generator_brand_remark TEXT,
+
+    generator_system_result VARCHAR(50),
+    generator_system_value VARCHAR(50),
+    generator_system_remark TEXT,
+
+    generator_sizing_result VARCHAR(50),
+    generator_sizing_value VARCHAR(50),
+    generator_sizing_remark TEXT,
+
+    generator_fuel_result VARCHAR(50),
+    generator_fuel_value VARCHAR(50),
+    generator_fuel_remark TEXT,
+
+    generator_battery_date_result VARCHAR(50),
+    generator_battery_date_value VARCHAR(50),
+    generator_battery_date_remark TEXT,
+
+    generator_fuel_change_date_result VARCHAR(50),
+    generator_fuel_change_date_value VARCHAR(50),
+    generator_fuel_change_date_remark TEXT,
+
+    generator_amp_result VARCHAR(50),
+    generator_amp_value VARCHAR(50),
+    generator_amp_remark TEXT,
+
+    generator_physical_check_result VARCHAR(50),
+    generator_physical_check_value VARCHAR(50),
+    generator_physical_check_remark TEXT,
+
+    CONSTRAINT fk_pm_generator_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_generator_pm_id
+ON pm_generator(pm_id);
+
+CREATE TABLE pm_site_facility (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    site_facility_key_result VARCHAR(50),
+    site_facility_key_value VARCHAR(50),
+    site_facility_key_remark TEXT,
+    
+    site_facility_sign_result VARCHAR(50),
+    site_facility_sign_value VARCHAR(50),
+    site_facility_sign_remark TEXT,
+    
+    site_facility_pole_result VARCHAR(50),
+    site_facility_pole_value VARCHAR(50),
+    site_facility_pole_remark TEXT,
+    
+    site_facility_road_result VARCHAR(50),
+    site_facility_road_value VARCHAR(50),
+    site_facility_road_remark TEXT,
+    
+    site_facility_door_result VARCHAR(50),
+    site_facility_door_value VARCHAR(50),
+    site_facility_door_remark TEXT,
+    
+    site_facility_cable_result VARCHAR(50),
+    site_facility_cable_value VARCHAR(50),
+    site_facility_cable_remark TEXT,
+
+    CONSTRAINT fk_pm_site_facility_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_site_facility_pm_id 
+ON pm_site_facility(pm_id);
+
+CREATE TABLE pm_voltage_input (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    r_s_result VARCHAR(50),
+    r_s_value VARCHAR(50),
+    r_s_remark TEXT,
+
+    s_t_result VARCHAR(50),
+    s_t_value VARCHAR(50),
+    s_t_remark TEXT,
+
+    t_r_result VARCHAR(50),
+    t_r_value VARCHAR(50),
+    t_r_remark TEXT,
+
+    r_n_result VARCHAR(50),
+    r_n_value VARCHAR(50),
+    r_n_remark TEXT,
+
+    s_n_result VARCHAR(50),
+    s_n_value VARCHAR(50),
+    s_n_remark TEXT,
+
+    t_n_result VARCHAR(50),
+    t_n_value VARCHAR(50),
+    t_n_remark TEXT,
+
+    l_n_result VARCHAR(50),
+    l_n_value VARCHAR(50),
+    l_n_remark TEXT,
+
+    n_g_result VARCHAR(50),
+    n_g_value VARCHAR(50),
+    n_g_remark TEXT,
+
+    CONSTRAINT fk_pm_voltage_input_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_voltage_input_pm_id 
+ON pm_voltage_input(pm_id);
+
+CREATE TABLE pm_mdb_ac (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    mccb_result VARCHAR(50),
+    mccb_value VARCHAR(50),
+    mccb_remark TEXT,
+
+    brand_mccb_result VARCHAR(100),
+    brand_mccb_value VARCHAR(100),
+    brand_mccb_remark TEXT,
+
+    mccb_pole_result VARCHAR(50),
+    mccb_pole_value VARCHAR(50),
+    mccb_pole_remark TEXT,
+
+    mdb_r_result VARCHAR(50),
+    mdb_r_value VARCHAR(50),
+    mdb_r_remark TEXT,
+
+    mdb_l_result VARCHAR(50),
+    mdb_l_value VARCHAR(50),
+    mdb_l_remark TEXT,
+
+    mdb_s_result VARCHAR(50),
+    mdb_s_value VARCHAR(50),
+    mdb_s_remark TEXT,
+
+    mdb_t_result VARCHAR(50),
+    mdb_t_value VARCHAR(50),
+    mdb_t_remark TEXT,
+
+    mdb_n_result VARCHAR(50),
+    mdb_n_value VARCHAR(50),
+    mdb_n_remark TEXT,
+
+    mdb_g_result VARCHAR(50),
+    mdb_g_value VARCHAR(50),
+    mdb_g_remark TEXT,
+
+    mdb_surge_result VARCHAR(50),
+    mdb_surge_value VARCHAR(50),
+    mdb_surge_remark TEXT,
+
+    mdb_pilot_lamp_result VARCHAR(50),
+    mdb_pilot_lamp_value VARCHAR(50),
+    mdb_pilot_lamp_remark TEXT,
+
+    mdb_socket_gen_result VARCHAR(50),
+    mdb_socket_gen_value VARCHAR(50),
+    mdb_socket_gen_remark TEXT,
+
+    mdb_check_label_result VARCHAR(50),
+    mdb_check_label_value VARCHAR(50),
+    mdb_check_label_remark TEXT,
+
+    CONSTRAINT fk_pm_mdb_ac_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_mdb_ac_pm_id
+ON pm_mdb_ac(pm_id);
+
+CREATE TABLE pm_grounding_system (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    ground_cable_result VARCHAR(50),
+    ground_cable_value VARCHAR(50),
+    ground_cable_remark TEXT,
+
+    ground_rod_result VARCHAR(50),
+    ground_rod_value VARCHAR(50),
+    ground_rod_remark TEXT,
+
+    ground_pit_result VARCHAR(50),
+    ground_pit_value VARCHAR(50),
+    ground_pit_remark TEXT,
+
+    lightning_pit_result VARCHAR(50),
+    lightning_pit_value VARCHAR(50),
+    lightning_pit_remark TEXT,
+
+    master_ground_bar_result VARCHAR(50),
+    master_ground_bar_value VARCHAR(50),
+    master_ground_bar_remark TEXT,
+
+    ground_loop_result VARCHAR(50),
+    ground_loop_value VARCHAR(50),
+    ground_loop_remark TEXT,
+
+    insulator_support_result VARCHAR(50),
+    insulator_support_value VARCHAR(50),
+    insulator_support_remark TEXT,
+
+    CONSTRAINT fk_pm_grounding_system_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_grounding_system_pm_id
+ON pm_grounding_system(pm_id);
+
+CREATE TABLE pm_external_alarm_before (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    main_power_alarm_result VARCHAR(50),
+    main_power_alarm_value VARCHAR(50),
+    main_power_alarm_remark TEXT,
+
+    rectifier_urgent_alarm_result VARCHAR(50),
+    rectifier_urgent_alarm_value VARCHAR(50),
+    rectifier_urgent_alarm_remark TEXT,
+
+    rectifier_non_urgent_alarm_result VARCHAR(50),
+    rectifier_non_urgent_alarm_value VARCHAR(50),
+    rectifier_non_urgent_alarm_remark TEXT,
+
+    door_open_alarm_result VARCHAR(50),
+    door_open_alarm_value VARCHAR(50),
+    door_open_alarm_remark TEXT,
+
+    smoke_alarm_result VARCHAR(50),
+    smoke_alarm_value VARCHAR(50),
+    smoke_alarm_remark TEXT,
+
+    batt_low_volt_alarm_result VARCHAR(50),
+    batt_low_volt_alarm_value VARCHAR(50),
+    batt_low_volt_alarm_remark TEXT,
+
+    batt_stolen_alarm_result VARCHAR(50),
+    batt_stolen_alarm_value VARCHAR(50),
+    batt_stolen_alarm_remark TEXT,
+
+    spd_failure_alarm_result VARCHAR(50),
+    spd_failure_alarm_value VARCHAR(50),
+    spd_failure_alarm_remark TEXT,
+
+    CONSTRAINT fk_pm_external_alarm_before_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_external_alarm_before_pm_id
+ON pm_external_alarm_before(pm_id);
+
+CREATE TABLE pm_nodeb_tx_equipment (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    cabinet_brand_result VARCHAR(100),
+    cabinet_brand_value VARCHAR(100),
+    cabinet_brand_remark TEXT,
+    
+    cabinet_model_result VARCHAR(100),
+    cabinet_model_value VARCHAR(100),
+    cabinet_model_remark TEXT,
+    
+    fan_cabinet_result VARCHAR(50),
+    fan_cabinet_value VARCHAR(50),
+    fan_cabinet_remark TEXT,
+    
+    nodeb_brand_result VARCHAR(100),
+    nodeb_brand_value VARCHAR(100),
+    nodeb_brand_remark TEXT,
+    
+    nodeb_model_result VARCHAR(100),
+    nodeb_model_value VARCHAR(100),
+    nodeb_model_remark TEXT,
+    
+    tx_type_result VARCHAR(50),
+    tx_type_value VARCHAR(50),
+    tx_type_remark TEXT,
+    
+    tx_brand_result VARCHAR(100),
+    tx_brand_value VARCHAR(100),
+    tx_brand_remark TEXT,
+    
+    tx_model_result VARCHAR(100),
+    tx_model_value VARCHAR(100),
+    tx_model_remark TEXT,
+    
+    node_type_result VARCHAR(100),
+    node_type_value VARCHAR(100),
+    node_type_remark TEXT,
+    
+    ground_leak_result VARCHAR(50),
+    ground_leak_value VARCHAR(50),
+    ground_leak_remark TEXT,
+    
+    inlet_connector_result VARCHAR(50),
+    inlet_connector_value VARCHAR(50),
+    inlet_connector_remark TEXT,
+    
+    routing_label_result VARCHAR(50),
+    routing_label_value VARCHAR(50),
+    routing_label_remark TEXT,
+
+    CONSTRAINT fk_pm_nodeb_tx_equipment_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_nodeb_tx_equipment_pm_id
+ON pm_nodeb_tx_equipment(pm_id);
+
+CREATE TABLE pm_rectifier (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    
+    brand_result VARCHAR(100),
+    brand_value VARCHAR(100),
+    brand_remark TEXT,
+    
+    model_result VARCHAR(100),
+    model_value VARCHAR(100),
+    model_remark TEXT,
+    
+    module_model_result VARCHAR(100),
+    module_model_value VARCHAR(100),
+    module_model_remark TEXT,
+    
+    power_module_result VARCHAR(50),
+    power_module_value VARCHAR(50),
+    power_module_remark TEXT,
+    
+    no_module_result VARCHAR(50),
+    no_module_value VARCHAR(50),
+    no_module_remark TEXT,
+    
+    load_current_result VARCHAR(50),
+    load_current_value VARCHAR(50),
+    load_current_remark TEXT,
+    
+    voltage_result VARCHAR(50),
+    voltage_value VARCHAR(50),
+    voltage_remark TEXT,
+    
+    current_limit_result VARCHAR(50),
+    current_limit_value VARCHAR(50),
+    current_limit_remark TEXT,
+    
+    llvd_voltage_result VARCHAR(50),
+    llvd_voltage_value VARCHAR(50),
+    llvd_voltage_remark TEXT,
+    
+    blvd_voltage_result VARCHAR(50),
+    blvd_voltage_value VARCHAR(50),
+    blvd_voltage_remark TEXT,
+    
+    battery_low_voltage_result VARCHAR(50),
+    battery_low_voltage_value VARCHAR(50),
+    battery_low_voltage_remark TEXT,
+    
+    fuse_battery_sizing_result VARCHAR(50),
+    fuse_battery_sizing_value VARCHAR(50),
+    fuse_battery_sizing_remark TEXT,
+    
+    CONSTRAINT fk_pm_rectifier_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_rectifier_pm_id
+ON pm_rectifier(pm_id);
+
+CREATE TABLE pm_cabinet_check (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    input_cfm_result VARCHAR(50),
+    input_cfm_value VARCHAR(50),
+    input_cfm_remark TEXT,
+
+    output_cfm_result VARCHAR(50),
+    output_cfm_value VARCHAR(50),
+    output_cfm_remark TEXT,
+
+    temp_out_cab_result VARCHAR(50),
+    temp_out_cab_value VARCHAR(50),
+    temp_out_cab_remark TEXT,
+
+    temp_in_cab_result VARCHAR(50),
+    temp_in_cab_value VARCHAR(50),
+    temp_in_cab_remark TEXT,
+
+    filter_result VARCHAR(50),
+    filter_value VARCHAR(50),
+    filter_remark TEXT,
+
+    theft_protection_result VARCHAR(50),
+    theft_protection_value VARCHAR(50),
+    theft_protection_remark TEXT,
+
+    physical_check_result VARCHAR(50),
+    physical_check_value VARCHAR(50),
+    physical_check_remark TEXT,
+
+    CONSTRAINT fk_pm_cabinet_check_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_cabinet_check_pm_id
+ON pm_cabinet_check(pm_id);
+
+CREATE TABLE pm_batteries (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    
+    battery_number VARCHAR(50) NULL,
+
+    serial_number_result VARCHAR(100) NOT NULL,
+    serial_number_value VARCHAR(100),
+    serial_number_remark TEXT,
+
+    brand_result VARCHAR(50),
+    brand_value VARCHAR(50),
+    brand_remark TEXT,
+    
+    model_result VARCHAR(100),
+    model_value VARCHAR(100),
+    model_remark TEXT,
+    
+    capacity_result VARCHAR(50),
+    capacity_value VARCHAR(50),
+    capacity_remark TEXT,
+    
+    type_result VARCHAR(50),
+    type_value VARCHAR(50),
+    type_remark TEXT,
+    
+    temp_result VARCHAR(50),
+    temp_value VARCHAR(50),
+    temp_remark TEXT,
+    
+    acid_0_result VARCHAR(50),
+    acid_0_value VARCHAR(50),
+    acid_0_remark TEXT,
+    
+    acid_30_result VARCHAR(50),
+    acid_30_value VARCHAR(50),
+    acid_30_remark TEXT,
+    
+    acid_60_result VARCHAR(50),
+    acid_60_value VARCHAR(50),
+    acid_60_remark TEXT,
+    
+    acid_90_result VARCHAR(50),
+    acid_90_value VARCHAR(50),
+    acid_90_remark TEXT,
+    
+    acid_120_result VARCHAR(50),
+    acid_120_value VARCHAR(50),
+    acid_120_remark TEXT,
+    
+    soh_result VARCHAR(50),
+    soh_value VARCHAR(50),
+    soh_remark TEXT,
+    
+    soc_result VARCHAR(50),
+    soc_value VARCHAR(50),
+    soc_remark TEXT,
+    
+    protection_result VARCHAR(50),
+    protection_value VARCHAR(50),
+    protection_remark TEXT,
+    
+    physical_result VARCHAR(50),
+    physical_value VARCHAR(50),
+    physical_remark TEXT,
+    
+    CONSTRAINT fk_pm_batteries_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE,
+);
+
+CREATE INDEX idx_pm_batteries_pm_id
+ON pm_batteries(pm_id);
+
+CREATE TABLE pm_battery_backup (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    backup_time_result VARCHAR(50),
+    backup_time_value VARCHAR(50),
+    backup_time_remark TEXT,
+
+    priority_result VARCHAR(50),
+    priority_value VARCHAR(50),
+    priority_remark TEXT,
+    
+    CONSTRAINT fk_pm_battery_backup_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_battery_backup_pm_id
+ON pm_battery_backup(pm_id);
+
+CREATE TABLE pm_test_alarm (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    door_result VARCHAR(50),
+    door_value VARCHAR(50),
+    door_remark TEXT,
+
+    main_power_result VARCHAR(50),
+    main_power_value VARCHAR(50),
+    main_power_remark TEXT,
+
+    high_temp_result VARCHAR(50),
+    high_temp_value VARCHAR(50),
+    high_temp_remark TEXT,
+
+    rectifier_non_urgent_result VARCHAR(50),
+    rectifier_non_urgent_value VARCHAR(50),
+    rectifier_non_urgent_remark TEXT,
+
+    rectifier_urgent_result VARCHAR(50),
+    rectifier_urgent_value VARCHAR(50),
+    rectifier_urgent_remark TEXT,
+
+    fire_smoke_result VARCHAR(50),
+    fire_smoke_value VARCHAR(50),
+    fire_smoke_remark TEXT,
+
+    spd_fault_result VARCHAR(50),
+    spd_fault_value VARCHAR(50),
+    spd_fault_remark TEXT,
+
+    pmu_csu_fault_result VARCHAR(50),
+    pmu_csu_fault_value VARCHAR(50),
+    pmu_csu_fault_remark TEXT,
+
+    battery_stolen_result VARCHAR(50),
+    battery_stolen_value VARCHAR(50),
+    battery_stolen_remark TEXT,
+
+    battery_low_voltage_result VARCHAR(50),
+    battery_low_voltage_value VARCHAR(50),
+    battery_low_voltage_remark TEXT,
+
+    CONSTRAINT fk_pm_test_alarm_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_test_alarm_pm_id
+ON pm_test_alarm(pm_id);
+
+CREATE TABLE pm_filter_check (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    filter_1_4_result VARCHAR(50),
+    filter_1_4_value VARCHAR(50),
+    filter_1_4_remark TEXT,
+
+    filter_5_8_result VARCHAR(50),
+    filter_5_8_value VARCHAR(50),
+    filter_5_8_remark TEXT,
+
+    filter_9_12_result VARCHAR(50),
+    filter_9_12_value VARCHAR(50),
+    filter_9_12_remark TEXT,
+    
+    CONSTRAINT fk_pm_filter_check_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_filter_check_pm_id
+ON pm_filter_check(pm_id);
+
+
+CREATE TABLE pm_online_equipment (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    equipment_number INTEGER NULL,
+    cab_result VARCHAR(50),
+    cab_value VARCHAR(50),
+    cab_remark TEXT,
+
+    olt_result VARCHAR(100),
+    olt_value VARCHAR(100),
+    olt_remark TEXT,
+
+    nodeb_result VARCHAR(50),
+    nodeb_value VARCHAR(50),
+    nodeb_remark TEXT,
+
+    brand_model_result VARCHAR(100),
+    brand_model_value VARCHAR(100),
+    brand_model_remark TEXT,
+
+    edfa_result VARCHAR(50),
+    edfa_value VARCHAR(50),
+    edfa_remark TEXT,
+
+    load_olt_result VARCHAR(50),
+    load_olt_value VARCHAR(50),
+    load_olt_remark TEXT,
+
+    external_alarm_result VARCHAR(50),
+    external_alarm_value VARCHAR(50),
+    external_alarm_remark TEXT,
+
+    edfa_io_result VARCHAR(50),
+    edfa_io_value VARCHAR(50),
+    edfa_io_remark TEXT,
+
+    work_urgent_result VARCHAR(50),
+    work_urgent_value VARCHAR(50),
+    work_urgent_remark TEXT,
+
+    work_urgent_photo_result VARCHAR(50),
+    work_urgent_photo_value VARCHAR(50),
+    work_urgent_photo_remark TEXT,
+
+    olt_data_result VARCHAR(50),
+    olt_data_value VARCHAR(50),
+    olt_data_remark TEXT,
+
+    olt_problem_result VARCHAR(50),
+    olt_problem_value VARCHAR(50),
+    olt_problem_remark TEXT,
+
+    pm_olt_result VARCHAR(50),
+    pm_olt_value VARCHAR(50),
+    pm_olt_remark TEXT,
+
+    pm_olt_suggest_result VARCHAR(50),
+    pm_olt_suggest_value VARCHAR(50),
+    pm_olt_suggest_remark TEXT,
+    
+    CONSTRAINT fk_pm_online_equipment_pm_id
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_online_equipment_pm_id
+ON pm_online_equipment(pm_id);
+
+CREATE TABLE pm_mowing (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    round_number INTEGER NULL,
+
+    mowing_result VARCHAR(100),
+    mowing_value VARCHAR(100),
+    mowing_remark TEXT,
+
+    physical_check_result VARCHAR(50),
+    physical_check_value VARCHAR(50),
+    physical_check_remark TEXT,
+    
+    last_pm_date_result VARCHAR(50),
+    last_pm_date_value VARCHAR(50),
+    last_pm_date_remark TEXT,
+
+    plan_of_date_result VARCHAR(50),
+    plan_of_date_value VARCHAR(50),
+    plan_of_date_remark TEXT,
+
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_remark TEXT,
+
+    team_name_result VARCHAR(100),
+    team_name_value VARCHAR(100),
+    team_name_remark TEXT,
+
+    team_company_result VARCHAR(100),
+    team_company_value VARCHAR(100),
+    team_company_remark TEXT,
+
+    photo_result VARCHAR(50),
+    photo_value VARCHAR(50), 
+    photo_remark TEXT,
+
+    CONSTRAINT fk_pm_mowing_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_mowing_pm_id
+ON pm_mowing(pm_id);
+
+CREATE TABLE pm_solar_cell (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    has_solar_result VARCHAR(100),
+    has_solar_value VARCHAR(100),
+    has_solar_remark TEXT,
+
+    last_pm_date_result VARCHAR(50),
+    last_pm_date_value VARCHAR(50),
+    last_pm_date_remark TEXT,
+
+    plan_date_result VARCHAR(50),
+    plan_date_value VARCHAR(50),
+    plan_date_remark TEXT,
+
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_remark TEXT,
+
+    team_name_result VARCHAR(100),
+    team_name_value VARCHAR(100),
+    team_name_remark TEXT,
+
+    team_company_result VARCHAR(100),
+    team_company_value VARCHAR(100),
+    team_company_remark TEXT,
+
+    weather_status_result VARCHAR(50),
+    weather_status_value VARCHAR(50),
+    weather_status_remark TEXT,
+
+    CONSTRAINT fk_pm_solar_cell_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_solar_cell_pm_id
+ON pm_solar_cell(pm_id);
+
+CREATE TABLE pm_air_maintenance (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    round_number INTEGER NULL,
+
+    has_air_result VARCHAR(100),
+    has_air_value VARCHAR(100),
+    has_air_remark TEXT,
+
+    last_pm_result VARCHAR(50),
+    last_pm_value VARCHAR(50),
+    last_pm_remark TEXT,
+
+    plan_of_date_result VARCHAR(50),
+    plan_of_date_value VARCHAR(50),
+    plan_of_date_remark TEXT,
+
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_remark TEXT,
+
+    temp_result VARCHAR(50),
+    temp_value VARCHAR(50),
+    temp_remark TEXT,
+
+    CONSTRAINT fk_pm_air_maintenance_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_air_maintenance_pm_id
+ON pm_air_maintenance(pm_id);
+
+CREATE TABLE pm_nop_external_alarm_after (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    nop_main_power_alarm_result VARCHAR(50),
+    nop_main_power_alarm_value VARCHAR(50),
+    nop_main_power_alarm_remark TEXT,
+
+    nop_rectifier_urgent_alarm_result VARCHAR(50),
+    nop_rectifier_urgent_alarm_value VARCHAR(50),
+    nop_rectifier_urgent_alarm_remark TEXT,
+
+    nop_rectifier_non_urgent_alarm_result VARCHAR(50),
+    nop_rectifier_non_urgent_alarm_value VARCHAR(50),
+    nop_rectifier_non_urgent_alarm_remark TEXT,
+
+    nop_door_open_alarm_result VARCHAR(50),
+    nop_door_open_alarm_value VARCHAR(50),
+    nop_door_open_alarm_remark TEXT,
+
+    nop_smoke_alarm_result VARCHAR(50),
+    nop_smoke_alarm_value VARCHAR(50),
+    nop_smoke_alarm_remark TEXT,
+
+    nop_batt_low_volt_alarm_result VARCHAR(50),
+    nop_batt_low_volt_alarm_value VARCHAR(50),
+    nop_batt_low_volt_alarm_remark TEXT,
+
+    nop_batt_stolen_alarm_result VARCHAR(50),
+    nop_batt_stolen_alarm_value VARCHAR(50),
+    nop_batt_stolen_alarm_remark TEXT,
+
+    nop_spd_failure_alarm_result VARCHAR(50),
+    nop_spd_failure_alarm_value VARCHAR(50),
+    nop_spd_failure_alarm_remark TEXT,
+    
+    CONSTRAINT fk_pm_nop_external_alarm_after_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_nop_external_alarm_after_pm
+ON pm_nop_external_alarm_after(pm_id);
+
+CREATE TABLE pm_nop_verify (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    
+    nop_verify_date_result VARCHAR(50),
+    nop_verify_date_value VARCHAR(50),
+    nop_verify_date_remark TEXT,
+
+    nop_supervisor_name_result VARCHAR(100),
+    nop_supervisor_name_value VARCHAR(100),
+    nop_supervisor_name_remark TEXT,
+
+    nop_ac_power_system_result VARCHAR(50),
+    nop_ac_power_system_value VARCHAR(50),
+    nop_ac_power_system_remark TEXT,
+
+    nop_generator_system_result VARCHAR(50),
+    nop_generator_system_value VARCHAR(50),
+    nop_generator_system_remark TEXT,
+
+    nop_dc_power_system_result VARCHAR(50),
+    nop_dc_power_system_value VARCHAR(50),
+    nop_dc_power_system_remark TEXT,
+
+    nop_air_system_result VARCHAR(50),
+    nop_air_system_value VARCHAR(50),
+    nop_air_system_remark TEXT,
+
+    nop_fire_alarm_system_result VARCHAR(50),
+    nop_fire_alarm_system_value VARCHAR(50),
+    nop_fire_alarm_system_remark TEXT,
+
+    nop_grounding_lightning_system_result VARCHAR(50),
+    nop_grounding_lightning_system_value VARCHAR(50),
+    nop_grounding_lightning_system_remark TEXT,
+
+    nop_external_alarm_system_result VARCHAR(50),
+    nop_external_alarm_system_value VARCHAR(50),
+    nop_external_alarm_system_remark TEXT,
+
+    nop_equipment_installation_result VARCHAR(50),
+    nop_equipment_installation_value VARCHAR(50),
+    nop_equipment_installation_remark TEXT,
+
+    nop_environment_result VARCHAR(50),
+    nop_environment_value VARCHAR(50),
+    nop_environment_remark TEXT,
+
+    nop_tower_result VARCHAR(50),
+    nop_tower_value VARCHAR(50),
+    nop_tower_remark TEXT,
+    
+    CONSTRAINT fk_pm_nop_verify_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm_nodeb(id) 
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_nop_verify_pm_id
+ON pm_nop_verify(pm_id);
+
+CREATE TABLE pm_images (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+
+    category VARCHAR(50),
+    field_name VARCHAR(100) NULL,   
+    sub_id INTEGER NULL,           
+    file_path VARCHAR(255),    
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+//คำสั่งลบ
+DROP TABLE IF EXISTS pm_site_information;
+DROP TABLE IF EXISTS pm_cabinets;
+DROP TABLE IF EXISTS pm_kwh_meter;
+DROP TABLE IF EXISTS pm_transformer;
+DROP TABLE IF EXISTS pm_generator;
+DROP TABLE IF EXISTS pm_site_facility;
+DROP TABLE IF EXISTS pm_voltage_input;
+DROP TABLE IF EXISTS pm_mdb_ac;
+DROP TABLE IF EXISTS pm_grounding_system;
+DROP TABLE IF EXISTS pm_external_alarm_before;
+DROP TABLE IF EXISTS pm_nodeb_tx_equipment;
+DROP TABLE IF EXISTS pm_rectifier;
+DROP TABLE IF EXISTS pm_cabinet_check;
+DROP TABLE IF EXISTS pm_batteries;
+DROP TABLE IF EXISTS pm_battery_backup;
+DROP TABLE IF EXISTS pm_test_alarm;
+DROP TABLE IF EXISTS pm_filter_check;
+DROP TABLE IF EXISTS pm_online_equipment;
+DROP TABLE IF EXISTS pm_mowing;
+DROP TABLE IF EXISTS pm_solar_cell;
+DROP TABLE IF EXISTS pm_air_maintenance;
+DROP TABLE IF EXISTS pm_nop_external_alarm_after;
+DROP TABLE IF EXISTS pm_nop_verify;
+DROP TABLE IF EXISTS pm_images;
+DROP TABLE IF EXISTS pm_nodeb;

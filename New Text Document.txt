@@ -1,0 +1,717 @@
+CREATE TABLE pm_nodeb (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    site_id VARCHAR(50) NOT NULL,
+    node_type VARCHAR(50) NULL,
+    round VARCHAR(20),
+    cabinet_total INT,
+    region VARCHAR(100),
+    pm_date DATETIME,
+    status VARCHAR(50),
+    planwork VARCHAR(100),
+    created_by VARCHAR(100),
+    remark TEXT,
+    img_photo_preview VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_site_id (site_id),
+    INDEX idx_pm_date (pm_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE pm_nodeb ADD COLUMN deleted_at TIMESTAMP NULL;
+
+
+CREATE TABLE pm_site_information (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    photo_around_result VARCHAR(50),
+    photo_around_remark TEXT,
+    latitude_result VARCHAR(100),
+    latitude_remark TEXT,
+    longitude_result VARCHAR(100),
+    longitude_remark TEXT,
+    equipment_room_result VARCHAR(100),
+    equipment_room_remark TEXT,
+    site_type_result VARCHAR(50),
+    site_type_remark TEXT,
+    tower_type_result VARCHAR(50),
+    tower_type_remark TEXT,
+    tower_height_result VARCHAR(50),
+    tower_height_value DECIMAL(10, 2),
+    tower_height_remark TEXT,
+    site_access_result VARCHAR(10),
+    site_access_remark TEXT,
+    site_owner_result VARCHAR(100),
+    site_owner_remark TEXT,
+    site_owner_phone_result VARCHAR(50),
+    site_owner_phone_remark TEXT,
+    site_key_result VARCHAR(50),
+    site_key_value DECIMAL(10, 2),
+    site_key_remark TEXT,
+    manager_key_result VARCHAR(100),
+    manager_key_remark TEXT,
+    manager_phone_result VARCHAR(50),
+    manager_phone_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_cabinets (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    cabinet_number INT NULL,
+    network_type VARCHAR(100),
+    result VARCHAR(50),
+    remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE,
+    INDEX idx_pm_cabinet (pm_id, cabinet_number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_kwh_meter (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    mea_pea_result VARCHAR(50),
+    mea_pea_value DECIMAL(10, 2),
+    mea_pea_remark TEXT,
+    meter_type_result VARCHAR(50),
+    meter_type_remark TEXT,
+    electric_system_result VARCHAR(50),
+    electric_system_remark TEXT,
+    kwh_size_result VARCHAR(50),
+    kwh_size_remark TEXT,
+    p1_l_input_result VARCHAR(50),
+    p1_l_input_value DECIMAL(10,2),
+    p1_l_input_remark TEXT,
+    p1_l_output_result VARCHAR(50),
+    p1_l_output_value DECIMAL(10,2),
+    p1_l_output_remark TEXT,
+    p1_n_input_result VARCHAR(50),
+    p1_n_input_value DECIMAL(10,2),
+    p1_n_input_remark TEXT,
+    p1_n_output_result VARCHAR(50),
+    p1_n_output_value DECIMAL(10,2),
+    p1_n_output_remark TEXT,
+    ground_leak_result VARCHAR(50),
+    ground_leak_value DECIMAL(10,2),
+    ground_leak_remark TEXT,
+    p3_r_input_result VARCHAR(50),
+    p3_r_input_value DECIMAL(10,2),
+    p3_r_input_remark TEXT,
+    p3_r_output_result VARCHAR(50),
+    p3_r_output_value DECIMAL(10,2),
+    p3_r_output_remark TEXT,
+    p3_s_input_result VARCHAR(50),
+    p3_s_input_value DECIMAL(10,2),
+    p3_s_input_remark TEXT,
+    p3_s_output_result VARCHAR(50),
+    p3_s_output_value DECIMAL(10,2),
+    p3_s_output_remark TEXT,
+    p3_t_input_result VARCHAR(50),
+    p3_t_input_value DECIMAL(10,2),
+    p3_t_input_remark TEXT,
+    p3_t_output_result VARCHAR(50),
+    p3_t_output_value DECIMAL(10,2),
+    p3_t_output_remark TEXT,
+    p3_n_input_result VARCHAR(50),
+    p3_n_input_value DECIMAL(10,2),
+    p3_n_input_remark TEXT,
+    p3_n_output_result VARCHAR(50),
+    p3_n_output_value DECIMAL(10,2),
+    p3_n_output_remark TEXT,
+    kwh_physical_check_result VARCHAR(50),
+    kwh_physical_check_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_transformer (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    has_transformer_result VARCHAR(100),
+    has_transformer_remark TEXT,
+    last_year_pm_date_result VARCHAR(50),
+    last_year_pm_date_remark TEXT,
+    plan_of_date_result VARCHAR(50),
+    plan_of_date_remark TEXT,
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_remark TEXT,
+    total_transformer_result VARCHAR(50),
+    total_transformer_remark TEXT,
+    brand_result VARCHAR(100),
+    brand_remark TEXT,
+    series_no_result VARCHAR(100),
+    series_no_remark TEXT,
+    system_phase_result VARCHAR(50),
+    system_phase_remark TEXT,
+    size_capacity_result VARCHAR(50),
+    size_capacity_remark TEXT,
+    rated_voltage_hv_result VARCHAR(50),
+    rated_voltage_hv_remark TEXT,
+    rated_voltage_lv_result VARCHAR(50),
+    rated_voltage_lv_remark TEXT,
+    power_rating_result VARCHAR(50),
+    power_rating_remark TEXT,
+    power_actual_load_result VARCHAR(50),
+    power_actual_load_remark TEXT,
+    power_used_result VARCHAR(50),
+    power_used_remark TEXT,
+    physical_check_result VARCHAR(50),
+    physical_check_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_generator (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    has_generator_result VARCHAR(10),
+    has_generator_remark TEXT,
+    generator_last_year_pm_date_result VARCHAR(50),
+    generator_last_year_pm_date_remark TEXT,
+    generator_plan_of_date_result VARCHAR(50),
+    generator_plan_of_date_remark TEXT,
+    generator_actual_pm_date_result VARCHAR(50),
+    generator_actual_pm_date_remark TEXT,
+    generator_brand_result VARCHAR(100),
+    generator_brand_remark TEXT,
+    generator_system_result VARCHAR(50),
+    generator_system_remark TEXT,
+    generator_sizing_result VARCHAR(50),
+    generator_sizing_remark TEXT,
+    generator_fuel_result VARCHAR(50),
+    generator_fuel_remark TEXT,
+    generator_battery_date_result VARCHAR(50),
+    generator_battery_date_remark TEXT,
+    generator_fuel_change_date_result VARCHAR(50),
+    generator_fuel_change_date_remark TEXT,
+    generator_amp_result VARCHAR(50),
+    generator_amp_value DECIMAL(10,2),
+    generator_amp_remark TEXT,
+    generator_physical_check_result VARCHAR(50),
+    generator_physical_check_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_site_facility (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    site_facility_key_result VARCHAR(50),
+    site_facility_key_remark TEXT,
+    site_facility_sign_result VARCHAR(50),
+    site_facility_sign_remark TEXT,
+    site_facility_pole_result VARCHAR(50),
+    site_facility_pole_remark TEXT,
+    site_facility_road_result VARCHAR(50),
+    site_facility_road_remark TEXT,
+    site_facility_door_result VARCHAR(50),
+    site_facility_door_remark TEXT,
+    site_facility_cable_result VARCHAR(50),
+    site_facility_cable_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_voltage_input (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    r_s_result VARCHAR(50),
+    r_s_value DECIMAL(10,2),
+    r_s_remark TEXT,
+    s_t_result VARCHAR(50),
+    s_t_value DECIMAL(10,2),
+    s_t_remark TEXT,
+    t_r_result VARCHAR(50),
+    t_r_value DECIMAL(10,2),
+    t_r_remark TEXT,
+    r_n_result VARCHAR(50),
+    r_n_value DECIMAL(10,2),
+    r_n_remark TEXT,
+    s_n_result VARCHAR(50),
+    s_n_value DECIMAL(10,2),
+    s_n_remark TEXT,
+    t_n_result VARCHAR(50),
+    t_n_value DECIMAL(10,2),
+    t_n_remark TEXT,
+    l_n_result VARCHAR(50),
+    l_n_value DECIMAL(10,2),
+    l_n_remark TEXT,
+    n_g_result VARCHAR(50),
+    n_g_value DECIMAL(10,2),
+    n_g_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_mdb_ac (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    mccb_result VARCHAR(50),
+    mccb_remark TEXT,
+    brand_mccb_result VARCHAR(100),
+    brand_mccb_remark TEXT,
+    mccb_pole_result VARCHAR(50),
+    mccb_pole_remark TEXT,
+    mdb_r_result VARCHAR(50),
+    mdb_r_value DECIMAL(10,2),
+    mdb_r_remark TEXT,
+    mdb_l_result VARCHAR(50),
+    mdb_l_value DECIMAL(10,2),
+    mdb_l_remark TEXT,
+    mdb_s_result VARCHAR(50),
+    mdb_s_value DECIMAL(10,2),
+    mdb_s_remark TEXT,
+    mdb_t_result VARCHAR(50),
+    mdb_t_value DECIMAL(10,2),
+    mdb_t_remark TEXT,
+    mdb_n_result VARCHAR(50),
+    mdb_n_value DECIMAL(10,2),
+    mdb_n_remark TEXT,
+    mdb_g_result VARCHAR(50),
+    mdb_g_value DECIMAL(10,2),
+    mdb_g_remark TEXT,
+    mdb_surge_result VARCHAR(50),
+    mdb_surge_remark TEXT,
+    mdb_pilot_lamp_result VARCHAR(50),
+    mdb_pilot_lamp_remark TEXT,
+    mdb_socket_gen_result VARCHAR(50),
+    mdb_socket_gen_remark TEXT,
+    mdb_check_label_result VARCHAR(50),
+    mdb_check_label_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_grounding_system (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    ground_cable_result VARCHAR(50),
+    ground_cable_remark TEXT,
+    ground_rod_result VARCHAR(50),
+    ground_rod_remark TEXT,
+    ground_pit_result VARCHAR(50),
+    ground_pit_value DECIMAL(10,2),
+    ground_pit_remark TEXT,
+    lightning_pit_result VARCHAR(50),
+    lightning_pit_value DECIMAL(10,2),
+    lightning_pit_remark TEXT,
+    master_ground_bar_result VARCHAR(50),
+    master_ground_bar_value DECIMAL(10,2),
+    master_ground_bar_remark TEXT,
+    ground_loop_result VARCHAR(50),
+    ground_loop_value DECIMAL(10,2),
+    ground_loop_remark TEXT,
+    insulator_support_result VARCHAR(50),
+    insulator_support_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_external_alarm_before (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    main_power_alarm_result VARCHAR(50),
+    main_power_alarm_remark TEXT,
+    rectifier_urgent_alarm_result VARCHAR(50),
+    rectifier_urgent_alarm_remark TEXT,
+    rectifier_non_urgent_alarm_result VARCHAR(50),
+    rectifier_non_urgent_alarm_remark TEXT,
+    door_open_alarm_result VARCHAR(50),
+    door_open_alarm_remark TEXT,
+    smoke_alarm_result VARCHAR(50),
+    smoke_alarm_remark TEXT,
+    batt_low_volt_alarm_result VARCHAR(50),
+    batt_low_volt_alarm_remark TEXT,
+    batt_stolen_alarm_result VARCHAR(50),
+    batt_stolen_alarm_remark TEXT,
+    spd_failure_alarm_result VARCHAR(50),
+    spd_failure_alarm_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_nodeb_tx_equipment (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    cabinet_brand_result VARCHAR(100),
+    cabinet_brand_remark TEXT,
+    cabinet_model_result VARCHAR(100),
+    cabinet_model_remark TEXT,
+    fan_cabinet_result VARCHAR(50),
+    fan_cabinet_remark TEXT,
+    nodeb_brand_result VARCHAR(100),
+    nodeb_brand_remark TEXT,
+    nodeb_model_result VARCHAR(100),
+    nodeb_model_remark TEXT,
+    tx_type_result VARCHAR(50),
+    tx_type_remark TEXT,
+    tx_brand_result VARCHAR(100),
+    tx_brand_remark TEXT,
+    tx_model_result VARCHAR(100),
+    tx_model_remark TEXT,
+    node_type_result VARCHAR(100),
+    node_type_remark TEXT,
+    ground_leak_result VARCHAR(50),
+    ground_leak_value DECIMAL(10,2),
+    ground_leak_remark TEXT,
+    inlet_connector_result VARCHAR(50),
+    inlet_connector_remark TEXT,
+    routing_label_result VARCHAR(50),
+    routing_label_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_rectifier (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    brand_result VARCHAR(100),
+    brand_remark TEXT,
+    model_result VARCHAR(100),
+    model_remark TEXT,
+    module_model_result VARCHAR(100),
+    module_model_remark TEXT,
+    power_module_result VARCHAR(50),
+    power_module_remark TEXT,
+    no_module_result VARCHAR(50),
+    no_module_remark TEXT,
+    load_current_result VARCHAR(50),
+    load_current_value DECIMAL(10,2),
+    load_current_remark TEXT,
+    voltage_result VARCHAR(50),
+    voltage_remark TEXT,
+    current_limit_result VARCHAR(50),
+    current_limit_remark TEXT,
+    llvd_voltage_result VARCHAR(50),
+    llvd_voltage_remark TEXT,
+    blvd_voltage_result VARCHAR(50),
+    blvd_voltage_remark TEXT,
+    battery_low_voltage_result VARCHAR(50),
+    battery_low_voltage_remark TEXT,
+    fuse_battery_sizing_result VARCHAR(50),
+    fuse_battery_sizing_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_cabinet_check (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    input_cfm_result VARCHAR(50),
+    input_cfm_value DECIMAL(10,2),
+    input_cfm_remark TEXT,
+    output_cfm_result VARCHAR(50),
+    output_cfm_value DECIMAL(10,2),
+    output_cfm_remark TEXT,
+    temp_out_cab_result VARCHAR(50),
+    temp_out_cab_value DECIMAL(10,2),
+    temp_out_cab_remark TEXT,
+    temp_in_cab_result VARCHAR(50),
+    temp_in_cab_value DECIMAL(10,2),
+    temp_in_cab_remark TEXT,
+    filter_result VARCHAR(50),
+    filter_remark TEXT,
+    theft_protection_result VARCHAR(50),
+    theft_protection_remark TEXT,
+    physical_check_result VARCHAR(50),
+    physical_check_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_batteries (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    battery_number INT NULL,
+    serial_number_result VARCHAR(100) NOT NULL,
+    serial_number_remark VARCHAR(100),
+    brand_result VARCHAR(50),
+    brand_remark TEXT,
+    model_result VARCHAR(100),
+    model_remark TEXT,
+    capacity_result VARCHAR(50),
+    capacity_remark TEXT,
+    type_result VARCHAR(50),
+    type_remark TEXT,
+    temp_result VARCHAR(50),
+    temp_value DECIMAL(10,2),
+    temp_remark TEXT,
+    acid_0_result VARCHAR(50),
+    acid_0_value DECIMAL(10,2),
+    acid_0_remark TEXT,
+    acid_30_result VARCHAR(50),
+    acid_30_value DECIMAL(10,2),
+    acid_30_remark TEXT,
+    acid_60_result VARCHAR(50),
+    acid_60_value DECIMAL(10,2),
+    acid_60_remark TEXT,
+    acid_90_result VARCHAR(50),
+    acid_90_value DECIMAL(10,2),
+    acid_90_remark TEXT,
+    acid_120_result VARCHAR(50),
+    acid_120_value DECIMAL(10,2),
+    acid_120_remark TEXT,
+    soh_result VARCHAR(50),
+    soh_value DECIMAL(10,2),
+    soh_remark TEXT,
+    soc_result VARCHAR(50),
+    soc_value DECIMAL(10,2),
+    soc_remark TEXT,
+    protection_result VARCHAR(50),
+    protection_remark TEXT,
+    physical_result VARCHAR(50),
+    physical_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE,
+    INDEX idx_pm_battery (pm_id, battery_number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_battery_backup (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    backup_time_result VARCHAR(50),
+    backup_time_remark TEXT,
+    priority_result VARCHAR(50),
+    priority_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_test_alarm (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    door_result VARCHAR(50),
+    door_remark TEXT,
+    main_power_result VARCHAR(50),
+    main_power_remark TEXT,
+    high_temp_result VARCHAR(50),
+    high_temp_remark TEXT,
+    rectifier_non_urgent_result VARCHAR(50),
+    rectifier_non_urgent_remark TEXT,
+    rectifier_urgent_result VARCHAR(50),
+    rectifier_urgent_remark TEXT,
+    fire_smoke_result VARCHAR(50),
+    fire_smoke_remark TEXT,
+    spd_fault_result VARCHAR(50),
+    spd_fault_remark TEXT,
+    pmu_csu_fault_result VARCHAR(50),
+    pmu_csu_fault_remark TEXT,
+    battery_stolen_result VARCHAR(50),
+    battery_stolen_remark TEXT,
+    battery_low_voltage_result VARCHAR(50),
+    battery_low_voltage_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_filter_check (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    filter_1_4_result VARCHAR(50),
+    filter_1_4_remark TEXT,
+    filter_5_8_result VARCHAR(50),
+    filter_5_8_remark TEXT,
+    filter_9_12_result VARCHAR(50),
+    filter_9_12_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_online_equipment (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    equipment_number INT NULL,
+    cab_result VARCHAR(50),
+    cab_remark TEXT,
+    olt_result VARCHAR(100),
+    olt_remark TEXT,
+    nodeb_result VARCHAR(50),
+    nodeb_remark TEXT,
+    brand_model_result VARCHAR(100),
+    brand_model_remark TEXT,
+    edfa_result VARCHAR(50),
+    edfa_remark TEXT,
+    load_olt_result VARCHAR(50),
+    load_olt_remark TEXT,
+    external_alarm_result VARCHAR(50),
+    external_alarm_remark TEXT,
+    edfa_io_result VARCHAR(50),
+    edfa_io_remark TEXT,
+    work_urgent_result VARCHAR(50),
+    work_urgent_remark TEXT,
+    work_urgent_photo_result VARCHAR(50),
+    work_urgent_photo_remark TEXT,
+    olt_data_result VARCHAR(50),
+    olt_data_remark TEXT,
+    olt_problem_result VARCHAR(50),
+    olt_problem_remark TEXT,
+    pm_olt_result VARCHAR(50),
+    pm_olt_remark TEXT,
+    pm_olt_suggest_result VARCHAR(50),
+    pm_olt_suggest_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE,
+    INDEX idx_pm_equipment (pm_id, equipment_number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_mowing (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    round_number INT NULL,
+    mowing_result VARCHAR(10),
+    mowing_remark TEXT,
+    physical_check_result VARCHAR(50),
+    physical_check_remark TEXT,
+    last_pm_date_result VARCHAR(50),
+    last_pm_date_remark TEXT,
+    plan_of_date_result VARCHAR(50),
+    plan_of_date_remark TEXT,
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_remark TEXT,
+    team_name_result VARCHAR(100),
+    team_name_remark TEXT,
+    team_company_result VARCHAR(100),
+    team_company_remark TEXT,
+    photo_result VARCHAR(50),
+    photo_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE,
+    INDEX idx_pm_round (pm_id, round_number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_solar_cell (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    has_solar_result VARCHAR(10),
+    has_solar_remark TEXT,
+    last_pm_date_result VARCHAR(50),
+    last_pm_date_remark TEXT,
+    plan_date_result VARCHAR(50),
+    plan_date_remark TEXT,
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_remark TEXT,
+    team_name_result VARCHAR(100),
+    team_name_remark TEXT,
+    team_company_result VARCHAR(100),
+    team_company_remark TEXT,
+    weather_status_result VARCHAR(50),
+    weather_status_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_air_maintenance (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    round_number INT NULL,
+    has_air_result VARCHAR(10),
+    has_air_remark TEXT,
+    last_pm_result VARCHAR(50),
+    last_pm_remark TEXT,
+    plan_of_date_result VARCHAR(50),
+    plan_of_date_remark TEXT,
+    actual_pm_date_result VARCHAR(50),
+    actual_pm_date_remark TEXT,
+    temp_result VARCHAR(50),
+    temp_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE,
+    INDEX idx_pm_air_round (pm_id, round_number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_nop_external_alarm_after (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    nop_main_power_alarm_result VARCHAR(50),
+    nop_main_power_alarm_remark TEXT,
+    nop_rectifier_urgent_alarm_result VARCHAR(50),
+    nop_rectifier_urgent_alarm_remark TEXT,
+    nop_rectifier_non_urgent_alarm_result VARCHAR(50),
+    nop_rectifier_non_urgent_alarm_remark TEXT,
+    nop_door_open_alarm_result VARCHAR(50),
+    nop_door_open_alarm_remark TEXT,
+    nop_smoke_alarm_result VARCHAR(50),
+    nop_smoke_alarm_remark TEXT,
+    nop_batt_low_volt_alarm_result VARCHAR(50),
+    nop_batt_low_volt_alarm_remark TEXT,
+    nop_batt_stolen_alarm_result VARCHAR(50),
+    nop_batt_stolen_alarm_remark TEXT,
+    nop_spd_failure_alarm_result VARCHAR(50),
+    nop_spd_failure_alarm_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_nop_verify (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pm_id INT NOT NULL,
+    nop_verify_date_result VARCHAR(50),
+    nop_verify_date_remark TEXT,
+    nop_supervisor_name_result VARCHAR(100),
+    nop_supervisor_name_remark TEXT,
+    nop_ac_power_system_result VARCHAR(50),
+    nop_ac_power_system_remark TEXT,
+    nop_generator_system_result VARCHAR(50),
+    nop_generator_system_remark TEXT,
+    nop_dc_power_system_result VARCHAR(50),
+    nop_dc_power_system_remark TEXT,
+    nop_air_system_result VARCHAR(50),
+    nop_air_system_remark TEXT,
+    nop_fire_alarm_system_result VARCHAR(50),
+    nop_fire_alarm_system_remark TEXT,
+    nop_grounding_lightning_system_result VARCHAR(50),
+    nop_grounding_lightning_system_remark TEXT,
+    nop_external_alarm_system_result VARCHAR(50),
+    nop_external_alarm_system_remark TEXT,
+    nop_equipment_installation_result VARCHAR(50),
+    nop_equipment_installation_remark TEXT,
+    nop_environment_result VARCHAR(50),
+    nop_environment_remark TEXT,
+    nop_tower_result VARCHAR(50),
+    nop_tower_remark TEXT,
+    FOREIGN KEY (pm_id) REFERENCES pm_nodeb(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pm_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pm_id INT NOT NULL,       
+    category VARCHAR(50),
+    field_name VARCHAR(100) NULL,   
+    sub_id INT NULL,           
+    file_path VARCHAR(255),    
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+## สรุปโครงสร้าง Database
+
+ฐานข้อมูลนี้ออกแบบเป็น **24 ตาราง** โดย:
+
+1. **ตารางหลัก**: `pm_nodeb` เก็บข้อมูล PM พื้นฐาน
+2. **ตารางย่อย**: แต่ละส่วนของฟอร์มแยกเป็นตารางต่างหากเพื่อความเป็นระเบียบ
+3. **ตารางแบบ Multiple Records**: 
+   - `cabinets` (หลาย Cabinet)
+   - `batteries` (หลาย Battery)
+   - `online_equipment` (2 ชุด)
+   - `mowing` (2 รอบ H1, H2)
+   - `air_maintenance` (2 รอบ H1, H2)
+
+### ข้อดีของการออกแบบนี้:
+- ✅ Normalized ลดการซ้ำซ้อนของข้อมูล
+- ✅ ง่ายต่อการ Query และ Join
+- ✅ รองรับการเพิ่ม Cabinet/Battery ได้ไม่จำกัด
+- ✅ มี Foreign Key เพื่อความสัมพันธ์ของข้อมูล
+- ✅ มี Index สำหรับ Performance
+- ✅ รองรับ UTF-8 (ภาษาไทย)
+
+คุณต้องการให้ผมสร้าง **PHP Processing Script** สำหรับ Insert/Update ข้อมูลด้วยไหมครับ?
+
+
+DROP TABLE IF EXISTS pm_site_information;
+DROP TABLE IF EXISTS pm_cabinets;
+DROP TABLE IF EXISTS pm_kwh_meter;
+DROP TABLE IF EXISTS pm_transformer;
+DROP TABLE IF EXISTS pm_generator;
+DROP TABLE IF EXISTS pm_site_facility;
+DROP TABLE IF EXISTS pm_voltage_input;
+DROP TABLE IF EXISTS pm_mdb_ac;
+DROP TABLE IF EXISTS pm_grounding_system;
+DROP TABLE IF EXISTS pm_external_alarm_before;
+DROP TABLE IF EXISTS pm_nodeb_tx_equipment;
+DROP TABLE IF EXISTS pm_rectifier;
+DROP TABLE IF EXISTS pm_cabinet_check;
+DROP TABLE IF EXISTS pm_batteries;
+DROP TABLE IF EXISTS pm_battery_backup;
+DROP TABLE IF EXISTS pm_test_alarm;
+DROP TABLE IF EXISTS pm_filter_check;
+DROP TABLE IF EXISTS pm_online_equipment;
+DROP TABLE IF EXISTS pm_mowing;
+DROP TABLE IF EXISTS pm_solar_cell;
+DROP TABLE IF EXISTS pm_air_maintenance;
+DROP TABLE IF EXISTS pm_nop_external_alarm_after;
+DROP TABLE IF EXISTS pm_nop_verify;
+DROP TABLE IF EXISTS pm_images;
+DROP TABLE IF EXISTS pm_nodeb;
+
+
+
+
+
+
