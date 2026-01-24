@@ -1202,7 +1202,7 @@ CREATE TABLE pm_images (
     field_name VARCHAR(100) NULL,   
     sub_id INTEGER NULL,           
     file_path VARCHAR(255),    
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 
