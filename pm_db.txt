@@ -200,15 +200,15 @@ CREATE TABLE pm_transformer (
     has_transformer_remark TEXT,
 
     last_year_pm_date_result VARCHAR(50),
-    last_year_pm_date_value VARCHAR(50),
+    last_year_pm_date_value TIMESTAMP,
     last_year_pm_date_remark TEXT,
 
     plan_of_date_result VARCHAR(50),
-    plan_of_date_value VARCHAR(50),
+    plan_of_date_value TIMESTAMP,
     plan_of_date_remark TEXT,
 
     actual_pm_date_result VARCHAR(50),
-    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_value TIMESTAMP,
     actual_pm_date_remark TEXT,
 
     total_transformer_result VARCHAR(50),
@@ -273,15 +273,15 @@ CREATE TABLE pm_generator (
     has_generator_remark TEXT,
 
     generator_last_year_pm_date_result VARCHAR(50),
-    generator_last_year_pm_date_value VARCHAR(50),
+    generator_last_year_pm_date_value TIMESTAMP,
     generator_last_year_pm_date_remark TEXT,
 
     generator_plan_of_date_result VARCHAR(50),
-    generator_plan_of_date_value VARCHAR(50),
+    generator_plan_of_date_value TIMESTAMP,
     generator_plan_of_date_remark TEXT,
 
     generator_actual_pm_date_result VARCHAR(50),
-    generator_actual_pm_date_result VARCHAR(50),
+    generator_actual_pm_date_result TIMESTAMP,
     generator_actual_pm_date_remark TEXT,
 
     generator_brand_result VARCHAR(100),
@@ -301,11 +301,11 @@ CREATE TABLE pm_generator (
     generator_fuel_remark TEXT,
 
     generator_battery_date_result VARCHAR(50),
-    generator_battery_date_value VARCHAR(50),
+    generator_battery_date_value TIMESTAMP,
     generator_battery_date_remark TEXT,
 
     generator_fuel_change_date_result VARCHAR(50),
-    generator_fuel_change_date_value VARCHAR(50),
+    generator_fuel_change_date_value TIMESTAMP,
     generator_fuel_change_date_remark TEXT,
 
     generator_amp_result VARCHAR(50),
@@ -683,6 +683,7 @@ ON pm_rectifier(pm_id);
 CREATE TABLE pm_cabinet_check (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
     input_cfm_result VARCHAR(50),
     input_cfm_value VARCHAR(50),
     input_cfm_remark TEXT,
@@ -789,7 +790,7 @@ CREATE TABLE pm_batteries (
     CONSTRAINT fk_pm_batteries_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE INDEX idx_pm_batteries_pm_id
@@ -980,15 +981,15 @@ CREATE TABLE pm_mowing (
     physical_check_remark TEXT,
     
     last_pm_date_result VARCHAR(50),
-    last_pm_date_value VARCHAR(50),
+    last_pm_date_value TIMESTAMP,
     last_pm_date_remark TEXT,
 
     plan_of_date_result VARCHAR(50),
-    plan_of_date_value VARCHAR(50),
+    plan_of_date_value TIMESTAMP,
     plan_of_date_remark TEXT,
 
     actual_pm_date_result VARCHAR(50),
-    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_value TIMESTAMP,
     actual_pm_date_remark TEXT,
 
     team_name_result VARCHAR(100),
@@ -1021,15 +1022,15 @@ CREATE TABLE pm_solar_cell (
     has_solar_remark TEXT,
 
     last_pm_date_result VARCHAR(50),
-    last_pm_date_value VARCHAR(50),
+    last_pm_date_value TIMESTAMP,
     last_pm_date_remark TEXT,
 
     plan_date_result VARCHAR(50),
-    plan_date_value VARCHAR(50),
+    plan_date_value TIMESTAMP,
     plan_date_remark TEXT,
 
     actual_pm_date_result VARCHAR(50),
-    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_value TIMESTAMP,
     actual_pm_date_remark TEXT,
 
     team_name_result VARCHAR(100),
@@ -1068,11 +1069,11 @@ CREATE TABLE pm_air_maintenance (
     last_pm_remark TEXT,
 
     plan_of_date_result VARCHAR(50),
-    plan_of_date_value VARCHAR(50),
+    plan_of_date_value TIMESTAMP,
     plan_of_date_remark TEXT,
 
     actual_pm_date_result VARCHAR(50),
-    actual_pm_date_value VARCHAR(50),
+    actual_pm_date_value TIMESTAMP,
     actual_pm_date_remark TEXT,
 
     temp_result VARCHAR(50),
@@ -1138,7 +1139,7 @@ CREATE TABLE pm_nop_verify (
     pm_id INTEGER NOT NULL,
     
     nop_verify_date_result VARCHAR(50),
-    nop_verify_date_value VARCHAR(50),
+    nop_verify_date_value TIMESTAMP,
     nop_verify_date_remark TEXT,
 
     nop_supervisor_name_result VARCHAR(100),
@@ -1202,7 +1203,12 @@ CREATE TABLE pm_images (
     field_name VARCHAR(100) NULL,   
     sub_id INTEGER NULL,           
     file_path VARCHAR(255),    
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_pm_images_pm
+        FOREIGN KEY (pm_id) 
+        REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
 );
 
 
