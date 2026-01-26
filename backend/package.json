@@ -9,11 +9,13 @@
   "dependencies": {
     "@hono/node-server": "^1.19.9",
     "hono": "^4.11.4",
-    "pg": "^8.17.1"
+    "pg": "^8.17.2",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.19.30",
     "@types/pg": "^8.16.0",
+    "@types/uuid": "^10.0.0",
     "tsx": "^4.7.1",
     "typescript": "^5.9.3"
   }

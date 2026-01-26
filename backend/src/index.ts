@@ -2,7 +2,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono';
 import { cors } from 'hono/cors'
 import { AuthService } from './services/auth.service.js';
-import { Client } from 'pg'; 
+import { Pool } from 'pg';
 
 const app = new Hono();
 
@@ -13,10 +13,10 @@ app.use('/api/*', cors({
 }))
 
 // ตั้งค่าเชื่อมต่อ DB
-const db = new Client({
-  user: 'postgres',           
+const db = new Pool({
+  user: 'postgres',
   host: 'localhost',
-  database: 'tsms_db', 
+  database: 'tsms_db',
   password: '1234',
   port: 5432,
 });

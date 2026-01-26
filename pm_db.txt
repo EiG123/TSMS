@@ -1203,12 +1203,16 @@ CREATE TABLE pm_images (
     field_name VARCHAR(100) NULL,   
     sub_id INTEGER NULL,           
     file_path VARCHAR(255),    
+<<<<<<< HEAD
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     CONSTRAINT fk_pm_images_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id)
         ON DELETE CASCADE
+=======
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+>>>>>>> dev
 );
 
 
