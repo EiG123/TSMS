@@ -20,7 +20,7 @@ const go = (path: string) => {
       <!-- PM NodeB -->
       <div
         class="card bg-base-100 shadow hover:shadow-xl cursor-pointer"
-        @click="go('/pm/nodeb')"
+        @click="go('/pm/pm_nodeb')"
       >
         <div class="card-body">
           <h1 class="text-xl font-bold">PM NodeB</h1>

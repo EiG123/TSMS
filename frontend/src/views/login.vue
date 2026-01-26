@@ -1,53 +1,39 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { AuthApiService } from "../services/auth.api";
+import { ref, nextTick } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
+const authStore = useAuthStore();
 const router = useRouter();
 
-const email = ref("");
-const password = ref("");
+const email = ref('');
+const password = ref('');
+const error = ref('');
+const loading = ref(false);
 
 const handleLogin = async () => {
-  try {
-    const data = await AuthApiService.login(email.value, password.value);
+  loading.value = true;
+  error.value = '';
+  
+  const result = await authStore.login(email.value, password.value);
+  
+  loading.value = false;
 
-    alert("ยินดีต้อนรับ: " + data.user.username);
-
-    // 👉 redirect ไปหน้า home
-    router.push("/home");
-  } catch (error: any) {
-    alert(error.response?.data?.message || "Login Failed");
+  if (result.success) {
+    window.location.href = "/home";
+  } else {
+    error.value = result.error;
   }
 };
 </script>
 
-
 <template>
-  <div class="flex items-center justify-center h-screen bg-base-200">
-    <div class="card w-96 bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title justify-center text-2xl mb-4">เข้าสู่ระบบ</h2>
-        <div class="form-control">
-          <input
-            v-model="email"
-            type="text"
-            placeholder="Email"
-            class="input input-bordered mb-4"
-          />
-          <input
-            v-model="password"
-            type="password"
-            placeholder="Password"
-            class="input input-bordered mb-6"
-          />
-        </div>
-        <div class="card-actions justify-end">
-          <button @click="handleLogin" class="btn btn-primary w-full text-lg">
-            Login
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <form @submit.prevent="handleLogin">
+    <input v-model="email" type="email" placeholder="Email" required />
+    <input v-model="password" type="password" placeholder="Password" required />
+    <button type="submit" :disabled="loading">
+      {{ loading ? 'กำลัง Login...' : 'Login' }}
+    </button>
+    <p v-if="error" style="color: red;">{{ error }}</p>
+  </form>
 </template>
