@@ -20,7 +20,7 @@ const go = (path: string) => {
       <!-- PM NodeB -->
       <div
         class="card bg-base-100 shadow hover:shadow-xl cursor-pointer"
-        @click="go('/pm/pm_nodeb')"
+        @click="go('/pm_nodeb')"
       >
         <div class="card-body">
           <h1 class="text-xl font-bold">PM NodeB</h1>
@@ -32,7 +32,7 @@ const go = (path: string) => {
       <!-- PM Small -->
       <div
         class="card bg-base-100 shadow hover:shadow-xl cursor-pointer"
-        @click="go('/pm/small')"
+        @click="go('/small')"
       >
         <div class="card-body">
           <h1 class="text-xl font-bold">PM Small Exchange</h1>
@@ -44,7 +44,7 @@ const go = (path: string) => {
       <!-- PM Medium -->
       <div
         class="card bg-base-100 shadow hover:shadow-xl cursor-pointer"
-        @click="go('/pm/medium')"
+        @click="go('/medium')"
       >
         <div class="card-body">
           <h1 class="text-xl font-bold">PM Medium Exchange</h1>
@@ -56,7 +56,7 @@ const go = (path: string) => {
       <!-- PM Broadband -->
       <div
         class="card bg-base-100 shadow hover:shadow-xl cursor-pointer"
-        @click="go('/pm/broadband')"
+        @click="go('/broadband')"
       >
         <div class="card-body">
           <h1 class="text-xl font-bold">PM Broadband</h1>
@@ -68,7 +68,7 @@ const go = (path: string) => {
       <!-- Mowing -->
       <div
         class="card bg-base-100 shadow hover:shadow-xl cursor-pointer"
-        @click="go('/pm/mowing')"
+        @click="go('/mowing')"
       >
         <div class="card-body">
           <h1 class="text-xl font-bold">Mowing</h1>
@@ -81,7 +81,7 @@ const go = (path: string) => {
       <!-- Solar -->
       <div
         class="card bg-base-100 shadow hover:shadow-xl cursor-pointer"
-        @click="go('/pm/solar')"
+        @click="go('/solar')"
       >
         <div class="card-body">
           <h1 class="text-xl font-bold">PM Solar Cell</h1>

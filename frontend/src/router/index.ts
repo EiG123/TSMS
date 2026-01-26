@@ -4,6 +4,8 @@ import Login from "../views/login.vue";
 import Home from "../views/home.vue";
 import PM from "../views/PM.vue";
 
+import pm_nodeb from "../views/pm/pm_nodeb.vue";
+
 const routes = [
     // 🔐 Login (ไม่มี layout)
     {
@@ -27,6 +29,11 @@ const routes = [
                 name: "PM",
                 component: PM,
             },
+            {
+                path: "pm_nodeb",
+                name: "pm_nodeb",
+                component: pm_nodeb,
+            }
         ],
     },
 ];
