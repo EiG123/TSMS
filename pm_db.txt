@@ -281,7 +281,7 @@ CREATE TABLE pm_generator (
     generator_plan_of_date_remark TEXT,
 
     generator_actual_pm_date_result VARCHAR(50),
-    generator_actual_pm_date_result TIMESTAMP,
+    generator_actual_pm_date_value TIMESTAMP,
     generator_actual_pm_date_remark TEXT,
 
     generator_brand_result VARCHAR(100),

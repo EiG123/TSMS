@@ -12,7 +12,8 @@ npm install pinia vue-router axios
 
 # 3. ติดตั้ง TailwindCSS และ DaisyUI
 npm install -D tailwindcss postcss autoprefixer daisyui
-npx tailwindcss init -p
+npm install -D @tailwindcss/postcss
+
 
 # 4. คำสั่งรัน Frontend
 npm run dev

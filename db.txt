@@ -8,3 +8,6 @@ CREATE TABLE users (
     region TEXT,
     company TEXT
 ); 
+
+INSERT INTO users (email, password, username, role) 
+VALUES ('admin@gmail.com', 'admin1234', 'AdminUser', 'admin');
