@@ -2,6 +2,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono';
 import { cors } from 'hono/cors'
 import { AuthService } from './services/auth.service.js';
+import { PmService } from './services/PmNodeB.service.js';
 import { Pool } from 'pg';
 
 const app = new Hono();
@@ -20,11 +21,10 @@ const db = new Pool({
   password: '1234',
   port: 5432,
 });
-db.connect();
+
 
 app.post('/api/login', async (c) => {
   const body = await c.req.json();
-  console.log("ข้อมูลที่ส่งมา:", body); // ดูใน Terminal ว่าค่ามาไหม
   const { email, password } = body;
 
   const result = await AuthService.validateLogin(email, password, db);
@@ -34,6 +34,22 @@ app.post('/api/login', async (c) => {
   } else {
     return c.json(result, 401);
   }
+});
+
+app.post('/api/pm_nodeb', async (c) => {
+  const body = await c.req.json();
+  const {site_id, node_type, round, cabinet_total, region, datetime, status, planwork, create_by, remark} = body;
+
+  const cabinetTotal = Number(cabinet_total);
+
+  const result = await PmService.InsertPM(site_id, node_type, round, cabinetTotal, region, datetime, status, planwork, create_by, remark, db);
+
+  if(result.success) {
+    return c.json(result);
+  }else{
+    return c.json(result, 401);
+  }
+
 });
 
 const port = 3000

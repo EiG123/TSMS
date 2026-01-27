@@ -1,18 +1,14 @@
-<script setup>
-import { useRouter } from "vue-router";
-import { ref } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
+import { useAuthStore } from "../stores/auth";
 
-const router = useRouter();
+const authStore = useAuthStore();
 
-const handlePM = async () => {
-  router.push("/PM");
-};
+const username = computed(() => authStore.user?.username || "User");
 </script>
 
 <template>
-  <div class="card-actions justify-end">
-    <button @click="handlePM" class="btn btn-primary w-full text-lg">
-      PM
-    </button>
+  <div class="text-lg font-semibold">
+    Hello, {{ username }}
   </div>
 </template>

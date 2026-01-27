@@ -10,7 +10,7 @@ export const AuthService = {
 
     if (user.password === pass) {
       const { password, ...userWithoutPassword } = user;
-      return { success: true, user: userWithoutPassword };
+      return { success: true, user: userWithoutPassword};
     }
 
     return { success: false, message: 'รหัสผ่านไม่ถูกต้อง' };

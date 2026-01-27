@@ -1,49 +1,59 @@
-import { defineStore } from 'pinia';
-import { AuthApiService } from '../services/auth.api';
+import { defineStore } from "pinia";
+import { AuthApiService } from "../services/auth.api";
 
-export const useAuthStore = defineStore('auth', {
+interface User {
+  username: string;
+  email: string;
+  role: string;
+  region: string;
+  company: string;
+}
+
+export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem('token') || null,
-    user: null as any,
+    token: localStorage.getItem("token") as string | null,
+    user: null as User | null,
   }),
-  
+
   getters: {
     isAuthenticated: (state) => !!state.token,
+
+    username: (state) => state.user?.username,
+    email: (state) => state.user?.email,
+    role: (state) => state.user?.role,
+    region: (state) => state.user?.region,
+    company: (state) => state.user?.company,
   },
-  
+
   actions: {
     async login(email: string, password: string) {
-      try {
-        const data = await AuthApiService.login(email, password);
-        
-        this.token = data.token;
-        this.user = data.user;
-        
-        // เก็บ token ใน localStorage (สำหรับ persistence)
-        localStorage.setItem('token', data.token);
-        
-        return { success: true, data };
-      } catch (error: any) {
-        return { 
-          success: false, 
-          error: error.response?.data?.message || 'Login failed' 
-        };
-      }
+      const data = await AuthApiService.login(email, password);
+
+      this.token = data.token;
+      this.user = data.user;
+
+      // persistence
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      return data;
     },
-    
+
     logout() {
       this.token = null;
       this.user = null;
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     },
-    
-    // เรียกตอน app init
+
     initAuth() {
-      const token = localStorage.getItem('token');
-      if (token) {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
+
+      if (token && user) {
         this.token = token;
-        // อาจจะต้อง validate token หรือ fetch user data
+        this.user = JSON.parse(user);
       }
-    }
-  }
+    },
+  },
 });

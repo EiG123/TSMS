@@ -1,21 +1,29 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted } from "vue";
-import { useAuthStore } from "../src/stores/auth";
+import { useAuthStore } from "./stores/auth";
 import Header from "./components/Header.vue";
+import Sidebar from "./components/Sidebar.vue";
+
+
 
 const authStore = useAuthStore();
 
-// Restore session ตอน app load
 onMounted(() => {
   authStore.initAuth();
 });
 
-const showHeader = computed(() => {
-  return authStore.isAuthenticated;
-});
+const isLoggedIn = computed(() => authStore.isAuthenticated);
 </script>
 
 <template>
-  <Header />
-  <router-view />
+  <!-- Sidebar -->
+  <Sidebar v-if="isLoggedIn" />
+  
+  <!-- Header -->
+  <Header v-if="isLoggedIn" />
+
+  <!-- Content -->
+  <main :class="isLoggedIn ? 'ml-64 pt-16 p-6' : 'p-6'">
+    <router-view />
+  </main>
 </template>
