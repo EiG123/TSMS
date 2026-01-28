@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import { computed } from "vue";
 import { useAuthStore } from "../stores/auth";
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 const username = computed(() => authStore.user?.username || "User");
+
+const goPM = () => router.push("/PM");
 
 // Sample data for cards
 const cards = [
@@ -14,6 +18,7 @@ const cards = [
     value: "",
     icon: "📊",
     color: "from-blue-500 to-blue-600",
+    onclick: goPM,
   },
   {
     id: 2,
@@ -119,6 +124,7 @@ const cards = [
       <div
         v-for="card in cards"
         :key="card.id"
+        @click="card.onclick"
         class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-slate-600 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1 group"
       >
         <!-- Card Header -->
