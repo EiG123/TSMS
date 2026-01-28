@@ -9,6 +9,7 @@ import { cors } from 'hono/cors'
 import { AuthService } from './services/auth.service.js';
 import { PmService } from './services/PmNodeB.service.js';
 import { Pool } from 'pg';
+import pmConfigRouter from "./routers/PmConfig.js";
 
 const app = new Hono();
 
@@ -19,6 +20,8 @@ app.use('/api/*', cors({
   allowHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }))
+
+app.route("/api/config", pmConfigRouter);
 
 // ตั้งค่าเชื่อมต่อ DB
 const db = new Pool({
@@ -63,6 +66,7 @@ app.post("/api/login", async (c) => {
     }, 500);
   }
 });
+
 
 // PM NodeB endpoint
 app.post('/api/pm_nodeb', async (c) => {
