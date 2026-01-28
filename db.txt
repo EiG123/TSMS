@@ -10,4 +10,4 @@ CREATE TABLE users (
 ); 
 
 INSERT INTO users (email, password, username, role) 
-VALUES ('admin@gmail.com', 'admin1234', 'AdminUser', 'admin');
+VALUES ('admin@gmail.com', '$2b$12$9tABcHgT5YbNsEiKIPTJiO/pbMPLkcGbvUyP2anaAQ/Jn411pmdqe', 'AdminUser', 'admin');

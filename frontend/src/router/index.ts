@@ -48,7 +48,7 @@ router.beforeEach(async (to, from, next) => {
     const { useAuthStore } = await import("../stores/auth");
     const authStore = useAuthStore();
 
-    const isAuthenticated = authStore.isAuthenticated;
+    const isAuthenticated = authStore.initAuth();
 
     // ⭐ ถ้าต้องการ auth แต่ยังไม่ login
     if (to.meta.requiresAuth && !isAuthenticated) {
