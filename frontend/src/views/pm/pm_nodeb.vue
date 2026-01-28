@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { PMApiService } from "../../services/pm_nodeb.api";
-import { getRectifierConfig } from "../../services/pmConfig.api";
+import {
+  getRectifierConfig,
+  getSiteInformationConfig,
+  getKwhMeterConfig,
+  getTransformerConfig,
+  getGeneratorConfig,
+  getSiteFacilityConfig,
+  getVoltageInputConfig,
+  getMdbAcConfig,
+  getGroundSystemConfig,
+  getExternalAlarmBeforeConfig,
+  getNodeBTxConfig
+} from "../../services/pmConfig.api";
 
-const fields = ref<any[]>([]);
+const sections = ref<any[]>([]); // ⭐ เพิ่มบรรทัดนี้
 const form = ref<Record<string, any>>({});
 const expandedCards = ref<Record<string, boolean>>({});
-
-interface RectifierField {
-  field: string;
-  label: string;
-  result: boolean;
-  value: boolean;
-  remark: boolean;
-  img?: string;
-  required: boolean;
-}
+const expandedSections = ref<Record<string, boolean>>({});
 
 const site_id = ref("");
 const node_type = ref("");
@@ -28,23 +31,101 @@ const planwork = ref("");
 const created_by = ref("");
 const remark = ref("");
 
+interface AllField {
+  field: string;
+  label: string;
+  result: boolean;
+  value: boolean;
+  remark: boolean;
+  img?: string;
+  required: boolean;
+}
+
 // สำหรับซ่อน/แสดง PM Information section
 const showPmInfo = ref(true);
-// สำหรับซ่อน/แสดง Field Cards ทั้งหมด
-const showAllFields = ref(true);
 
 onMounted(async () => {
-  const res = await getRectifierConfig();
+  const siteRes = await getSiteInformationConfig();
+  const kwhRes = await getKwhMeterConfig();
+  const transformerRes = await getTransformerConfig();
+  const generatorRes = await getGeneratorConfig();
+  const site_facilityRes = await getSiteFacilityConfig();
+  const voltage_inputRes = await getVoltageInputConfig();
+  const mdb_acRes = await getMdbAcConfig();
+  const groundSysRes = await getGroundSystemConfig();
+  const externalAarmBeforeRes = await getExternalAlarmBeforeConfig();
+  const nodebTxRes = await getNodeBTxConfig();
+  const rectifierRes = await getRectifierConfig();
 
-  fields.value = res.fields.filter((f: RectifierField) => f.result === true);
+  sections.value = [
+    {
+      key: "site_information",
+      title: "#1 - Site Information",
+      fields: siteRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "kwh_meter",
+      title: "#2 - KWH Meter",
+      fields: kwhRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "transformer",
+      title: "#3 - Transformer *หม้อแปลงไฟฟ้า",
+      fields: transformerRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "generator",
+      title: "#4 - Generator *เครื่องปั่นไฟ",
+      fields: generatorRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "site_facility",
+      title: "#5 - Site Facility",
+      fields: site_facilityRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "voltage_input",
+      title: "#6 - Voltage Input",
+      fields: voltage_inputRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "mdb_ac",
+      title: "#7 - MDB (AC) *การทำ PM ต้อง Off Solar Cell",
+      fields: mdb_acRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "groundingsystem",
+      title: "#8 - Grounding System",
+      fields: groundSysRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "externalalarmbefore",
+      title: "#9 - External Alarm (Before PM) *ก่อนทำ PM ให้ตรวจสอบ alarm จาก PMBOT (-checkpmhistory SiteID)",
+      fields: externalAarmBeforeRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "nodebTx",
+      title: "#10 - NodeB & TX Equipment",
+      fields: nodebTxRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "rectifier",
+      title: "#11 - Rectifier",
+      fields: rectifierRes.fields.filter((f: AllField) => f.result),
+    },
+  ];
 
-  // กำหนดค่าเริ่มต้นให้แต่ละ card ขยายออก
-  fields.value.forEach((f) => {
-    expandedCards.value[f.field] = true;
+  // init form + expanded
+  sections.value.forEach((section) => {
+    expandedSections.value[section.key] = true; // เปิด section ทั้งหมดตอนเริ่มต้น
     
-    if (f.result) form.value[`${f.field}_result`] = "";
-    if (f.value) form.value[`${f.field}_value`] = "";
-    if (f.remark) form.value[`${f.field}_remark`] = "";
+    section.fields.forEach((f: any) => {
+      expandedCards.value[f.field] = true;
+
+      if (f.result) form.value[`${f.field}_result`] = "";
+      if (f.value) form.value[`${f.field}_value`] = "";
+      if (f.remark) form.value[`${f.field}_remark`] = "";
+    });
   });
 });
 
@@ -56,13 +137,18 @@ const togglePmInfo = () => {
   showPmInfo.value = !showPmInfo.value;
 };
 
-// ฟังก์ชันซ่อน/แสดงทั้งหมด
-const toggleAllFields = () => {
-  showAllFields.value = !showAllFields.value;
-  // ถ้าแสดงทั้งหมด ให้เปิดทุก card, ถ้าซ่อนทั้งหมด ให้ปิดทุก card
-  fields.value.forEach((f) => {
-    expandedCards.value[f.field] = showAllFields.value;
-  });
+// ฟังก์ชันซ่อน/แสดงทั้งหมดใน section
+const toggleSection = (sectionKey: string) => {
+  const isExpanded = !expandedSections.value[sectionKey];
+  expandedSections.value[sectionKey] = isExpanded;
+  
+  // ถ้าแสดง section ให้เปิดทุก card ใน section นั้น
+  const section = sections.value.find((s) => s.key === sectionKey);
+  if (section) {
+    section.fields.forEach((f: any) => {
+      expandedCards.value[f.field] = isExpanded;
+    });
+  }
 };
 
 const handlePmNodeB = async () => {
@@ -96,7 +182,7 @@ const handlePmNodeB = async () => {
           {{ showPmInfo ? "−" : "+" }}
         </button>
       </div>
-      
+
       <transition name="slide">
         <div v-show="showPmInfo" class="box">
           <div class="card">
@@ -162,18 +248,18 @@ const handlePmNodeB = async () => {
       </transition>
     </div>
 
-    <!-- Field Cards Section with Toggle All Button -->
-    <div class="section-card">
-      <div class="section-header" @click="toggleAllFields">
-        <h2>Rectifier</h2>
+    <!-- Dynamic Sections -->
+    <div v-for="section in sections" :key="section.key" class="section-card">
+      <div class="section-header" @click="toggleSection(section.key)">
+        <h2>{{ section.title }}</h2>
         <button type="button" class="toggle-btn">
-          {{ showAllFields ? "−" : "+" }}
+          {{ expandedSections[section.key] ? "−" : "+" }}
         </button>
       </div>
 
       <transition name="slide">
-        <div v-show="showAllFields" class="card-content">
-          <div v-for="f in fields" :key="f.field" class="field-card">
+        <div v-show="expandedSections[section.key]" class="card-content">
+          <div v-for="f in section.fields" :key="f.field" class="field-card">
             <div class="card-header" @click="toggleCard(f.field)">
               <h3>
                 {{ f.label }}
