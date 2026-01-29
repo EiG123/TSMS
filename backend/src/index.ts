@@ -21,7 +21,7 @@ app.use('/api/*', cors({
   credentials: true,
 }))
 
-app.route("/api/config", pmConfigRouter);
+app.route("/api/config/pm", pmConfigRouter);
 
 // ตั้งค่าเชื่อมต่อ DB
 const db = new Pool({

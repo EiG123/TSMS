@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, warn } from "vue";
 import { PMApiService } from "../../services/pm_nodeb.api";
 import {
   getRectifierConfig,
@@ -12,7 +12,20 @@ import {
   getMdbAcConfig,
   getGroundSystemConfig,
   getExternalAlarmBeforeConfig,
-  getNodeBTxConfig
+  getNodeBTxConfig,
+  getCabinetCheckConfig,
+  getBatteryBackUpConfig,
+  getTestAlarmConfig,
+  getFilterConfig,
+  getOnlineEq1Config,
+  getOnlineEq2Config,
+  getMowing1Config,
+  getMowing2Config,
+  getSolarCellConfig,
+  getAirMaintenance1Config,
+  getAirMaintenance2Config,
+  getNopExternalAlarmConfig,
+  getNopVerifyConfig
 } from "../../services/pmConfig.api";
 
 const sections = ref<any[]>([]); // ⭐ เพิ่มบรรทัดนี้
@@ -56,6 +69,19 @@ onMounted(async () => {
   const externalAarmBeforeRes = await getExternalAlarmBeforeConfig();
   const nodebTxRes = await getNodeBTxConfig();
   const rectifierRes = await getRectifierConfig();
+  const cabinet_checkRes = await getCabinetCheckConfig();
+  const battery_backupRes = await getBatteryBackUpConfig();
+  const testAlarmRes = await getTestAlarmConfig();
+  const filterRes = await getFilterConfig();
+  const onlineEq1Res = await getOnlineEq1Config();
+  const onlineEq2Res = await getOnlineEq2Config();
+  const mowing1Res = await getMowing1Config();
+  const mowing2Res = await getMowing2Config();
+  const solarCellRes = await getSolarCellConfig();
+  const airMaintenance1Res = await getAirMaintenance1Config();
+  const airMaintenance2Res = await getAirMaintenance2Config();
+  const nopExternalAlarmRes = await getExternalAlarmBeforeConfig();
+  const nopVerifyRes = await getNopVerifyConfig();
 
   sections.value = [
     {
@@ -112,6 +138,72 @@ onMounted(async () => {
       key: "rectifier",
       title: "#11 - Rectifier",
       fields: rectifierRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "cabinet_check",
+      title: "#12 - Cabinet",
+      fields: cabinet_checkRes.fields.filter((f: AllField) => f.result),
+    },
+    //////////////////////
+    {
+      key: "battery_backup",
+      title: "#21 - Battery Backup",
+      fields: battery_backupRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "test_alarm",
+      title: "#22 - Test Alarm (-checkpm SiteID)",
+      fields: testAlarmRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "filter",
+      title: "#23 - แทรกสี Filter",
+      fields: filterRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "onlineEq1",
+      title: "#24 - Online Equipment No.1",
+      fields: onlineEq1Res.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "onlineEq2",
+      title: "#25 - Online Equipment No.2",
+      fields: onlineEq2Res.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "mowing1",
+      title: "#26 - Mowing H1 *ตัดหญ้ารอบ 1",
+      fields: mowing1Res.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "mowing2",
+      title: "#27 - Mowing H2 *ตัดหญ้ารอบ 2",
+      fields: mowing2Res.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "solar_cell",
+      title: "#28 - Solar Cell",
+      fields: solarCellRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "air_maintenance1",
+      title: "#29 - Air (2 times/Year) H1",
+      fields: airMaintenance1Res.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "air_maintenance2",
+      title: "#30 - Air (2 times/Year) H2",
+      fields: airMaintenance2Res.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "air_maintenance2",
+      title: "#31 - NOP Verify - External Alarm (After PM) *หลังทำ PM ให้ตรวจสอบ alarm จาก PMBOT",
+      fields: nopExternalAlarmRes.fields.filter((f: AllField) => f.result),
+    },
+    {
+      key: "air_maintenance2",
+      title: "#32 - NOP Verify",
+      fields: nopVerifyRes.fields.filter((f: AllField) => f.result),
     },
   ];
 
