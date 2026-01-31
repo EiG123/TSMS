@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api'
+    baseURL: 'http://localhost:3000/api/pmInsert'
 });
 
 api.interceptors.request.use((config) => {
@@ -14,8 +14,40 @@ api.interceptors.request.use((config) => {
 
 
 export const PMApiService = {
-    async pm_nodeb(site_id: string, node_type: string, round: string, cabinet_total: string, region: string, datetime: string, status: string, planwork: string, create_by: string, remark: string) {
-        const response = await api.post('/pm_nodeb', { site_id, node_type, round, cabinet_total, region, datetime, status, planwork, create_by, remark});
+    async pm_nodeb(
+        site_id: string,
+        region: string,
+        datetime: string,
+        status: string,
+        generator: string,
+        transformer: string,
+        kwh_meter: any,
+        solar_cell: string,
+        mowing: string,
+        created_by: string,
+        remark: string) {
+        const response = await api.post("/pm_nodeb", {
+            site_id,
+            region,
+            datetime,
+            status,
+            generator,
+            transformer,
+            kwh_meter,
+            solar_cell,
+            mowing,
+            created_by,
+            remark
+        });
         return response.data;
-    }
+    },
+
+    // บันทึก Site Information
+    // async pm_site_information(pm_id: string, data: Record<string, any>) {
+    //     const response = await api.post('/pm_site_information', {
+    //         pm_id,
+    //         ...data
+    //     });
+    //     return response.data;
+    // },
 };

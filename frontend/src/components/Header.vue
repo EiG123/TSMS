@@ -6,6 +6,11 @@ import { useAuthStore } from "../stores/auth";
 const router = useRouter();
 const authStore = useAuthStore();
 
+// รับ props สำหรับควบคุมการแสดงผล
+const props = defineProps<{
+  onMenuClick?: () => void;
+}>();
+
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || "User");
 
@@ -16,24 +21,52 @@ const goProfile = () => {
 
 <template>
   <header
-    class="fixed top-0 left-64 right-0 h-16 bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700/50 shadow-lg z-50 flex items-center px-6"
+    class="fixed top-0 right-0 h-16 bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700/50 shadow-lg z-30 flex items-center px-4 md:px-6 transition-all duration-300"
+    :class="[
+      // บน mobile: เต็มหน้าจอ
+      // บนหน้าจอใหญ่: เว้นที่สำหรับ sidebar
+      'left-0 md:left-64'
+    ]"
   >
-    <!-- CENTER - Title -->
-    <div class="flex-1">
-      <h1 class="text-xl font-bold text-white">TSM Platform</h1>
+    <!-- LEFT - Menu Button (Mobile Only) + Title -->
+    <div class="flex items-center gap-3 flex-1">
+      <!-- Hamburger Menu Button สำหรับ Mobile -->
+      <button
+        @click="onMenuClick"
+        class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200"
+        aria-label="Toggle menu"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+
+      <!-- Title -->
+      <h1 class="text-lg md:text-xl font-bold text-white truncate">
+        TSM Platform
+      </h1>
     </div>
 
     <!-- RIGHT - Actions -->
-    <div class="flex items-center gap-3">
-      <!-- Search Button (Optional) -->
-
+    <div class="flex items-center gap-2 md:gap-3">
       <!-- Notifications -->
       <div class="relative">
         <button
           class="relative p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
+          aria-label="Notifications"
         >
           <svg
-            class="w-6 h-6"
+            class="w-5 h-5 md:w-6 md:h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -52,35 +85,29 @@ const goProfile = () => {
         </button>
       </div>
 
-      <!-- Divider -->
-      <div class="w-px h-8 bg-slate-700/50"></div>
+      <!-- Divider (Hidden on small screens) -->
+      <div class="hidden sm:block w-px h-8 bg-slate-700/50"></div>
 
       <!-- User Profile -->
       <button
         @click="goProfile"
-        class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
+        class="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
       >
         <div
-          class="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center ring-2 ring-slate-700 group-hover:ring-slate-600"
+          class="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center ring-2 ring-slate-700 group-hover:ring-slate-600 transition-all"
         >
-          <svg
-            class="w-5 h-5 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            />
-          </svg>
+          <span class="text-white font-semibold text-sm">
+            {{ username.charAt(0).toUpperCase() }}
+          </span>
         </div>
+        
+        <!-- Username & Dropdown (Hidden on mobile) -->
         <div class="hidden lg:block text-left">
           <p class="text-sm font-medium text-white">{{ username }}</p>
           <p class="text-xs text-slate-400">View Profile</p>
         </div>
+        
+        <!-- Dropdown Icon (Hidden on mobile) -->
         <svg
           class="hidden lg:block w-4 h-4 text-slate-400 group-hover:text-white transition-colors"
           fill="none"

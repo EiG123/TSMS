@@ -137,19 +137,8 @@ export const useAuthStore = defineStore("auth", {
           alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
           
           // redirect to login
-          window.location.href = '/login';
+          window.location.href = '/';
         }, expiresIn);
-
-        // Optional: เตือนก่อน logout 1 นาที
-        const warningTime = expiresIn - 60 * 1000; // 1 minute before
-        if (warningTime > 0) {
-          setTimeout(() => {
-            if (this.isAuthenticated) {
-              alert('เซสชันของคุณจะหมดอายุใน 1 นาที');
-            }
-          }, warningTime);
-        }
-
       } catch (error) {
         console.error('Error setting auto logout:', error);
       }

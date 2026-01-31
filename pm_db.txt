@@ -1,23 +1,27 @@
 CREATE TABLE pm_nodeb (
     id SERIAL PRIMARY KEY,
     site_id VARCHAR(50) NOT NULL,
-    node_type VARCHAR(50),
-    round VARCHAR(20),
-    cabinet_total INTEGER,
-    region VARCHAR(100),
-    pm_date TIMESTAMP,
-    status VARCHAR(50),
-    planwork VARCHAR(100),
-    created_by VARCHAR(100),
-    remark TEXT,
-    img_photo_preview VARCHAR(255),
+    round VARCHAR(20) NULL,
+    cabinet_total INTEGER NULL,
+    region VARCHAR(100) NULL,
+    datetime TIMESTAMP NULL,
+    status VARCHAR(50) NULL,
+    generator VARCHAR(50) NULL,
+    transformer VARCHAR(50) NULL,
+    kwh_meter VARCHAR(50) NULL,
+    solar_cell VARCHAR(50) NULL,
+    mowing VARCHAR(50) NULL,
+    planwork VARCHAR(100) NULL,
+    created_by VARCHAR(100) NULL,
+    remark TEXT NULL,
+    img_photo_preview VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
 );
 
 CREATE INDEX idx_pm_nodeb_site_id ON pm_nodeb (site_id);
-CREATE INDEX idx_pm_nodeb_pm_date ON pm_nodeb (pm_date);
+CREATE INDEX idx_pm_nodeb_pm_date ON pm_nodeb (datetime);
 
 CREATE TABLE pm_site_information (
     id SERIAL PRIMARY KEY,
@@ -64,7 +68,7 @@ CREATE TABLE pm_site_information (
     site_owner_phone_remark TEXT,
 
     site_key_result VARCHAR(50),
-    site_key_value DECIMAL(10,2),
+    site_key_value VARCHAR(50),
     site_key_remark TEXT,
 
     manager_key_result VARCHAR(100),
@@ -109,6 +113,9 @@ ON pm_cabinets(pm_id);
 CREATE TABLE pm_kwh_meter (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+    cab_number INTEGER NOT NULL,
+
+    kwh_meter_number INTEGER NOT NULL,
 
     mea_pea_result VARCHAR(50),
     mea_pea_value VARCHAR(50),
@@ -195,6 +202,10 @@ CREATE TABLE pm_transformer (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
+    cab_number INTEGER NOT NULL,
+
+    transformer_number INTEGER NOT NULL,
+
     has_transformer_result VARCHAR(100),
     has_transformer_value VARCHAR(100),
     has_transformer_remark TEXT,
@@ -268,6 +279,10 @@ CREATE TABLE pm_generator (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
+    cab_number INTEGER NOT NULL,
+
+    generator_number INTEGER NOT NULL,
+
     has_generator_result VARCHAR(10),
     has_generator_value VARCHAR(100),
     has_generator_remark TEXT,
@@ -329,6 +344,8 @@ CREATE TABLE pm_site_facility (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
+    cab_number INTEGER NOT NULL,
+
     site_facility_key_result VARCHAR(50),
     site_facility_key_value VARCHAR(50),
     site_facility_key_remark TEXT,
@@ -365,6 +382,8 @@ ON pm_site_facility(pm_id);
 CREATE TABLE pm_voltage_input (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    cab_number INTEGER NOT NULL,
 
     r_s_result VARCHAR(50),
     r_s_value VARCHAR(50),
@@ -410,6 +429,8 @@ ON pm_voltage_input(pm_id);
 CREATE TABLE pm_mdb_ac (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    cab_number INTEGER NOT NULL,
 
     mccb_result VARCHAR(50),
     mccb_value VARCHAR(50),
@@ -517,6 +538,8 @@ CREATE TABLE pm_external_alarm_before (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
+    cab_number INTEGER NOT NULL,
+
     main_power_alarm_result VARCHAR(50),
     main_power_alarm_value VARCHAR(50),
     main_power_alarm_remark TEXT,
@@ -561,6 +584,8 @@ ON pm_external_alarm_before(pm_id);
 CREATE TABLE pm_nodeb_tx_equipment (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    cab_number INTEGER NOT NULL,
 
     cabinet_brand_result VARCHAR(100),
     cabinet_brand_value VARCHAR(100),
@@ -622,6 +647,8 @@ ON pm_nodeb_tx_equipment(pm_id);
 CREATE TABLE pm_rectifier (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    cab_number INTEGER NOT NULL,
     
     brand_result VARCHAR(100),
     brand_value VARCHAR(100),
@@ -684,6 +711,8 @@ CREATE TABLE pm_cabinet_check (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
+    cab_number INTEGER NOT NULL,
+
     input_cfm_result VARCHAR(50),
     input_cfm_value VARCHAR(50),
     input_cfm_remark TEXT,
@@ -724,6 +753,8 @@ ON pm_cabinet_check(pm_id);
 CREATE TABLE pm_batteries (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    cab_number INTEGER NOT NULL,
     
     battery_number VARCHAR(50) NULL,
 
@@ -800,6 +831,8 @@ CREATE TABLE pm_battery_backup (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
+    cab_number INTEGER NOT NULL,
+
     backup_time_result VARCHAR(50),
     backup_time_value VARCHAR(50),
     backup_time_remark TEXT,
@@ -820,6 +853,8 @@ ON pm_battery_backup(pm_id);
 CREATE TABLE pm_test_alarm (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    cab_number INTEGER NOT NULL,
 
     door_result VARCHAR(50),
     door_value VARCHAR(50),
@@ -874,6 +909,8 @@ CREATE TABLE pm_filter_check (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
+    cab_number INTEGER NOT NULL,
+
     filter_1_4_result VARCHAR(50),
     filter_1_4_value VARCHAR(50),
     filter_1_4_remark TEXT,
@@ -899,6 +936,8 @@ ON pm_filter_check(pm_id);
 CREATE TABLE pm_online_equipment (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    cab_number INTEGER NOT NULL,
 
     equipment_number INTEGER NULL,
     cab_result VARCHAR(50),
@@ -970,7 +1009,7 @@ CREATE TABLE pm_mowing (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
 
-    round_number INTEGER NULL,
+    mowing_number INTEGER NOT NULL,
 
     mowing_result VARCHAR(100),
     mowing_value VARCHAR(100),
@@ -1016,6 +1055,8 @@ ON pm_mowing(pm_id);
 CREATE TABLE pm_solar_cell (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
+
+    solar_cell_number INTEGER NOT NULL,
 
     has_solar_result VARCHAR(100),
     has_solar_value VARCHAR(100),

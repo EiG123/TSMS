@@ -6,33 +6,70 @@ import { useAuthStore } from "../stores/auth";
 const router = useRouter();
 const authStore = useAuthStore();
 
+// รับ props สำหรับควบคุมการแสดงผลและปิด menu
+const props = defineProps<{
+  isOpen?: boolean;
+}>();
+
+const emit = defineEmits<{
+  close: [];
+}>();
+
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || "User");
 const email = computed(() => authStore.user?.email || "user@gmail.com");
 
-const goHome = () => router.push("/home");
-const goPM = () => router.push("/PM");
+const goHome = () => {
+  router.push("/home");
+  emit("close"); // ปิด sidebar บน mobile หลังคลิก
+};
+
+const goPM = () => {
+  router.push("/PM");
+  emit("close");
+};
+
+const goToSettings = () => {
+  // router.push("/settings");
+  emit("close");
+};
+
 const logout = () => {
   authStore.logout();
   router.push("/");
+  emit("close");
 };
 </script>
 
 <template>
   <aside
-    class="fixed top-0 left-0 w-64 h-screen bg-gradient-to-b from-slate-900 to-slate-800 shadow-2xl z-40 flex flex-col"
+    class="fixed top-0 left-0 w-64 h-screen bg-gradient-to-b from-slate-900 to-slate-800 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out z-40"
+    :class="[
+      // บน mobile: เลื่อนเข้า-ออกตาม isOpen
+      // บนหน้าจอใหญ่: แสดงปกติเสมอ
+      'md:translate-x-0',
+      isOpen ? 'translate-x-0' : '-translate-x-full'
+    ]"
   >
     <!-- Header/Logo Section -->
     <div class="p-6 border-b border-slate-700/50">
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg"
-        >
-          <span class="text-white font-bold text-lg">TS</span>
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg"
+          >
+            <span class="text-white font-bold text-lg">TS</span>
+          </div>
         </div>
-        <button class="text-slate-400 hover:text-white transition-colors">
+        
+        <!-- ปุ่มปิดสำหรับ mobile -->
+        <button
+          @click="emit('close')"
+          class="md:hidden text-slate-400 hover:text-white transition-colors p-1"
+          aria-label="Close menu"
+        >
           <svg
-            class="w-5 h-5"
+            class="w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -41,7 +78,7 @@ const logout = () => {
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
+              d="M6 18L18 6M6 6l12 12"
             />
           </svg>
         </button>
@@ -94,6 +131,7 @@ const logout = () => {
 
       <!-- Module -->
       <button
+        @click="emit('close')"
         class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
       >
         <svg
@@ -115,8 +153,9 @@ const logout = () => {
       <!-- Divider -->
       <div class="pt-4 border-t border-slate-700/50 mt-4"></div>
 
-      <!-- Settings (Optional) -->
+      <!-- Settings -->
       <button
+        @click="goToSettings"
         class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
       >
         <svg
@@ -150,7 +189,9 @@ const logout = () => {
         <div
           class="w-9 h-9 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center"
         >
-          <span class="text-white font-semibold text-sm">U</span>
+          <span class="text-white font-semibold text-sm">
+            {{ username.charAt(0).toUpperCase() }}
+          </span>
         </div>
         <div class="flex-1 min-w-0">
           <p class="text-white text-sm font-medium truncate">{{ username }}</p>

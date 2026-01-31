@@ -12,6 +12,8 @@ import { nodeb_tx_equipment_fields } from "../config/nodeb_tx_equipment.config.j
 import { rectifierFieldConfig } from "../config/rectifier.config.js";
 import { cabinet_check_fields_config } from "../config/cabinet_check.config.js";
 //
+import { batteries_field_config } from "../config/batteries.config.js";
+//
 import { battery_backup_fields_config } from "../config/battery_backup.config.js";
 import { test_alarm_fields_config } from "../config/test_alarm.config.js";
 import { filter_check_fields_config } from "../config/filter_check.config.js";
@@ -118,7 +120,13 @@ pmConfigRouter.get("/cabinet_check", (c) => {
     fields: cabinet_check_fields_config
   });
 });
-
+/////////////
+pmConfigRouter.get("/batteries", (c) => {
+  return c.json({
+    module: "batteries",
+    fields: batteries_field_config
+  });
+});
 /////////////
 
 pmConfigRouter.get("/battery_backup", (c) => {

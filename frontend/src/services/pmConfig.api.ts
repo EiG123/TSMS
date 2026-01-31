@@ -84,6 +84,13 @@ export const getCabinetCheckConfig = async () => {
   return res.data;
 };
 
+export const getBatteriesConfig = async () => {
+  const res = await axios.get(
+    "http://localhost:3000/api/config/pm/batteries"
+  );
+  return res.data;
+};
+
 export const getBatteryBackUpConfig = async () => {
   const res = await axios.get(
     "http://localhost:3000/api/config/pm/battery_backup"

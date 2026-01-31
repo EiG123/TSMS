@@ -33,7 +33,7 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       // Redirect to login (ถ้าใช้ Vue Router)
-      window.location.href = '/login';
+      window.location.href = '/';
     }
     
     return Promise.reject(error);

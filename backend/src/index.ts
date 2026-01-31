@@ -9,7 +9,10 @@ import { cors } from 'hono/cors'
 import { AuthService } from './services/auth.service.js';
 import { PmService } from './services/PmNodeB.service.js';
 import { Pool } from 'pg';
-import pmConfigRouter from "./routers/PmConfig.js";
+import pmConfigRouter from "./routers/pmConfig.js";
+import pmInsertRouter from "./routers/pmInsert.js";
+import pmSiteListRouter from "./routers/pmSiteList.js";
+import pmSiteDateRouter from "./routers/pmGetSiteData.js";
 
 const app = new Hono();
 
@@ -22,6 +25,10 @@ app.use('/api/*', cors({
 }))
 
 app.route("/api/config/pm", pmConfigRouter);
+// PM NodeB endpoint
+app.route("/api/pmInsert", pmInsertRouter);
+app.route("/api/site", pmSiteListRouter);
+app.route("/api/getData", pmSiteDateRouter);
 
 // ตั้งค่าเชื่อมต่อ DB
 const db = new Pool({
@@ -67,69 +74,6 @@ app.post("/api/login", async (c) => {
   }
 });
 
-
-// PM NodeB endpoint
-app.post('/api/pm_nodeb', async (c) => {
-  try {
-    const body = await c.req.json();
-    const { 
-      site_id, 
-      node_type, 
-      round, 
-      cabinet_total, 
-      region, 
-      datetime, 
-      status, 
-      planwork, 
-      create_by, 
-      remark 
-    } = body;
-
-    // Validation
-    if (!site_id || !node_type || !cabinet_total) {
-      return c.json({ 
-        success: false, 
-        message: "กรุณากรอกข้อมูลที่จำเป็น" 
-      }, 400);
-    }
-
-    const cabinetTotal = Number(cabinet_total);
-
-    if (isNaN(cabinetTotal)) {
-      return c.json({ 
-        success: false, 
-        message: "cabinet_total ต้องเป็นตัวเลข" 
-      }, 400);
-    }
-
-    const result = await PmService.InsertPM(
-      site_id, 
-      node_type, 
-      round, 
-      cabinetTotal, 
-      region, 
-      datetime, 
-      status, 
-      planwork, 
-      create_by, 
-      remark, 
-      db
-    );
-
-    if (result.success) {
-      return c.json(result);
-    } else {
-      return c.json(result, 400);
-    }
-
-  } catch (error) {
-    console.error('PM NodeB error:', error);
-    return c.json({ 
-      success: false, 
-      message: "เกิดข้อผิดพลาดในการบันทึกข้อมูล" 
-    }, 500);
-  }
-});
 
 // Health check endpoint
 app.get('/api/health', async (c) => {
