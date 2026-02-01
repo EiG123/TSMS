@@ -114,8 +114,9 @@ CREATE TABLE pm_kwh_meter (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
     cab_number INTEGER NOT NULL,
-
     kwh_meter_number INTEGER NOT NULL,
+
+    phase_type VARCHAR(2) NOT NULL,
 
     mea_pea_result VARCHAR(50),
     mea_pea_value VARCHAR(50),
@@ -133,57 +134,9 @@ CREATE TABLE pm_kwh_meter (
     kwh_size_value VARCHAR(50),
     kwh_size_remark TEXT,
 
-    p1_l_input_result VARCHAR(50),
-    p1_l_input_value VARCHAR(50),
-    p1_l_input_remark TEXT,
-
-    p1_l_output_result VARCHAR(50),
-    p1_l_output_value VARCHAR(50),
-    p1_l_output_remark TEXT,
-
-    p1_n_input_result VARCHAR(50),
-    p1_n_input_value VARCHAR(50),
-    p1_n_input_remark TEXT,
-
-    p1_n_output_result VARCHAR(50),
-    p1_n_output_value VARCHAR(50),
-    p1_n_output_remark TEXT,
-
     ground_leak_result VARCHAR(50),
     ground_leak_value VARCHAR(50),
     ground_leak_remark TEXT,
-
-    p3_r_input_result VARCHAR(50),
-    p3_r_input_value VARCHAR(50),
-    p3_r_input_remark TEXT,
-
-    p3_r_output_result VARCHAR(50),
-    p3_r_output_value VARCHAR(50),
-    p3_r_output_remark TEXT,
-
-    p3_s_input_result VARCHAR(50),
-    p3_s_input_value VARCHAR(50),
-    p3_s_input_remark TEXT,
-
-    p3_s_output_result VARCHAR(50),
-    p3_s_output_value VARCHAR(50),
-    p3_s_output_remark TEXT,
-
-    p3_t_input_result VARCHAR(50),
-    p3_t_input_value VARCHAR(50),
-    p3_t_input_remark TEXT,
-
-    p3_t_output_result VARCHAR(50),
-    p3_t_output_value VARCHAR(50),
-    p3_t_output_remark TEXT,
-
-    p3_n_input_result VARCHAR(50),
-    p3_n_input_value VARCHAR(50),
-    p3_n_input_remark TEXT,
-
-    p3_n_output_result VARCHAR(50),
-    p3_n_output_value VARCHAR(50),
-    p3_n_output_remark TEXT,
 
     kwh_physical_check_result VARCHAR(50),
     kwh_physical_check_value VARCHAR(50),
@@ -192,6 +145,72 @@ CREATE TABLE pm_kwh_meter (
     CONSTRAINT fk_pm_kwh_meter_pm
         FOREIGN KEY (pm_id)
         REFERENCES pm_nodeb(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pm_kwh_meter_p1 (
+    kwh_meter_id INTEGER PRIMARY KEY,
+
+    l_input_result VARCHAR(50),
+    l_input_value VARCHAR(50),
+    l_input_remark TEXT,
+
+    l_output_result VARCHAR(50),
+    l_output_value VARCHAR(50),
+    l_output_remark TEXT,
+
+    n_input_result VARCHAR(50),
+    n_input_value VARCHAR(50),
+    n_input_remark TEXT,
+
+    n_output_result VARCHAR(50),
+    n_output_value VARCHAR(50),
+    n_output_remark TEXT,
+
+    CONSTRAINT fk_p1_meter
+        FOREIGN KEY (kwh_meter_id)
+        REFERENCES pm_kwh_meter(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pm_kwh_meter_p3 (
+    kwh_meter_id INTEGER PRIMARY KEY,
+
+    r_input_result VARCHAR(50),
+    r_input_value VARCHAR(50),
+    r_input_remark TEXT,
+
+    r_output_result VARCHAR(50),
+    r_output_value VARCHAR(50),
+    r_output_remark TEXT,
+
+    s_input_result VARCHAR(50),
+    s_input_value VARCHAR(50),
+    s_input_remark TEXT,
+
+    s_output_result VARCHAR(50),
+    s_output_value VARCHAR(50),
+    s_output_remark TEXT,
+
+    t_input_result VARCHAR(50),
+    t_input_value VARCHAR(50),
+    t_input_remark TEXT,
+
+    t_output_result VARCHAR(50),
+    t_output_value VARCHAR(50),
+    t_output_remark TEXT,
+
+    n_input_result VARCHAR(50),
+    n_input_value VARCHAR(50),
+    n_input_remark TEXT,
+
+    n_output_result VARCHAR(50),
+    n_output_value VARCHAR(50),
+    n_output_remark TEXT,
+
+    CONSTRAINT fk_p3_meter
+        FOREIGN KEY (kwh_meter_id)
+        REFERENCES pm_kwh_meter(id)
         ON DELETE CASCADE
 );
 
@@ -1257,6 +1276,8 @@ CREATE TABLE pm_images (
 //คำสั่งลบ
 DROP TABLE IF EXISTS pm_site_information;
 DROP TABLE IF EXISTS pm_cabinets;
+DROP TABLE IF EXISTS pm_kwh_meter_p1;
+DROP TABLE IF EXISTS pm_kwh_meter_p3;
 DROP TABLE IF EXISTS pm_kwh_meter;
 DROP TABLE IF EXISTS pm_transformer;
 DROP TABLE IF EXISTS pm_generator;
