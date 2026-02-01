@@ -69,7 +69,7 @@ const mowingEnabled = ref(false);
 // KWH Meter specific states
 const kwhMeterCount = ref(1);
 const kwh_meters = ref([
-  { phase: "1phase" }
+  { phase: "P1" }
 ]);
 
 // Watch for count changes
@@ -79,7 +79,7 @@ watch(kwhMeterCount, (newCount) => {
   if (newCount > currentLength) {
     // เพิ่มช่องใหม่
     for (let i = currentLength; i < newCount; i++) {
-      kwh_meters.value.push({ phase: "1phase" });
+      kwh_meters.value.push({ phase: "P1" });
     }
   } else if (newCount < currentLength) {
     // ลดช่อง
@@ -91,7 +91,7 @@ watch(kwhMeterCount, (newCount) => {
 watch(kwhMeterEnabled, (enabled) => {
   if (!enabled) {
     kwhMeterCount.value = 1;
-    kwh_meters.value = [{ phase: "1phase" }];
+    kwh_meters.value = [{ phase: "P1" }];
   }
 });
 </script>
@@ -242,10 +242,10 @@ watch(kwhMeterEnabled, (enabled) => {
                     <div class="flex gap-2">
                       <button
                         type="button"
-                        @click="meter.phase = '1phase'"
+                        @click="meter.phase = 'P1'"
                         :class="[
                           'px-4 py-2 rounded-md font-medium text-sm transition-all',
-                          meter.phase === '1phase'
+                          meter.phase === 'P1'
                             ? 'bg-blue-600 text-white shadow-md'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         ]"
@@ -254,10 +254,10 @@ watch(kwhMeterEnabled, (enabled) => {
                       </button>
                       <button
                         type="button"
-                        @click="meter.phase = '3phase'"
+                        @click="meter.phase = 'P3'"
                         :class="[
                           'px-4 py-2 rounded-md font-medium text-sm transition-all',
-                          meter.phase === '3phase'
+                          meter.phase === 'P3'
                             ? 'bg-blue-600 text-white shadow-md'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         ]"

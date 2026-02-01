@@ -116,7 +116,7 @@ CREATE TABLE pm_kwh_meter (
     cab_number INTEGER NOT NULL,
     kwh_meter_number INTEGER NOT NULL,
 
-    phase_type VARCHAR(2) NOT NULL,
+    phase_type VARCHAR(10) NOT NULL,
 
     mea_pea_result VARCHAR(50),
     mea_pea_value VARCHAR(50),

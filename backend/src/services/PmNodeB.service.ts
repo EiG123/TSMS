@@ -33,8 +33,11 @@ export const PmService = {
                 ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())
                 RETURNING id
             `;
-
+      console.log("ALL KWH_DATA");
+      console.log(kwh_meter);
       const kwh_meter_data = JSON.parse(kwh_meter);
+      console.log("KWH PARSE DATA");
+      console.log(kwh_meter_data);
       const kwh_meter_total = kwh_meter_data.length;
 
       const values = [
@@ -52,6 +55,58 @@ export const PmService = {
       ];
 
       const result = await client.query(query, values);
+
+      const pmId = result.rows[0].id;
+
+      for (let i = 0; i < kwh_meter_data.length; i++) {
+        const meter = kwh_meter_data[i];
+        const phaseType = meter.phase;
+        
+
+        // 1. insert pm_kwh_meter
+        const meterResult = await client.query(
+          `
+    INSERT INTO pm_kwh_meter (
+      pm_id,
+      cab_number,
+      kwh_meter_number,
+      phase_type
+    )
+    VALUES ($1, $2, $3, $4)
+    RETURNING id
+    `,
+          [
+            pmId,
+            i + 1,              // cab_number
+            i + 1,              // หรือเลขจริงจาก FE
+            phaseType
+          ]
+        );
+
+        const kwhMeterId = meterResult.rows[0].id;
+
+        // 2. insert ตาม phase
+        if (phaseType === "P1") {
+          await client.query(
+            `
+      INSERT INTO pm_kwh_meter_p1 (kwh_meter_id)
+      VALUES ($1)
+      `,
+            [kwhMeterId]
+          );
+        }
+
+        if (phaseType === "P3") {
+          await client.query(
+            `
+      INSERT INTO pm_kwh_meter_p3 (kwh_meter_id)
+      VALUES ($1)
+      `,
+            [kwhMeterId]
+          );
+        }
+      }
+
 
       // ⭐ ส่ง pm_id กลับไป
       return {
