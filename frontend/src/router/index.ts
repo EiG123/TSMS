@@ -6,7 +6,18 @@ import PM from "../views/PM.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
+import pm_nodeb_site_details from "../views/pm/pm_nodeb_site_details.vue"
 import pm_nodeb_edit from "../views/pm/pm_nodeb_edit.vue";
+
+import pm_title from "../views/pm/title/pm_title.vue";
+import pm_title_add from "../views/pm/title/pm_title_add.vue";
+import pm_title_child from "../views/pm/title/pm_title_child.vue";
+import pm_title_child_add from "../views/pm/title/pm_title_child_add.vue";
+
+import cableslack from "../views/cableslack/cableslack.vue";
+
+import txt_to_excel from "../views/txt_to_excel/home.vue";
+
 
 const routes = [
     // 🔐 Login (ไม่มี layout)
@@ -42,13 +53,53 @@ const routes = [
                 component: pm_nodeb_new,
             },
             {
+                path: "pm_nodeb_site_details/:id",  // รับ ID เป็น parameter
+                name: "pm_nodeb_site_details",
+                component: pm_nodeb_site_details,
+                props: true  // ส่ง params เป็น props
+            },
+            {
                 path: "pm_nodeb_edit/:id",  // รับ ID เป็น parameter
                 name: "pm_nodeb_edit",
                 component: pm_nodeb_edit,
                 props: true  // ส่ง params เป็น props
+            },
+            {
+                path: "pm_title",  
+                name: "pm_title",
+                component: pm_title 
+            },
+            {
+                path: "pm_title_add",
+                name: "pm_title_add",
+                component: pm_title_add
+            },
+            {
+                path: "pm_title_child/:id",
+                name: "pm_title_child",
+                component: pm_title_child,
+                props: true
+            },
+            {
+                path: "pm_title_child_add/:id",
+                name: "pm_title_child_add",
+                component: pm_title_child_add,
+                props: true
+            },
+            {
+                path: "cableslack",
+                name: "cableslack",
+                component: cableslack,
+            },
+            {
+                path: "txt_to_excel",
+                name: "txt_to_excel",
+                component: txt_to_excel,
             }
         ],
     },
+
+    
 ];
 
 const router = createRouter({

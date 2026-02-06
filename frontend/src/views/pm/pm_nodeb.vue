@@ -6,6 +6,7 @@ import { getSiteList } from "../../services/pm_nodeb_list.api";
 const router = useRouter();
 const goNew = () => router.push("/pm_nodeb_new");
 const goEdit = (id: string) => router.push(`/pm_nodeb_edit/${id}`);
+const goView = (id: string) => router.push(`/pm_nodeb_site_details/${id}`);
 
 // ===== state =====
 const siteList = ref<any[]>([]);
@@ -70,21 +71,29 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8">
+  <div
+    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+  >
     <!-- Header -->
     <div class="mb-8 animate-fade-in">
-      <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2">
+      <h1
+        class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2"
+      >
         PM NodeB Management
       </h1>
-      <p class="text-slate-400 text-lg">Track and manage site preventive maintenance</p>
+      <p class="text-slate-400 text-lg">
+        Track and manage site preventive maintenance
+      </p>
     </div>
 
     <!-- Controls -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 animate-slide-down">
+    <div
+      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 animate-slide-down"
+    >
       <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto flex-1">
         <!-- Year Select -->
-        <select 
-          v-model="selectedYear" 
+        <select
+          v-model="selectedYear"
           class="bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
         >
           <option>2025/2026</option>
@@ -120,8 +129,8 @@ const handleSearch = () => {
       </div>
 
       <!-- New Button -->
-      <button 
-        @click="goNew" 
+      <button
+        @click="goNew"
         class="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-300"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -137,22 +146,50 @@ const handleSearch = () => {
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex flex-col items-center justify-center py-16 animate-fade-in">
-      <div class="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+    <div
+      v-if="loading"
+      class="flex flex-col items-center justify-center py-16 animate-fade-in"
+    >
+      <div
+        class="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"
+      ></div>
       <p class="text-slate-400 text-lg">Loading site data...</p>
     </div>
 
     <!-- Table -->
-    <div v-else class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl animate-slide-up">
+    <div
+      v-else
+      class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl animate-slide-up"
+    >
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead>
             <tr class="bg-slate-900/60 border-b border-slate-700/50">
-              <th class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">#</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Site ID</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Region</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">PM Date</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">Actions</th>
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
+              >
+                #
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
+              >
+                Site ID
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
+              >
+                Region
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
+              >
+                PM Date
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
+              >
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-700/30">
@@ -165,7 +202,9 @@ const handleSearch = () => {
                 {{ (currentPage - 1) * pageSize + index + 1 }}
               </td>
               <td class="px-6 py-4">
-                <span class="inline-block bg-blue-500/15 border border-blue-500/30 text-blue-300 px-3 py-1.5 rounded-lg text-sm font-mono font-medium">
+                <span
+                  class="inline-block bg-blue-500/15 border border-blue-500/30 text-blue-300 px-3 py-1.5 rounded-lg text-sm font-mono font-medium"
+                >
                   {{ row.site_id }}
                 </span>
               </td>
@@ -176,6 +215,21 @@ const handleSearch = () => {
                 {{ row.datetime }}
               </td>
               <td class="px-6 py-4">
+                <button
+                  @click="goView(row.id)"
+                  class="inline-flex items-center gap-1.5 bg-blue-500/15 border border-purple-500/30 hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                >
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  view
+                </button>
                 <button
                   @click="goEdit(row.id)"
                   class="inline-flex items-center gap-1.5 bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
@@ -198,8 +252,17 @@ const handleSearch = () => {
       </div>
 
       <!-- Empty State -->
-      <div v-if="paginatedList.length === 0" class="flex flex-col items-center justify-center py-16 text-slate-500">
-        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" class="mb-4 opacity-50">
+      <div
+        v-if="paginatedList.length === 0"
+        class="flex flex-col items-center justify-center py-16 text-slate-500"
+      >
+        <svg
+          width="64"
+          height="64"
+          viewBox="0 0 64 64"
+          fill="none"
+          class="mb-4 opacity-50"
+        >
           <path
             d="M32 56c13.255 0 24-10.745 24-24S45.255 8 32 8 8 18.745 8 32s10.745 24 24 24z"
             stroke="currentColor"
@@ -215,12 +278,17 @@ const handleSearch = () => {
           />
         </svg>
         <p class="text-lg font-semibold text-slate-400 mb-1">No sites found</p>
-        <span class="text-sm text-slate-500">Try adjusting your search or filters</span>
+        <span class="text-sm text-slate-500"
+          >Try adjusting your search or filters</span
+        >
       </div>
     </div>
 
     <!-- Pagination -->
-    <div v-if="!loading && paginatedList.length > 0" class="flex justify-center items-center gap-6 mt-6 animate-fade-in">
+    <div
+      v-if="!loading && paginatedList.length > 0"
+      class="flex justify-center items-center gap-6 mt-6 animate-fade-in"
+    >
       <button
         @click="prevPage"
         :disabled="currentPage === 1"

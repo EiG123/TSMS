@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 const JWT_SECRET = process.env.JWT_SECRET || "DEV_SECRET_PLEASE_CHANGE_IN_PRODUCTION";
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "3h";
 
 // ตรวจสอบว่ามี JWT_SECRET ใน production
 if (JWT_SECRET === "DEV_SECRET_PLEASE_CHANGE_IN_PRODUCTION") {

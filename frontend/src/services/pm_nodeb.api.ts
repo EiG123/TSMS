@@ -15,29 +15,9 @@ api.interceptors.request.use((config) => {
 
 export const PMApiService = {
     async pm_nodeb(
-        site_id: string,
-        region: string,
-        datetime: string,
-        status: string,
-        generator: string,
-        transformer: string,
-        kwh_meter: any,
-        solar_cell: string,
-        mowing: string,
-        created_by: string,
-        remark: string) {
+        data: any) {
         const response = await api.post("/pm_nodeb", {
-            site_id,
-            region,
-            datetime,
-            status,
-            generator,
-            transformer,
-            kwh_meter,
-            solar_cell,
-            mowing,
-            created_by,
-            remark
+           ...data
         });
         return response.data;
     },

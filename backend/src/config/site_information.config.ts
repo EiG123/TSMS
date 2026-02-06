@@ -1,3 +1,9 @@
+import pool from "../services/db.js";
+
+pool.connect();
+
+const sql = `SELECT * FROM pm_site_information`;
+
 export const site_information_fields_config = [
     {
         field: 'photo_around',

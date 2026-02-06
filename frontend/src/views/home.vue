@@ -9,6 +9,8 @@ const router = useRouter();
 const username = computed(() => authStore.user?.username || "User");
 
 const goPM = () => router.push("/PM");
+const goCableSlack = () => router.push("/CableSlack")
+const goTxTtoExcel = () => router.push("/txt_to_excel")
 
 // Sample data for cards
 const cards = [
@@ -22,17 +24,19 @@ const cards = [
   },
   {
     id: 2,
-    title: "",
-    value: "",
-    icon: "✅",
-    color: "from-green-500 to-green-600",
-  },
-  {
-    id: 3,
-    title: "",
+    title: "เก็บตกยกสาย",
     value: "",
     icon: "🎯",
     color: "from-purple-500 to-purple-600",
+    onclick: goCableSlack,
+  },
+  {
+    id: 3,
+    title: "TxT To Excel",
+    value: "",
+    icon: "✅",
+    color: "from-green-500 to-green-600",
+    onclick: goTxTtoExcel,
   },
   {
     id: 4,

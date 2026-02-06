@@ -1,0 +1,115 @@
+CREATE TABLE pm (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(50) NOT NULL
+);
+
+
+CREATE TABLE pm_job (
+    id SERIAL PRIMARY KEY,
+    pm_type VARCHAR(50) NOT NULL,
+    site_id VARCHAR(50),
+    created_by VARCHAR(100),
+    status VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE pm_title (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(50),
+    description VARCHAR(255),
+    title_type VARCHAR(50),
+    pm_mode VARCHAR(50),
+    pm_type VARCHAR(50),
+    status VARCHAR(50) NOT NULL,
+    reportable VARCHAR(50) NOT NULL,
+    fso VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL
+);
+
+
+CREATE TABLE pm_title_child (
+    id SERIAL PRIMARY KEY,
+    title_id INTEGER NOT NULL,
+    title_child_name VARCHAR(100) NOT NULL,
+    description TEXT,
+    rank INTEGER NOT NULL,
+    status VARCHAR(30) NOT NULL,
+    reportable VARCHAR(30) NOT NULL,
+    fso VARCHAR(30) NOT NULL,
+
+    CONSTRAINT fk_title_child_title
+        FOREIGN KEY (title_id)
+        REFERENCES pm_title(id)
+        ON DELETE CASCADE
+);
+CREATE INDEX idx_pm_title_child
+ON pm_title_child(title_id);
+
+CREATE TABLE pm_result (
+    id SERIAL PRIMARY KEY,
+    title_child_id INTEGER NOT NULL,
+    pm_job_id INTEGER,
+
+    result_status VARCHAR(30),
+    result_name VARCHAR(255),
+    result_type VARCHAR(50),
+    dropdown_checkbox_name VARCHAR(50),
+    dropdown_checkbox_value VARCHAR(50),
+    result VARCHAR(50),
+
+    CONSTRAINT fk_result_job
+        FOREIGN KEY (pm_job_id)
+        REFERENCES pm_job(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_result_child
+        FOREIGN KEY (title_child_id)
+        REFERENCES pm_title_child(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_result
+ON pm_result(pm_job_id);
+
+CREATE TABLE pm_value (
+    id SERIAL PRIMARY KEY,
+    pm_job_id INTEGER,
+    title_child_id INTEGER NOT NULL,
+    value_number INTEGER NOT NULL,
+
+    value_status VARCHAR(50),
+    value_name VARCHAR(255),
+    value_type VARCHAR(50),
+    value VARCHAR(100),
+    remark VARCHAR(255)
+
+);
+
+CREATE TABLE pm_images (
+    id SERIAL PRIMARY KEY,
+    pm_job_id INTEGER,
+    title_child_id INTEGER,
+    description VARCHAR(255),
+    file_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_pm_images_job
+        FOREIGN KEY (pm_job_id)
+        REFERENCES pm_job(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_pm_images
+ON pm_images(pm_job_id);
+
+
+
+
+DROP TABLE IF EXISTS pm_images;
+DROP TABLE IF EXISTS pm_value;
+DROP TABLE IF EXISTS pm_result;
+DROP TABLE IF EXISTS pm_title_child;
+DROP TABLE IF EXISTS pm_title;
+DROP TABLE IF EXISTS pm_job;
+DROP TABLE IF EXISTS pm;
