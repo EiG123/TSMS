@@ -83,12 +83,7 @@ onMounted(async () => {
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
               >
-                Mode
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
-                Type
+                PM Type
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
@@ -98,27 +93,12 @@ onMounted(async () => {
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
               >
-                Status
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
-                Result
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
                 Value
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
               >
-                Reportable
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
-                FSO
+                Status
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
@@ -178,20 +158,16 @@ onMounted(async () => {
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                 @click="goTitleChild(item.id)"
               >
-                [{{ item.title_child_id }}] {{ item.title_child_name }}
+                [{{ item.id }}] {{ item.title_child_name }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.pm_mode || "-" }}
+                {{ item.pm_type || "-" }}
               </td>
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-              >
-              {{ item.pm_type || "-" }}
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ item.sub_type || "-" }}
               </td>
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-              >
-              {{ item.sub_type || "-" }}
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ item.pm_detail_count || "-" }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
@@ -204,28 +180,6 @@ onMounted(async () => {
                 >
                   {{ item.status === "active" ? "Active" : "Inactive" }}
                 </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.result_status || "-" }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.value_status || "-" }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  :class="[
-                    'px-2 py-1 text-xs font-semibold rounded-full',
-                    item.reportable === 'active'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800',
-                  ]"
-                >
-                  {{ item.reportable === "active" ? "Active" : "Inactive" }}
-                </span>
-              </td>
-
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.fso ? "Yes" : "No" }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <div class="flex gap-2">

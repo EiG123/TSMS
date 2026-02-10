@@ -16,11 +16,13 @@ onMounted(async () => {
   try {
     const res = await pmTitleManage.getAllPmTitle();
     pmTitles.value = res.data.result;
+    console.log(pmTitles.value);
     for (let i = 0; i < pmTitles.value.length; i++) {
       const resTitleChild_count = await pmTitleManage.getAllPmTitleChild(
         pmTitles.value[i].id
       );
-      pmTitles.value[i].title_child_count = resTitleChild_count.data.result.length;
+      pmTitles.value[i].title_child_count =
+        resTitleChild_count.data.result.length;
     }
   } catch {
     alert("ไม่เจอ API getAllPmTitle");
@@ -78,12 +80,7 @@ onMounted(async () => {
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
               >
-                Title Type
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
-                PM Mode
+                Key
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
@@ -99,16 +96,6 @@ onMounted(async () => {
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
               >
                 Status
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
-                Reportable
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
-                FSO
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
@@ -171,13 +158,10 @@ onMounted(async () => {
                 [{{ item.id }}] {{ item.title }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.title_type || "-" }}
+                {{ item.key || "-" }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.pm_mode }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.pm_type }}
+                {{ item.type }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ item.title_child_count || "0" }}
@@ -193,21 +177,6 @@ onMounted(async () => {
                 >
                   {{ item.status === "active" ? "Active" : "Inactive" }}
                 </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  :class="[
-                    'px-2 py-1 text-xs font-semibold rounded-full',
-                    item.reportable === 'active'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800',
-                  ]"
-                >
-                  {{ item.reportable === "active" ? "Active" : "Inactive" }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {{ item.fso ? "Yes" : "No" }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <div class="flex gap-2">

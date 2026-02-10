@@ -1,0 +1,68 @@
+CREATE TABLE sites (
+    id SERIAL PRIMARY KEY,
+    site_id VARCHAR(50)
+);
+
+CREATE TABLE pm (
+    id SERIAL PRIMARY KEY,
+    round VARCHAR(50),
+    key VARCHAR(50),
+    created_by VARCHAR(50),
+    created_at VARCHAR(50),
+    updated_by VARCHAR(50),
+    updated_at VARCHAR(50),
+    deleted_at VARCHAR(50),
+    deleted_by VARCHAR(50)
+);
+
+CREATE TABLE pm_title (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(50),
+    description VARCHAR(255),
+    key VARCHAR(50),
+    type VARCHAR(50),
+    status VARCHAR(50) NOT NULL,
+    rank INTEGER NOT NULL
+);
+
+CREATE TABLE pm_title_child (
+    id SERIAL PRIMARY KEY,
+    title_id INTEGER NOT NULL,
+    title_child_name VARCHAR(100) NOT NULL,
+    description TEXT,
+    rank INTEGER NOT NULL,
+    status VARCHAR(30) NOT NULL,
+
+    CONSTRAINT fk_title_child_title
+        FOREIGN KEY (title_id)
+        REFERENCES pm_title(id)
+        ON DELETE CASCADE
+);
+CREATE INDEX idx_pm_title_child
+ON pm_title_child(title_id);
+
+CREATE TABLE pm_details (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER,
+    title_id INTEGER,
+    title_child_id INTEGER,
+    name VARCHAR(255),
+    input_type VARCHAR(50),
+    number INTEGER,
+    value VARCHAR(255)
+);
+
+CREATE TABLE pm_images (
+    id SERIAL PRIMARY KEY,
+    title_child_id INTEGER,
+    description VARCHAR(255),
+    file_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS pm_images;
+DROP TABLE IF EXISTS pm_details;
+DROP TABLE IF EXISTS pm_title_child;
+DROP TABLE IF EXISTS pm_title;
+DROP TABLE IF EXISTS pm;
+DROP TABLE IF EXISTS sites;

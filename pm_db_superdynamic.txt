@@ -367,9 +367,6 @@ CREATE TABLE pm_rectifier (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-    
     CONSTRAINT fk_pm_rectifier_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
@@ -387,9 +384,6 @@ CREATE TABLE pm_cabinet_check (
 
     title_id VARCHAR(50),
     title_child VARCHAR(50),
-
-    
-    
 
     CONSTRAINT fk_pm_cabinet_check_pm
         FOREIGN KEY (pm_id) 
@@ -411,9 +405,6 @@ CREATE TABLE pm_batteries (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-    
     CONSTRAINT fk_pm_batteries_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
@@ -432,9 +423,6 @@ CREATE TABLE pm_battery_backup (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-    
     CONSTRAINT fk_pm_battery_backup_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
@@ -452,9 +440,6 @@ CREATE TABLE pm_test_alarm (
 
     title_id VARCHAR(50),
     title_child VARCHAR(50),
-
-    
-    
 
     CONSTRAINT fk_pm_test_alarm_pm
         FOREIGN KEY (pm_id) 
@@ -474,9 +459,6 @@ CREATE TABLE pm_filter_check (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-    
     CONSTRAINT fk_pm_filter_check_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
@@ -495,9 +477,6 @@ CREATE TABLE pm_online_equipment (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-    
     CONSTRAINT fk_pm_online_equipment_pm_id
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
@@ -513,9 +492,6 @@ CREATE TABLE pm_mowing (
 
     title_id VARCHAR(50),
     title_child VARCHAR(50),
-
-    
-    
 
     CONSTRAINT fk_pm_mowing_pm
         FOREIGN KEY (pm_id) 
@@ -535,9 +511,6 @@ CREATE TABLE pm_solar_cell (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-
     CONSTRAINT fk_pm_solar_cell_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
@@ -556,9 +529,6 @@ CREATE TABLE pm_air_maintenance (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-
     CONSTRAINT fk_pm_air_maintenance_pm
         FOREIGN KEY (pm_id) 
         REFERENCES pm_nodeb(id) 
@@ -574,9 +544,6 @@ CREATE TABLE pm_nop_external_alarm_after (
 
     title_id VARCHAR(50),
     title_child VARCHAR(50),
-
-    
-    
     
     CONSTRAINT fk_pm_nop_external_alarm_after_pm
         FOREIGN KEY (pm_id) 
@@ -594,9 +561,6 @@ CREATE TABLE pm_nop_verify (
     title_id VARCHAR(50),
     title_child VARCHAR(50),
 
-    
-    
-    
     CONSTRAINT fk_pm_nop_verify_pm
         FOREIGN KEY (pm_id)
         REFERENCES pm_nodeb(id) 

@@ -14,6 +14,8 @@ import pm_title_add from "../views/pm/title/pm_title_add.vue";
 import pm_title_child from "../views/pm/title/pm_title_child.vue";
 import pm_title_child_add from "../views/pm/title/pm_title_child_add.vue";
 
+import pm_dropdown from "../views/pm/title/pm_dropdown.vue";
+
 import cableslack from "../views/cableslack/cableslack.vue";
 
 import txt_to_excel from "../views/txt_to_excel/home.vue";
@@ -68,6 +70,11 @@ const routes = [
                 path: "pm_title",  
                 name: "pm_title",
                 component: pm_title 
+            },
+            {
+                path: "pm_dropdown",
+                name: "pm_dropdown",
+                component: pm_dropdown,
             },
             {
                 path: "pm_title_add",

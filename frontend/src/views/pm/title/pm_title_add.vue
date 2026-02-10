@@ -7,12 +7,10 @@ const router = useRouter();
 
 const pm_name = ref("");
 const pm_description = ref("");
-const pm_title_type = ref("");
+const pm_key = ref("");
 const pm_mode = ref("PM");
 const pm_type = ref("NodeB");
 const pm_status = ref("");
-const pm_reportable = ref("");
-const pm_fso = ref("");
 const pm_rank = ref(0);
 
 const handleCancel = () => {
@@ -23,12 +21,9 @@ const handleSubmit = async () => {
   const res = await pmTitleManage.AddpmTitle(
     pm_name.value,
     pm_description.value,
-    pm_title_type.value,
-    pm_mode.value,
+    pm_key.value,
     pm_type.value,
     pm_status.value,
-    pm_reportable.value,
-    pm_fso.value,
     pm_rank.value
   );
 
@@ -80,12 +75,14 @@ const handleSubmit = async () => {
           Title Type
         </label>
         <select
-          v-model="pm_title_type"
+          v-model="pm_key"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white"
         >
           <option value="">Select...</option>
-          <option value="type1">Type 1</option>
-          <option value="type2">Type 2</option>
+          <option value="site_info">Site Information</option>
+          <option value="transformer">Transformer</option>
+          <option value="generator">Generator</option>
+          <option value="kwh_meter">KWH Meter</option>
         </select>
       </div>
 
@@ -145,33 +142,6 @@ const handleSubmit = async () => {
         </div>
       </div>
 
-      <!-- Report Status -->
-      <div class="form-group">
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          Report Status
-        </label>
-        <div class="flex gap-6">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              v-model="pm_reportable"
-              type="radio"
-              value="active"
-              class="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
-            />
-            <span class="text-gray-700">Active</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              v-model="pm_reportable"
-              type="radio"
-              value="inactive"
-              class="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
-            />
-            <span class="text-gray-700">Inactive</span>
-          </label>
-        </div>
-      </div>
-
       <!-- Rank -->
       <div class="form-group">
         <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -183,22 +153,6 @@ const handleSubmit = async () => {
           min="0"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
         />
-      </div>
-
-      <!-- FSO -->
-      <div class="form-group">
-        <label class="block text-sm font-medium text-gray-700 mb-3">
-          FSO
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer w-fit">
-          <input
-            v-model="pm_fso"
-            type="checkbox"
-            value="yes"
-            class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-          />
-          <span class="text-gray-700">FSO</span>
-        </label>
       </div>
 
       <!-- Buttons -->

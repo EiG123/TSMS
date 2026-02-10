@@ -7,7 +7,7 @@ export const ground_system_fields =
             value: true,
             remark: true,
             img: 'img_8_1',
-                    required: false
+            required: false
 
         },
         {
@@ -17,7 +17,7 @@ export const ground_system_fields =
             value: true,
             remark: true,
             img: 'img_8_2',
-                    required: false
+            required: false
 
         },
         {
@@ -27,7 +27,7 @@ export const ground_system_fields =
             value: true,
             remark: true,
             img: 'img_8_3',
-                    required: false
+            required: false
 
         },
         {
@@ -37,7 +37,7 @@ export const ground_system_fields =
             value: true,
             remark: true,
             img: 'img_8_4',
-                    required: false
+            required: false
 
         },
         {
@@ -47,7 +47,7 @@ export const ground_system_fields =
             value: true,
             remark: true,
             img: 'img_8_5',
-                    required: false
+            required: false
 
         },
         {
@@ -57,7 +57,7 @@ export const ground_system_fields =
             value: true,
             remark: true,
             img: 'img_8_6',
-                    required: false
+            required: false
 
         },
         {
@@ -67,7 +67,7 @@ export const ground_system_fields =
             value: true,
             remark: true,
             img: 'img_8_7',
-        required: false
+            required: false
 
         }
     ];

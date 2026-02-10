@@ -1,7 +1,6 @@
 import { Hono } from "hono";
 import { pmTitleService } from "../services/PmTitle.service.js";
 import pool from "../services/db.js";
-import { success } from "zod";
 
 const pmTitleRouter = new Hono();
 
@@ -11,24 +10,18 @@ pmTitleRouter.post("/AddPmTitle", async (c) => {
         const {
             pm_name,
             pm_description,
-            pm_title_type,
-            pm_mode,
+            pm_key,
             pm_type,
             pm_status,
-            pm_reportable,
-            pm_fso,
             pm_rank
         } = body;
 
         const result = await pmTitleService.InsertTitle(
             pm_name,
             pm_description,
-            pm_title_type,
-            pm_mode,
+            pm_key,
             pm_type,
             pm_status,
-            pm_reportable,
-            pm_fso,
             pm_rank,
             pool
         );
@@ -44,7 +37,7 @@ pmTitleRouter.post("/AddPmTitle", async (c) => {
         }
 
     } catch (error) {
-        console.error('PM Title error:', error);
+        console.error('PM Title error Router:', error);
         return c.json({
             success: false,
             message: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",

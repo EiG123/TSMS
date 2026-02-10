@@ -4,24 +4,18 @@ export const pmTitleManage = {
     async AddpmTitle(
         pm_name: string,
         pm_description: string,
-        pm_title_type: string,
-        pm_mode: string,
+        pm_key: string,
         pm_type: string,
         pm_status: string,
-        pm_reportable: string,
-        pm_fso: string,
         pm_rank: number
     ) {
         const response = await axios.post(
             "http://localhost:3000/api/pmTitle/AddPmTitle", {
             pm_name,
             pm_description,
-            pm_title_type,
-            pm_mode,
+            pm_key,
             pm_type,
             pm_status,
-            pm_reportable,
-            pm_fso,
             pm_rank
         }
         );
@@ -43,7 +37,7 @@ export const pmTitleManage = {
         return response.data;
     },
 
-    async AddpmTitleChild(data: any) { // หรือระบุ Interface แทน any
+    async AddpmTitleChild(data: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmTitle/AddPmTitleChild",
             { ...data }
