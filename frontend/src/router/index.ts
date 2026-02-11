@@ -15,6 +15,9 @@ import pm_title_child from "../views/pm/title/pm_title_child.vue";
 import pm_title_child_add from "../views/pm/title/pm_title_child_add.vue";
 
 import pm_dropdown from "../views/pm/title/pm_dropdown.vue";
+import pm_dropdown_add from "../views/pm/title/pm_dropdown_add.vue";
+import pm_dropdown_member from "../views/pm/title/pm_dropdown_member.vue";
+import pm_dropdown_member_add from "../views/pm/title/pm_dropdown_member_add.vue";
 
 import cableslack from "../views/cableslack/cableslack.vue";
 
@@ -75,6 +78,29 @@ const routes = [
                 path: "pm_dropdown",
                 name: "pm_dropdown",
                 component: pm_dropdown,
+            },
+            {
+                path: "pm_dropdown_add",
+                name: "pm_dropdown_add",
+                component: pm_dropdown_add,
+            },
+            {
+                path: "pm_dropdown_member/:id",
+                name: "pm_dropdown_member",
+                component: pm_dropdown_member,
+                props: true,
+            },
+            {
+                path: "pm_dropdown_member/:id",
+                name: "pm_dropdown_member",
+                component: pm_dropdown_member,
+                props: true,
+            },
+            {
+                path: "pm_dropdown_member_add/:id",
+                name: "pm_dropdown_member_add",
+                component: pm_dropdown_member_add,
+                props: true,
             },
             {
                 path: "pm_title_add",

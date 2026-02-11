@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { success } from "zod";
 export const pmTitleService = {
   async InsertTitle(
     pm_name: string,
@@ -143,8 +144,6 @@ export const pmTitleService = {
 
       const titleChildId = rows[0].id;
 
-      console.log(data);
-
       /* ==================== pm_value (BULK) ==================== */
       if (Array.isArray(data.values) && data.values.length > 0) {
         const valuePlaceholders: string[] = [];
@@ -225,7 +224,84 @@ export const pmTitleService = {
     } finally {
       client.release();
     }
-  }
+  },
 
+  async InsertDropDown(data: any, pool: any) {
+    const client = await pool.connect();
+    console.log(data);
+    try {
+      const sql = `
+        INSERT INTO pm_dropdown_head (
+          dropdown_head
+        ) VALUES ($1)`;
+      const values = [
+        data.dropdown_head
+      ]
+      const result = await client.query(sql, values);
 
+      const sql_member = `
+        INSERT INTO pm_dropdown_member (
+          dropdown_member
+        ) VALUES ($1)`;
+      const values_member = [
+        data.dropdown_member
+      ]
+      const result_member = await client.query(sql_member, values);
+
+      return {
+        success: true,
+      };
+    } catch {
+      return {
+        success: false
+      }
+    } finally {
+      client.release();
+    }
+  },
+
+  async InsertDropDownMember(data: any, pool: any) {
+    const client = await pool.connect();
+    console.log(data.dropdown_name);
+    try {
+      const sql = `
+        INSERT INTO pm_dropdown_member (
+          dropdown_member
+        ) VALUES ($1)`;
+      const values = [
+        data.dropdown_member
+      ]
+      const result = await client.query(sql, values);
+      return {
+        success: true,
+      };
+    } catch {
+      return {
+        success: false
+      }
+    } finally {
+      client.release();
+    }
+  },
+
+  async getAllDropdown(pool: any) {
+    const client = await pool.connect();
+    try {
+      const sql = `SELECT
+          *
+        FROM pm_dropdown_head;
+      `;
+      const res = await client.query(sql);
+      return {
+        result: res.rows,
+        success: true
+      }
+    } catch (error) {
+      return {
+        success: false
+      }
+    } finally {
+      client.release();
+    }
+  },
 };

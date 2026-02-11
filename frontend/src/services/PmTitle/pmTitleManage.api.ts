@@ -43,5 +43,15 @@ export const pmTitleManage = {
             { ...data }
         );
         return response.data;
+    },
+
+    async getAllDropdown() {
+        const response = await axios.get("http://localhost:3000/api/pmTitle/getAllDropdown");
+        return response.data;
+    },
+
+    async getDropdownById(id: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getDropdownById", { id });
+        return response.data;
     }
 };

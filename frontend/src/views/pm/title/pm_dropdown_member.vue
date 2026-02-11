@@ -1,39 +1,38 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { pmDropdownManage } from "../../../services/PmTitle/pmDropdownManage.api";
 
 const router = useRouter();
-const goNew = () => router.push("/pm_dropdown_add");
-const goPMDropdown_Member = (id: string) => router.push(`/pm_dropdown_member/${id}`);
+const route = useRoute();
+const Id = ref(route.params.id as string);
+const goNew = (id: any) => router.push(`/pm_dropdown_member_add/${id}`);
 
 const loading = ref(false);
-const pmTitles = ref([]);
+const pmDropDown = ref([]);
 
 // ===== lifecycle =====
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await pmDropdownManage.getAllDropdown();
-    console.log(res.data.result);
-    pmTitles.value = res.data.result;
+    const res = await pmDropdownManage.getDropdownMemberById(Id.value);
+    pmDropDown.value = res.data.result;
   } catch {
-    alert("ไม่เจอ API getAllDropdown");
+    alert("ไม่เจอ API getAllPmTitle");
   } finally {
     loading.value = false;
   }
 });
 
-
 const handleDelete = async (id: number) => {
-  const confirmed = window.confirm("คุณต้องการลบ Dropdown นี้ใช่หรือไม่?");
+  const confirmed = window.confirm("คุณต้องการลบ DropdownMember นี้ใช่หรือไม่?");
 
   if (!confirmed) return;
 
   loading.value = true;
 
   try {
-    await pmDropdownManage.deleteDropdownById(id);
+    await pmDropdownManage.deleteDropdownMemberById(id);
     window.location.reload();
   } catch (error) {
     alert("ไม่สามารถลบข้อมูลได้");
@@ -41,10 +40,6 @@ const handleDelete = async (id: number) => {
     loading.value = false;
   }
 };
-
-
-
-
 </script>
 
 <template>
@@ -55,11 +50,11 @@ const handleDelete = async (id: number) => {
         <h1 class="text-2xl font-bold text-gray-800">Dropdown Settings</h1>
 
         <button
-          @click="goNew"
+          @click="goNew(Id)"
           class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
         >
           <span class="text-xl">+</span>
-          <span>New Dropdown</span>
+          <span>New Dropdown Member</span>
         </button>
       </div>
     </div>
@@ -73,12 +68,7 @@ const handleDelete = async (id: number) => {
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
               >
-                DROPDOWN
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
-              >
-                DROPDOWN MEMBER
+                DROPDOWN NAME
               </th>
             </tr>
           </thead>
@@ -113,7 +103,7 @@ const handleDelete = async (id: number) => {
             </tr>
 
             <!-- No Data State -->
-            <tr v-else-if="!pmTitles.length">
+            <tr v-else-if="!pmDropDown.length">
               <td colspan="10" class="px-6 py-8 text-center text-gray-500">
                 No data available
               </td>
@@ -122,20 +112,15 @@ const handleDelete = async (id: number) => {
             <!-- Data Rows -->
             <tr
               v-else
-              v-for="item in pmTitles"
+              v-for="item in pmDropDown"
               :key="item.id"
               class="hover:bg-gray-50 transition-colors"
             >
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                @click="goPMDropdown_Member(item.id)"
+                @click="goPMDropdown(item.id)"
               >
-                [{{ item.id }}] {{ item.dropdown_head }}
-              </td>
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-              >
-                {{item.duplicate_count}}
+                [{{ item.id }}] {{ item.dropdown_member }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <div class="flex gap-2">
