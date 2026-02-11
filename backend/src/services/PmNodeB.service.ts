@@ -1,5 +1,28 @@
 import { Pool } from "pg";
 export const PmService = {
+  async getData(
+    db: any
+  ) {
+    const client = await db.connect();
+
+    try{
+      const sql = `SELECT * FROM pm`
+
+      const res = await client.query(sql);
+      return {
+        data: res.rows,
+        success: true
+      }
+    }catch(err){
+      return{
+        success: false
+      }
+    }finally{
+      client.release();
+    }
+  },
+
+
   async InsertPM(
     data: any,
     db: Pool

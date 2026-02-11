@@ -12,10 +12,11 @@ import { Pool } from 'pg';
 import pmConfigRouter from "./routers/pmConfig.js";
 import pmInsertRouter from "./routers/pmInsert.js";
 import pmSiteListRouter from "./routers/pmSiteList.js";
-import pmSiteDateRouter from "./routers/pmGetSiteData.js";
+
 import pmTitleRouter from "./routers/pmTitle.js";
 import txt_to_excelRouter from "./routers/txt_to_excel.js";
 import pmDropdownRouter from "./routers/pmDropdown.js";
+import pmGetPmListRouter from "./routers/pmGetPmList.js";
 
 const app = new Hono();
 
@@ -31,9 +32,10 @@ app.route("/api/config/pm", pmConfigRouter);
 // PM NodeB endpoint
 app.route("/api/pmInsert", pmInsertRouter);
 app.route("/api/site", pmSiteListRouter);
-app.route("/api/getData", pmSiteDateRouter);
 app.route("/api/pmTitle", pmTitleRouter);
 app.route("/api/pmDropdown", pmDropdownRouter);
+
+app.route("/api/pmGetPm", pmGetPmListRouter);
 
 //Txt To Excel
 app.route("/api/txt-to-excel", txt_to_excelRouter);

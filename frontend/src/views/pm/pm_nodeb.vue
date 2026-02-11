@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import { getSiteList } from "../../services/pm_nodeb_list.api";
+import { getPmList } from "../../services/pm_nodeb_list.api";
 
 const router = useRouter();
 const goNew = () => router.push("/pm_nodeb_new");
@@ -22,7 +22,8 @@ const pageSize = 10;
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await getSiteList();
+    const res = await getPmList();
+    console.log(res.data);
     siteList.value = res.data;
   } catch {
     alert("ไม่เจอ API SiteList");

@@ -1,8 +1,6 @@
 import { Hono } from "hono";
 import { PmService } from "../services/PmNodeB.service.js";
 import { Pool } from "pg";
-import { validateRequest } from "../middlewares/pm_validation.middleware.js";
-import { pmNodeBSchema } from "../validation/pmNode.schema.js";
 
 const pmInsertRouter = new Hono();
 
@@ -19,8 +17,6 @@ const db = new Pool({
 pmInsertRouter.post("/pm_nodeb", async (c) => {
     try {
         const body = await c.req.json();
-        console.log(body);
-
         const result = await PmService.InsertPM(
             body,
             db

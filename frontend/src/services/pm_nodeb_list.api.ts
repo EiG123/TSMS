@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const getSiteList = async () => {
+export const getPmList = async () => {
   const res = await axios.get(
-    "http://localhost:3000/api/site/pmSiteList"
+    "http://localhost:3000/api/pmGetPm/pmGetPmList"
   );
   return res.data;
 };
