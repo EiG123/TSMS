@@ -2,16 +2,17 @@ CREATE TABLE sites (
     id SERIAL PRIMARY KEY,
     site_id VARCHAR(50),
     region VARCHAR(50),
-    province VARCHAR(50),
+    province VARCHAR(50)
 );
 
 CREATE TABLE pm (
     id SERIAL PRIMARY KEY,
+    site_id INTEGER,
     date VARCHAR(100),
     round VARCHAR(50),
-    key VARCHAR(50),
     planwork VARCHAR(255),
     service_status VARCHAR(50),
+    remark TEXT,
 
     created_by VARCHAR(50),
     created_at VARCHAR(50),
@@ -19,6 +20,68 @@ CREATE TABLE pm (
     updated_at VARCHAR(50),
     deleted_at VARCHAR(50),
     deleted_by VARCHAR(50)
+);
+
+CREATE TABLE pm_key_manager (
+    id SERIAL PRIMARY KEY,
+    key_id INTEGER NOT NULL,
+    key_name TEXT NOT NULL
+);
+
+CREATE TABLE pm_generator (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    number INTEGER NOT NULL,
+
+    CONSTRAINT fk_pm_generator
+        FOREIGN KEY (pm_id)
+        REFERENCES pm(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pm_transformer (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    number INTEGER NOT NULL,
+
+    CONSTRAINT fk_pm_transformer
+        FOREIGN KEY (pm_id)
+        REFERENCES pm(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pm_kwh_meter (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    number INTEGER NOT NULL,
+    phase VARCHAR(50) NOT NULL,
+
+    CONSTRAINT fk_pm_kwh_meter
+        FOREIGN KEY (pm_id)
+        REFERENCES pm(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pm_solar_cell (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    number INTEGER NOT NULL,
+
+    CONSTRAINT fk_pm_solar_cell
+        FOREIGN KEY (pm_id)
+        REFERENCES pm(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pm_mowing (
+    id SERIAL PRIMARY KEY,
+    pm_id INTEGER NOT NULL,
+    number INTEGER NOT NULL,
+
+    CONSTRAINT fk_pm_mowing
+        FOREIGN KEY (pm_id)
+        REFERENCES pm(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE pm_title (
@@ -89,5 +152,11 @@ DROP TABLE IF EXISTS pm_title_child;
 DROP TABLE IF EXISTS pm_title;
 DROP TABLE IF EXISTS pm;
 DROP TABLE IF EXISTS sites;
+DROP TABLE IF EXISTS pm_key_manager;
+DROP TABLE IF EXISTS pm_generator;
+DROP TABLE IF EXISTS pm_kwh_meter;
+DROP TABLE IF EXISTS pm_transformer;
+DROP TABLE IF EXISTS pm_solar_cell;
+DROP TABLE IF EXISTS pm_mowing;
 DROP TABLE IF EXISTS pm_dropdown_head;
 DROP TABLE IF EXISTS pm_dropdown_member;

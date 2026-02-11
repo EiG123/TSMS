@@ -26,9 +26,10 @@ const handlePmNodeB = async () => {
       region: region.value,
       datetime: datetime.value,
       status: status.value,
+      planwork: planwork.value,
       generatorEnabled: generatorEnabled.value ? generator.value : "",
       transformerEnabled: transformerEnabled.value ? transformer.value : "",
-      kwhMeterData: kwhMeterData,
+      pm_kwh_meter: kwhMeterData,
       solarCellEnabled: solarCellEnabled.value ? solar_cell.value : "",
       mowingEnabled: mowingEnabled.value ? mowing.value : "",
       created_by: created_by.value,
@@ -52,12 +53,14 @@ const site_id = ref("");
 const region = ref("");
 const datetime = ref("");
 const status = ref("");
+const planwork = ref("");
 const generator = ref("");
 const transformer = ref("");
 const solar_cell = ref("");
 const mowing = ref("");
 const created_by = ref("");
 const remark = ref("");
+
 
 // Checkbox states
 const generatorEnabled = ref(false);
@@ -158,6 +161,18 @@ watch(kwhMeterEnabled, (enabled) => {
                 v-model="datetime"
                 type="datetime-local"
                 required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <!-- PM Date -->
+            <div class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                PlanWork
+              </label>
+              <input
+                v-model="planwork"
+                type="text"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

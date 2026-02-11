@@ -156,105 +156,12 @@ const handleSearch = () => {
       <p class="text-slate-400 text-lg">Loading site data...</p>
     </div>
 
-    <!-- Table -->
-    <div
-      v-else
-      class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl animate-slide-up"
-    >
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead>
-            <tr class="bg-slate-900/60 border-b border-slate-700/50">
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
-              >
-                #
-              </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
-              >
-                Site ID
-              </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
-              >
-                Region
-              </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
-              >
-                PM Date
-              </th>
-              <th
-                class="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-700/30">
-            <tr
-              v-for="(row, index) in paginatedList"
-              :key="row.id"
-              class="hover:bg-blue-500/5 transition-colors duration-200"
-            >
-              <td class="px-6 py-4 text-slate-500 font-mono text-sm">
-                {{ (currentPage - 1) * pageSize + index + 1 }}
-              </td>
-              <td class="px-6 py-4">
-                <span
-                  class="inline-block bg-blue-500/15 border border-blue-500/30 text-blue-300 px-3 py-1.5 rounded-lg text-sm font-mono font-medium"
-                >
-                  {{ row.site_id }}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-slate-300">
-                {{ row.region }}
-              </td>
-              <td class="px-6 py-4 text-slate-400 font-mono text-sm">
-                {{ row.datetime }}
-              </td>
-              <td class="px-6 py-4">
-                <button
-                  @click="goView(row.id)"
-                  class="inline-flex items-center gap-1.5 bg-blue-500/15 border border-purple-500/30 hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  view
-                </button>
-                <button
-                  @click="goEdit(row.id)"
-                  class="inline-flex items-center gap-1.5 bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-300 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-                >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Edit
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
+    <!-- Card Grid -->
+    <div v-else class="animate-slide-up">
       <!-- Empty State -->
       <div
         v-if="paginatedList.length === 0"
-        class="flex flex-col items-center justify-center py-16 text-slate-500"
+        class="flex flex-col items-center justify-center py-16 text-slate-500 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50"
       >
         <svg
           width="64"
@@ -281,6 +188,162 @@ const handleSearch = () => {
         <span class="text-sm text-slate-500"
           >Try adjusting your search or filters</span
         >
+      </div>
+
+      <!-- Cards Grid -->
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          v-for="(row, index) in paginatedList"
+          :key="row.id"
+          class="group bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40"
+        >
+          <!-- Card Header -->
+          <div
+            class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-slate-700/50 px-6 py-4"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm"
+                >
+                  {{ (currentPage - 1) * pageSize + index + 1 }}
+                </div>
+                <div>
+                  <h3 class="text-slate-300 font-semibold text-lg">
+                    {{ row.site_id || 'N/A' }}
+                  </h3>
+                  <p class="text-slate-500 text-xs font-mono">Site ID</p>
+                </div>
+              </div>
+              <div
+                class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="px-6 py-5 space-y-4">
+            <!-- Region -->
+            <div class="flex items-center gap-3">
+              <div
+                class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="text-blue-400"
+                >
+                  <path
+                    d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M1.333 8h13.334M8 1.333A10.2 10.2 0 0 1 10.667 8 10.2 10.2 0 0 1 8 14.667 10.2 10.2 0 0 1 5.333 8 10.2 10.2 0 0 1 8 1.333z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-slate-500 uppercase tracking-wide">
+                  Region
+                </p>
+                <p class="text-slate-300 font-medium truncate">
+                  {{ row.region || 'N/A' }}
+                </p>
+              </div>
+            </div>
+
+            <!-- PM Date -->
+            <div class="flex items-center gap-3">
+              <div
+                class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="text-purple-400"
+                >
+                  <rect
+                    x="2"
+                    y="3.333"
+                    width="12"
+                    height="10.667"
+                    rx="2"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-slate-500 uppercase tracking-wide">
+                  PM Date
+                </p>
+                <p class="text-slate-300 font-medium font-mono text-sm truncate">
+                  {{ row.datetime || 'Not scheduled' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div
+            class="px-6 py-4 bg-slate-900/40 border-t border-slate-700/50 flex gap-2"
+          >
+            <button
+              @click="goView(row.id)"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="2"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              View
+            </button>
+            <button
+              @click="goEdit(row.id)"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Edit
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 

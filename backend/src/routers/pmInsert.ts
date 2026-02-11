@@ -19,32 +19,10 @@ const db = new Pool({
 pmInsertRouter.post("/pm_nodeb", async (c) => {
     try {
         const body = await c.req.json();
-        const {
-            site_id,
-            region,
-            datetime,
-            status,
-            generator,
-            transformer,
-            kwh_meter,
-            solar_cell,
-            mowing,
-            created_by,
-            remark
-        } = body;
+        console.log(body);
 
         const result = await PmService.InsertPM(
-            site_id,
-            region,
-            datetime,
-            status,
-            generator,
-            transformer,
-            kwh_meter,
-            solar_cell,
-            mowing,
-            created_by,
-            remark,
+            body,
             db
         );
 
@@ -55,7 +33,6 @@ pmInsertRouter.post("/pm_nodeb", async (c) => {
                 message: "บันทึกข้อมูล PM สำเร็จ",
                 data: {
                     pm_id: result.pm_id,  // ⭐ สำคัญมาก!
-                    site_id: site_id,
                 }
             });
         } else {

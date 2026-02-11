@@ -1,117 +1,128 @@
 import { Pool } from "pg";
 export const PmService = {
   async InsertPM(
-    site_id: string,
-    region: string,
-    datetime: string,
-    status: string,
-    generator: string,
-    transformer: string,
-    kwh_meter: any,
-    solar_cell: string,
-    mowing: string,
-    created_by: string,
-    remark: string,
+    data: any,
     db: Pool
   ) {
     const client = await db.connect();
+    console.log(data);
     try {
       const query = `
-                INSERT INTO pm_nodeb (
-                    site_id,
-                    region,
-                    datetime,
-                    status,
-                    generator,
-                    transformer,
-                    kwh_meter,
-                    solar_cell,
-                    mowing,
-                    created_by,
-                    remark,
+                INSERT INTO pm (
+                    date,
+                    planwork,
+                    service_status,
                     created_at
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())
+                ) VALUES ($1, $2, $3, NOW())
                 RETURNING id
             `;
-      console.log("ALL KWH_DATA");
-      console.log(kwh_meter);
-      let kwh_meter_data = [];
-      if (kwh_meter !== "") {
-        kwh_meter_data = JSON.parse(kwh_meter);
-      }
-      console.log("KWH PARSE DATA");
-      console.log(kwh_meter_data);
-      const kwh_meter_total = kwh_meter_data.length;
 
       const values = [
-        site_id,
-        region,
-        datetime,
-        status,
-        generator,
-        transformer,
-        kwh_meter_total,
-        solar_cell,
-        mowing,
-        created_by,
-        remark
+        data.datetime,
+        data.planwork,
+        data.status
       ];
 
       const result = await client.query(query, values);
 
       const pmId = result.rows[0].id;
 
-      if (kwh_meter_data.length != 0) {
-        for (let i = 0; i < kwh_meter_data.length; i++) {
-          const meter = kwh_meter_data[i];
-          const phaseType = meter.phase;
+      //pm_generator
+      if(data.pm_generator.length != 0){
+        const sql_pm_generator = `
+          INSERT INTO pm_generator (
+            pm_id,
+            number,
+          ) VALUES ($1, $2);
+        `;
 
+        for(let i=0;i<data.pm_generator.length;i++){
+          const values_pm_generator = [
+            pmId,
+            i+1,
+          ];
 
-          // 1. insert pm_kwh_meter
-          const meterResult = await client.query(
-            `
-              INSERT INTO pm_kwh_meter (
-                pm_id,
-                cab_number,
-                kwh_meter_number,
-                phase_type
-              )
-              VALUES ($1, $2, $3, $4)
-              RETURNING id
-              `,
-            [
-              pmId,
-              i + 1,              // cab_number
-              i + 1,              // หรือเลขจริงจาก FE
-              phaseType
-            ]
-          );
-
-          const kwhMeterId = meterResult.rows[0].id;
-
-          // 2. insert ตาม phase
-          if (phaseType === "P1") {
-            await client.query(
-              `
-              INSERT INTO pm_kwh_meter_p1 (kwh_meter_id)
-              VALUES ($1)
-              `,
-              [kwhMeterId]
-            );
-          }
-
-          if (phaseType === "P3") {
-            await client.query(
-              `
-              INSERT INTO pm_kwh_meter_p3 (kwh_meter_id)
-              VALUES ($1)
-              `,
-              [kwhMeterId]
-            );
-          }
+          await client.query(sql_pm_generator, values_pm_generator)
         }
       }
 
+      //pm_transformer
+      if(data.pm_transformer.length != 0){
+        const sql_pm_transformer = `
+          INSERT INTO pm_transformer (
+            pm_id,
+            number,
+          ) VALUES ($1, $2);
+        `;
+
+        for(let i=0;i<data.pm_transformer.length;i++){
+          const values_pm_transformer = [
+            pmId,
+            i+1,
+          ];
+
+          await client.query(sql_pm_transformer, values_pm_transformer)
+        }
+      }
+
+      // pm_kwh_meter
+      if(data.pm_kwh_meter.length != 0){
+        const sql_pm_kwh_meter = `
+          INSERT INTO pm_kwh_meter (
+            pm_id,
+            number,
+            phase
+          ) VALUES ($1, $2, $3);
+        `;
+
+        for(let i=0;i<data.pm_kwh_meter.length;i++){
+          const values_pm_kwh_meter = [
+            pmId,
+            i+1,
+            data.pm_kwh_meter[i]
+          ];
+
+          await client.query(sql_pm_kwh_meter, values_pm_kwh_meter)
+        }
+      }
+
+      //pm_solar_cell
+      if(data.pm_solar_cell.length != 0){
+        const sql_pm_solar_cell = `
+          INSERT INTO pm_solar_cell (
+            pm_id,
+            number,
+          ) VALUES ($1, $2);
+        `;
+
+        for(let i=0;i<data.pm_solar_cell.length;i++){
+          const values_pm_solar_cell = [
+            pmId,
+            i+1,
+          ];
+
+          await client.query(sql_pm_solar_cell, values_pm_solar_cell)
+        }
+      }
+
+      //pm_mowing
+      if(data.pm_mowing.length != 0){
+        const sql_pm_mowing = `
+          INSERT INTO pm_mowing (
+            pm_id,
+            number,
+          ) VALUES ($1, $2);
+        `;
+
+        for(let i=0;i<data.pm_mowing.length;i++){
+          const values_pm_mowing = [
+            pmId,
+            i+1,
+          ];
+
+          await client.query(sql_pm_mowing, values_pm_mowing)
+        }
+      }
 
       // ⭐ ส่ง pm_id กลับไป
       return {
