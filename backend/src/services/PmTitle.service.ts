@@ -1,4 +1,3 @@
-import { Pool } from "pg";
 import { success } from "zod";
 export const pmTitleService = {
   async InsertTitle(
@@ -36,6 +35,47 @@ export const pmTitleService = {
       success: true
     }
   },
+
+  async EditpmTitle(data: any, pool: any) {
+    const client = await pool.connect();
+    try {
+      const sql = `
+      UPDATE pm_title
+      SET
+        title = $1,
+        description = $2,
+        key = $3,
+        type = $4,
+        status = $5,
+        rank = $6
+      WHERE id = $7
+      RETURNING id;
+    `;
+
+      const values = [
+        data.pm_name,
+        data.pm_description,
+        data.pm_key,
+        data.pm_type,   // ใช้ตัวเดียว
+        data.pm_status,
+        data.pm_rank,
+        data.pm_id
+      ];
+
+      const result = await client.query(sql, values);
+
+      return {
+        success: result.rowCount > 0
+      };
+
+    } catch (error) {
+      console.error("EditpmTitle error:", error);
+      return { success: false };
+    } finally {
+      client.release();
+    }
+  },
+
 
   async getAllPmTitle(pool: any) {
     const client = await pool.connect();
@@ -226,82 +266,42 @@ export const pmTitleService = {
     }
   },
 
-  async InsertDropDown(data: any, pool: any) {
+  async deleteTitleChildById(
+    data: any,
+    pool: any
+  ) {
     const client = await pool.connect();
-    console.log(data);
-    try {
-      const sql = `
-        INSERT INTO pm_dropdown_head (
-          dropdown_head
-        ) VALUES ($1)`;
-      const values = [
-        data.dropdown_head
-      ]
-      const result = await client.query(sql, values);
+    const sql = `
+      DELETE FROM pm_title_child WHERE id = $1;
+    `;
 
-      const sql_member = `
-        INSERT INTO pm_dropdown_member (
-          dropdown_member
-        ) VALUES ($1)`;
-      const values_member = [
-        data.dropdown_member
-      ]
-      const result_member = await client.query(sql_member, values);
+    const values = [
+      data.id
+    ]
 
-      return {
-        success: true,
-      };
-    } catch {
-      return {
-        success: false
-      }
-    } finally {
-      client.release();
+    const result = await client.query(sql, values);
+    return {
+      success: true
     }
   },
 
-  async InsertDropDownMember(data: any, pool: any) {
+  async deleteTitleById(
+    data: any,
+    pool: any
+  ) {
     const client = await pool.connect();
-    console.log(data.dropdown_name);
-    try {
-      const sql = `
-        INSERT INTO pm_dropdown_member (
-          dropdown_member
-        ) VALUES ($1)`;
-      const values = [
-        data.dropdown_member
-      ]
-      const result = await client.query(sql, values);
-      return {
-        success: true,
-      };
-    } catch {
-      return {
-        success: false
-      }
-    } finally {
-      client.release();
+    const sql = `
+      DELETE FROM pm_title WHERE id = $1;
+    `;
+
+    const values = [
+      data.id
+    ]
+
+    const result = await client.query(sql, values);
+    return {
+      success: true
     }
   },
 
-  async getAllDropdown(pool: any) {
-    const client = await pool.connect();
-    try {
-      const sql = `SELECT
-          *
-        FROM pm_dropdown_head;
-      `;
-      const res = await client.query(sql);
-      return {
-        result: res.rows,
-        success: true
-      }
-    } catch (error) {
-      return {
-        success: false
-      }
-    } finally {
-      client.release();
-    }
-  },
 };

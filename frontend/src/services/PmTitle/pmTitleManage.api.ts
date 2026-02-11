@@ -22,6 +22,17 @@ export const pmTitleManage = {
         return response.data;
     },
 
+    async EditpmTitle(
+        data: any
+    ) {
+        const response = await axios.post(
+                "http://localhost:3000/api/pmTitle/EditpmTitle", {
+                ...data
+            }
+        );
+        return response.data;
+    },
+
     async getAllPmTitle() {
         const response = await axios.get("http://localhost:3000/api/pmTitle/getAllPmTitle");
         return response.data;
@@ -45,13 +56,12 @@ export const pmTitleManage = {
         return response.data;
     },
 
-    async getAllDropdown() {
-        const response = await axios.get("http://localhost:3000/api/pmTitle/getAllDropdown");
+    async deleteTitleChildById(id: number) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/deleteTitleChildById", { id });
         return response.data;
     },
-
-    async getDropdownById(id: any) {
-        const response = await axios.post("http://localhost:3000/api/pmTitle/getDropdownById", { id });
+    async deleteTitleById(id: number) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/deleteTitleById", { id });
         return response.data;
     }
 };

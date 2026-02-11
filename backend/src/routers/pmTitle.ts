@@ -45,6 +45,33 @@ pmTitleRouter.post("/AddPmTitle", async (c) => {
     }
 });
 
+pmTitleRouter.post("/EditpmTitle", async (c) => {
+    try {
+        const body = await c.req.json();
+        const result = await pmTitleService.EditpmTitle(
+            body,
+            pool
+        );
+
+        if (result.success) {
+            // ⭐ ต้อง return pm_id กลับไปด้วย
+            return c.json({
+                success: true,
+                message: "บันทึกข้อมูล PM Title สำเร็จ",
+            });
+        } else {
+            return c.json(result, 401);
+        }
+
+    } catch (error) {
+        console.error('PM Title error Router:', error);
+        return c.json({
+            success: false,
+            message: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        }, 500);
+    }
+});
+
 pmTitleRouter.get("/getAllPmTitle", async (c) => {
     const data = await pmTitleService.getAllPmTitle(pool);
     if (data.success) {
@@ -94,6 +121,42 @@ pmTitleRouter.post("/getAllPmTitleChild", async (c) => {
 pmTitleRouter.post("/AddPmTitleChild", async (c) => {
     const body = await c.req.json();
     const data = await pmTitleService.InsertTitleChild(
+        body,
+        pool
+    );
+    if (data.success) {
+        return c.json({
+            data: data,
+            success: true
+        });
+    } else {
+        return c.json({
+            success: false
+        });
+    }
+});
+
+pmTitleRouter.post("/deleteTitleChildById", async (c) => {
+    const body = await c.req.json();
+    const data = await pmTitleService.deleteTitleChildById(
+        body,
+        pool
+    );
+    if (data.success) {
+        return c.json({
+            data: data,
+            success: true
+        });
+    } else {
+        return c.json({
+            success: false
+        });
+    }
+});
+
+pmTitleRouter.post("/deleteTitleById", async (c) => {
+    const body = await c.req.json();
+    const data = await pmTitleService.deleteTitleById(
         body,
         pool
     );

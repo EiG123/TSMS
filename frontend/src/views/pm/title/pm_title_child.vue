@@ -30,6 +30,23 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const handleDelete = async (id: number) => {
+  const confirmed = window.confirm("คุณต้องการลบ Tittle Child นี้หรือไม่?");
+
+  if(!confirmed) return;
+
+  loading.value =true;
+
+  try {
+    await pmTitleManage.deleteTitleChildById(id);
+    window.location.reload();
+  } catch (error) {
+    alert("ไม่สามารถลบ Title Child นี้ได้");
+  } finally {
+    loading.value = false;
+  }
+}
 </script>
 
 <template>

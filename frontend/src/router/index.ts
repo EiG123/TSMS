@@ -11,6 +11,7 @@ import pm_nodeb_edit from "../views/pm/pm_nodeb_edit.vue";
 
 import pm_title from "../views/pm/title/pm_title.vue";
 import pm_title_add from "../views/pm/title/pm_title_add.vue";
+import pm_title_edit from "../views/pm/title/pm_title_edit.vue";
 import pm_title_child from "../views/pm/title/pm_title_child.vue";
 import pm_title_child_add from "../views/pm/title/pm_title_child_add.vue";
 
@@ -73,6 +74,12 @@ const routes = [
                 path: "pm_title",  
                 name: "pm_title",
                 component: pm_title 
+            },
+            {
+                path: "pm_title_edit/:id",  
+                name: "pm_title_edit",
+                component: pm_title_edit,
+                props: true
             },
             {
                 path: "pm_dropdown",
