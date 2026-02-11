@@ -14,7 +14,7 @@ export const pmDropdownManage = {
         return response.data;
     },
 
-    async deleteDropdownMemberById(id: any){
+    async deleteDropdownMemberById(id: any) {
         const response = await axios.post("http://localhost:3000/api/pmDropdown/deleteDropdownMemberById", { id });
         return response.data;
     },
@@ -34,4 +34,9 @@ export const pmDropdownManage = {
             { ...data });
         return response.data;
     },
+
+    async getAllDropdownNameAndValue() {
+        const response = await axios.get("http://localhost:3000/api/pmDropdown/getAllDropdownNameAndValue");
+        return response.data;
+    }
 };

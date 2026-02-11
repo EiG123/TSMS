@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { pmDropdownManage } from "../../../services/PmTitle/pmDropdownManage.api";
 import { pmTitleManage } from "../../../services/PmTitle/pmTitleManage.api";
 
 const router = useRouter();
@@ -15,24 +16,58 @@ const rank = ref(0);
 // Dynamic Values
 const value_status = ref("inactive");
 const value_number = ref(0);
-const values = ref<Array<{ name: string; input_type: string }>>([]);
+const values = ref<Array<{ 
+  name: string; 
+  input_type: string;
+  dropdown_head_id?: string | null;
+  dropdown_member_id?: string | null;
+}>>([]);
 
 const image_status = ref("inactive");
 const image_number = ref(0);
 const image_descriptions = ref<string[]>([]);
+
+// Dropdown data
+const dropdownData = ref([]);
 
 // Watch value_number to update values array
 watch(value_number, (newVal) => {
   const num = Number(newVal) || 0;
   values.value = Array(num)
     .fill(null)
-    .map(() => ({ name: "", input_type: "" }));
+    .map(() => ({ 
+      name: "", 
+      input_type: "",
+      dropdown_head_id: null,
+      dropdown_member_id: null
+    }));
 });
 
 // Watch image_number to update descriptions array
 watch(image_number, (newVal) => {
   const num = Number(newVal) || 0;
   image_descriptions.value = Array(num).fill("");
+});
+
+// Computed property to get members for each value index
+const getSelectedMembers = (index: number) => {
+  const headId = values.value[index]?.dropdown_head_id;
+  if (!headId) return [];
+  
+  const head = dropdownData.value.find((item) => item.id === headId);
+  return head ? head.members : [];
+};
+
+// Load dropdown data on mount
+onMounted(async () => {
+  try {
+    const res = await pmDropdownManage.getAllDropdownNameAndValue();
+    if (res.data.success) {
+      dropdownData.value = res.data.result;
+    }
+  } catch (error) {
+    console.error("Error loading dropdown data:", error);
+  }
 });
 
 const handleCancel = () => {
@@ -102,7 +137,6 @@ const handleSubmit = async () => {
           />
         </div>
 
-
         <!-- Status -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-3">
@@ -130,33 +164,6 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        <!-- Report Status -->
-        <!-- <div>
-          <label class="block text-sm font-medium text-gray-700 mb-3">
-            Report Status
-          </label>
-          <div class="flex gap-6">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                v-model="reportable"
-                type="radio"
-                value="active"
-                class="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
-              />
-              <span class="text-gray-700">Active</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                v-model="reportable"
-                type="radio"
-                value="inactive"
-                class="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
-              />
-              <span class="text-gray-700">Inactive</span>
-            </label>
-          </div>
-        </div> -->
-
         <!-- Rank -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -169,26 +176,6 @@ const handleSubmit = async () => {
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
           />
         </div>
-
-        <!-- FSO and Update All Rank -->
-        <!-- <div class="space-y-2">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              v-model="fso"
-              type="checkbox"
-              class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-            />
-            <span class="text-gray-700">FSO</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              v-model="update_all_rank"
-              type="checkbox"
-              class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-            />
-            <span class="text-gray-700">Update all rank current position</span>
-          </label>
-        </div> -->
       </div>
 
       <!-- Dynamic Values Section -->
@@ -268,7 +255,7 @@ const handleSubmit = async () => {
                 <label class="block text-sm font-medium text-gray-700 mb-3">
                   Input Type
                 </label>
-                <div class="flex gap-6">
+                <div class="flex flex-wrap gap-6">
                   <label class="flex items-center gap-2 cursor-pointer">
                     <input
                       v-model="values[index].input_type"
@@ -314,6 +301,54 @@ const handleSubmit = async () => {
                     />
                     <span class="text-gray-700">OCR(AI)</span>
                   </label>
+                </div>
+              </div>
+
+              <!-- Dropdown Configuration (Show only when input_type is 'dropdown') -->
+              <div 
+                v-if="values[index].input_type === 'dropdown'" 
+                class="space-y-3 mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200"
+              >
+                <h4 class="text-sm font-semibold text-blue-800">Dropdown Configuration</h4>
+                
+                <!-- Select Dropdown Head -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Select Dropdown Name
+                  </label>
+                  <select 
+                    v-model="values[index].dropdown_head_id"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                  >
+                    <option :value="null">-- Select Dropdown --</option>
+                    <option
+                      v-for="head in dropdownData"
+                      :key="head.id"
+                      :value="head.id"
+                    >
+                      {{ head.dropdown_head }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Select Dropdown Member (Show only when head is selected) -->
+                <div v-if="values[index].dropdown_head_id">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Select Value
+                  </label>
+                  <select 
+                    v-model="values[index].dropdown_member_id"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                  >
+                    <option :value="null">-- Select Value --</option>
+                    <option
+                      v-for="member in getSelectedMembers(index)"
+                      :key="member.id"
+                      :value="member.id"
+                    >
+                      {{ member.dropdown_member }}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>

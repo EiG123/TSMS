@@ -115,6 +115,20 @@ pmDropdownRouter.post("/deleteDropdownMemberById", async (c) => {
     }
 });
 
+pmDropdownRouter.get("/getAllDropdownNameAndValue", async (c) => {
+    const data = await pmDropdownService.getAllDropdownNameAndValue(pool);
+    if (data.success) {
+        return c.json({
+            data: data,
+            success: true
+        });
+    } else {
+        return c.json({
+            success: false
+        });
+    }
+});
+
 
 
 export default pmDropdownRouter;

@@ -128,7 +128,7 @@ export const pmDropdownService = {
 
     },
 
-    
+
     async AddDropDownMemberById(data: any, pool: any) {
         console.log(data);
         const client = await pool.connect();
@@ -143,7 +143,7 @@ export const pmDropdownService = {
                 data.dropdown_member
             ]
             const res = await client.query(sql, values);
-            
+
             return {
                 result: res.rows,
                 success: true
@@ -181,5 +181,45 @@ export const pmDropdownService = {
         }
 
     },
-    
+
+
+    async getAllDropdownNameAndValue(pool: any) {
+        const client = await pool.connect();
+        try {
+            const sql = `
+            SELECT 
+                ddh.id,
+                ddh.dropdown_head,
+                COALESCE(
+                    json_agg(
+                        json_build_object(
+                            'id', ddm.id,
+                            'dropdown_member', ddm.dropdown_member
+                        )
+                        ORDER BY ddm.id
+                    ) FILTER (WHERE ddm.id IS NOT NULL),
+                    '[]'
+                ) AS members
+            FROM pm_dropdown_head ddh
+            LEFT JOIN pm_dropdown_member ddm
+                ON ddh.id = ddm.dropdown_head_id
+            GROUP BY ddh.id
+            ORDER BY ddh.id ASC;
+        `;
+
+            const res = await client.query(sql);
+
+            return {
+                result: res.rows,
+                success: true
+            };
+        } catch (error) {
+            console.error("Error getAllDropdownNameAndValue:", error);
+            return { success: false };
+        } finally {
+            client.release();
+        }
+    }
+
+
 }
