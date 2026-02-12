@@ -230,8 +230,15 @@ const handleSearch = () => {
                   <p class="text-slate-500 text-xs font-mono">Site ID</p>
                 </div>
               </div>
+              <!-- Status Indicator -->
               <div
-                class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50"
+                class="w-2 h-2 rounded-full shadow-lg"
+                :class="{
+                  'bg-green-500 shadow-green-500/50':
+                    row.service_status === 'onService',
+                  'bg-red-500 shadow-red-500/50': row.service_status === 'cancel',
+                  'bg-gray-500 shadow-gray-500/50': row.service_status === '',
+                }"
               ></div>
             </div>
           </div>
@@ -312,7 +319,7 @@ const handleSearch = () => {
                 <p
                   class="text-slate-300 font-medium font-mono text-sm truncate"
                 >
-                  {{ row.datetime || "Not scheduled" }}
+                  {{ row.date || "Not scheduled" }}
                 </p>
               </div>
             </div>
