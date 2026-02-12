@@ -17,6 +17,7 @@ const db = new Pool({
 pmInsertRouter.post("/pm_nodeb", async (c) => {
     try {
         const body = await c.req.json();
+        console.log(typeof body.pm_kwh_meter);
         const result = await PmService.InsertPM(
             body,
             db

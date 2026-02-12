@@ -17,12 +17,9 @@ const handlePmNodeB = async () => {
 
   try {
     // แปลง kwh_meters array เป็น string หรือ JSON ตามที่ API ต้องการ
-    const kwhMeterData = kwhMeterEnabled.value
-      ? JSON.stringify(kwh_meters.value)
-      : "";
-
-    const pmResult = await PMApiService.pm_nodeb(
-      {site_id: site_id.value,
+    const kwhMeterData = kwhMeterEnabled.value ? kwh_meters.value : [];
+    const pmResult = await PMApiService.pm_nodeb({
+      site_id: site_id.value,
       region: region.value,
       datetime: datetime.value,
       status: status.value,
@@ -33,8 +30,8 @@ const handlePmNodeB = async () => {
       solarCellEnabled: solarCellEnabled.value ? solar_cell.value : "",
       mowingEnabled: mowingEnabled.value ? mowing.value : "",
       created_by: created_by.value,
-      remark: remark.value}
-    );
+      remark: remark.value,
+    });
 
     if (pmResult.success) {
       window.location.href = "/pm_nodeb";
@@ -60,7 +57,6 @@ const solar_cell = ref("");
 const mowing = ref("");
 const created_by = ref("");
 const remark = ref("");
-
 
 // Checkbox states
 const generatorEnabled = ref(false);

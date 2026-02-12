@@ -28,7 +28,6 @@ export const PmService = {
     db: Pool
   ) {
     const client = await db.connect();
-    console.log(data);
     try {
       const query = `
                 INSERT INTO pm (
@@ -99,7 +98,6 @@ export const PmService = {
             phase
           ) VALUES ($1, $2, $3);
         `;
-
         for(let i=0;i<data.pm_kwh_meter.length;i++){
           const values_pm_kwh_meter = [
             pmId,
