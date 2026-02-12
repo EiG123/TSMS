@@ -39,7 +39,7 @@ const pageSize = 10;
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await getPmList();
+    const res = await getPmList.getPmList();
     console.log(res.data);
     siteList.value = res.data;
   } catch {
@@ -97,11 +97,8 @@ const handleSearch = () => {
       <h1
         class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2"
       >
-        PM NodeB Management
+        PM NodeB List
       </h1>
-      <p class="text-slate-400 text-lg">
-        Track and manage site preventive maintenance
-      </p>
     </div>
 
     <!-- Controls -->

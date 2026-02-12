@@ -51,7 +51,7 @@ export const PmService = {
       const pmId = result.rows[0].id;
 
       //pm_generator
-      if(data.pm_generator.length != 0){
+      if(data.pm_generator?.length){
         const sql_pm_generator = `
           INSERT INTO pm_generator (
             pm_id,
@@ -70,7 +70,7 @@ export const PmService = {
       }
 
       //pm_transformer
-      if(data.pm_transformer.length != 0){
+      if(data.pm_transformer?.length){
         const sql_pm_transformer = `
           INSERT INTO pm_transformer (
             pm_id,
@@ -89,7 +89,7 @@ export const PmService = {
       }
 
       // pm_kwh_meter
-      if(data.pm_kwh_meter.length != 0){
+      if(data.pm_kwh_meter?.length){
         const sql_pm_kwh_meter = `
           INSERT INTO pm_kwh_meter (
             pm_id,
@@ -110,7 +110,7 @@ export const PmService = {
       }
 
       //pm_solar_cell
-      if(data.pm_solar_cell.length != 0){
+      if(data.pm_solar_cell?.length){
         const sql_pm_solar_cell = `
           INSERT INTO pm_solar_cell (
             pm_id,
@@ -129,7 +129,7 @@ export const PmService = {
       }
 
       //pm_mowing
-      if(data.pm_mowing.length != 0){
+      if(data.pm_mowing?.length){
         const sql_pm_mowing = `
           INSERT INTO pm_mowing (
             pm_id,
