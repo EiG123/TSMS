@@ -8,4 +8,13 @@ export const pmServiceManage = {
         );
         return response.data;
     },
+
+    async heartbeat(pmId: number, userId: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/pmServiceManage/heartbeat",
+            { pmId, userId}
+        );
+        return response.data;
+    },
 };
+

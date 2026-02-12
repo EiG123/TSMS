@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
-
+import {useAuthStore} from "../../stores/auth";
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
 const pmId = ref(route.params.id as string);
 
 const loading = ref(false);
@@ -41,9 +42,34 @@ const handleDelete = async () => {
   }
 };
 
+let heartbeatInterval: any = null;
+
+const userId = authStore.userId;
+console.log(userId);
+
+const startHeartbeat = (pmId: any) => {
+  heartbeatInterval = setInterval(async () => {
+    try {
+      await pmServiceManage.heartbeat(pmId, userId);
+      console.log("heartbeat sent");
+    } catch {
+      console.log("session expired");
+      clearInterval(heartbeatInterval);
+    }
+  }, 60000); // 60 วินาที
+};
+
+const stopHeartbeat = () => {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+  }
+};
+
+
 onMounted(async () => {
   loading.value = true;
   try {
+    startHeartbeat(pmId.value);
     const res = await getPmList.getPmById(pmId.value);
     pMsiteData.value = res.data.data;
     console.log(res.data.data);
@@ -176,16 +202,18 @@ onMounted(async () => {
 
       <!-- Site Information Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div
+          class="lg:col-span-2 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6"
+        >
+          <div>กรุณา Check in เพื่อเริ่มบันทึกผล PM</div>
+          <button @click="handleCheckIn">
+            Check in
+          </button>
+        </div>
         <!-- Main Info Box -->
         <div
           class="lg:col-span-2 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6"
         >
-          <h2
-            class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6"
-          >
-            Site Information
-          </h2>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Column 1 -->
             <div class="space-y-5">

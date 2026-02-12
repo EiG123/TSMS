@@ -1,26 +1,56 @@
+import { success } from "zod";
+
 export const pmServiceManage = {
     async getData(
-    db: any
-  ) {
-    const client = await db.connect();
+        db: any
+    ) {
+        const client = await db.connect();
 
-    try{
-      const sql = `SELECT * FROM pm`
+        try {
+            const sql = `SELECT * FROM pm`
 
-      const res = await client.query(sql);
-      return {
-        data: res.rows,
-        success: true
-      }
-    }catch(err){
-      return{
-        success: false
-      }
-    }finally{
-      client.release();
-    }
-  },
-  
+            const res = await client.query(sql);
+            return {
+                data: res.rows,
+                success: true
+            }
+        } catch (err) {
+            return {
+                success: false
+            }
+        } finally {
+            client.release();
+        }
+    },
+
+    async heartbeat(pmId: any, user_id: any, db: any) {
+        const client = await db.connect();
+        try {
+            const sql = `UPDATE pm
+                SET last_activity_at = NOW()
+                WHERE id = $1
+                AND user_id = $2
+                AND status = 'checkin'
+                RETURNING id`;
+            const values = [
+                pmId,
+                user_id
+            ];
+
+            const res = await db.query(sql, values);
+
+            return {
+                success: true
+            }
+        } catch (err){
+            return {
+                success: false
+            }
+        } finally {
+            client.release();
+        }
+    },
+
     async deletPmById(id: number, db: any) {
         const client = await db.connect();
         try {

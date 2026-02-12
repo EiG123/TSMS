@@ -10,6 +10,7 @@ interface JwtPayload {
 }
 
 interface User {
+  id: any;
   username: string;
   email: string;
   role: string;
@@ -28,6 +29,7 @@ export const useAuthStore = defineStore("auth", {
     isAuthenticated: (state) => !!state.token,
     currentUser: (state) => state.user,
     userRole: (state) => state.user?.role,
+    userId: (state) => state.user?.id,
   },
 
   actions: {
