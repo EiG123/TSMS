@@ -6,6 +6,7 @@ import PM from "../views/PM.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
+import pm_site_detail from "../views/pm/pm_site_detail.vue";
 
 import pm_title from "../views/pm/title/pm_title.vue";
 import pm_title_add from "../views/pm/title/pm_title_add.vue";
@@ -55,6 +56,12 @@ const routes = [
                 path: "pm_nodeb_new",
                 name: "pm_nodeb_new",
                 component: pm_nodeb_new,
+            },
+            {
+                path: "pm_site_detail/:id",
+                name: "pm_site_detail",
+                component: pm_site_detail,
+                props: true
             },
             {
                 path: "pm_title",  

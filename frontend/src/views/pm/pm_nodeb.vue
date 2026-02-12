@@ -7,7 +7,7 @@ import { pmServiceManage } from "../../services/pmServiceManage.api";
 const router = useRouter();
 const goNew = () => router.push("/pm_nodeb_new");
 const goEdit = (id: string) => router.push(`/pm_nodeb_edit/${id}`);
-const goView = (id: string) => router.push(`/pm_nodeb_site_details/${id}`);
+const goView = (id: string) => router.push(`/pm_site_detail/${id}`);
 const handleDelete = async (id: number) => {
   const confirmed = window.confirm("คุณต้องการลบ Dropdown นี้ใช่หรือไม่?");
 
@@ -225,7 +225,7 @@ const handleSearch = () => {
                 </div>
                 <div>
                   <h3 class="text-slate-300 font-semibold text-lg">
-                    {{ row.site_id || "N/A" }}
+                    {{ row.site_name || "N/A" }}
                   </h3>
                   <p class="text-slate-500 text-xs font-mono">Site ID</p>
                 </div>
