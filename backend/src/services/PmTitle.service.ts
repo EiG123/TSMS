@@ -6,7 +6,7 @@ export const pmTitleService = {
     pm_type: string,
     pm_status: string,
     pm_rank: number,
-    pool: Pool,
+    pool: any,
   ) {
     const client = await pool.connect();
     const sql = `

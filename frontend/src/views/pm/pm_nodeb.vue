@@ -2,11 +2,28 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
+import { pmServiceManage } from "../../services/pmServiceManage.api";
 
 const router = useRouter();
 const goNew = () => router.push("/pm_nodeb_new");
 const goEdit = (id: string) => router.push(`/pm_nodeb_edit/${id}`);
 const goView = (id: string) => router.push(`/pm_nodeb_site_details/${id}`);
+const handleDelete = async (id: number) => {
+  const confirmed = window.confirm("คุณต้องการลบ Dropdown นี้ใช่หรือไม่?");
+
+  if (!confirmed) return;
+
+  loading.value = true;
+
+  try {
+    await pmServiceManage.deletePmById(id);
+    window.location.reload();
+  } catch (error) {
+    alert("ไม่สามารถลบข้อมูลได้");
+  } finally {
+    loading.value = false;
+  }
+};
 
 // ===== state =====
 const siteList = ref<any[]>([]);
@@ -211,7 +228,7 @@ const handleSearch = () => {
                 </div>
                 <div>
                   <h3 class="text-slate-300 font-semibold text-lg">
-                    {{ row.site_id || 'N/A' }}
+                    {{ row.site_id || "N/A" }}
                   </h3>
                   <p class="text-slate-500 text-xs font-mono">Site ID</p>
                 </div>
@@ -257,7 +274,7 @@ const handleSearch = () => {
                   Region
                 </p>
                 <p class="text-slate-300 font-medium truncate">
-                  {{ row.region || 'N/A' }}
+                  {{ row.region || "N/A" }}
                 </p>
               </div>
             </div>
@@ -295,8 +312,10 @@ const handleSearch = () => {
                 <p class="text-xs text-slate-500 uppercase tracking-wide">
                   PM Date
                 </p>
-                <p class="text-slate-300 font-medium font-mono text-sm truncate">
-                  {{ row.datetime || 'Not scheduled' }}
+                <p
+                  class="text-slate-300 font-medium font-mono text-sm truncate"
+                >
+                  {{ row.datetime || "Not scheduled" }}
                 </p>
               </div>
             </div>
@@ -342,6 +361,21 @@ const handleSearch = () => {
                 />
               </svg>
               Edit
+            </button>
+            <button
+              @click="handleDelete(row.id)"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/15 border border-red-500/30 hover:bg-red-500/25 hover:border-red-500/50 text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Delete
             </button>
           </div>
         </div>

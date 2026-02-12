@@ -11,12 +11,12 @@ import { PmService } from './services/PmNodeB.service.js';
 import { Pool } from 'pg';
 import pmConfigRouter from "./routers/pmConfig.js";
 import pmInsertRouter from "./routers/pmInsert.js";
-import pmSiteListRouter from "./routers/pmSiteList.js";
 
 import pmTitleRouter from "./routers/pmTitle.js";
 import txt_to_excelRouter from "./routers/txt_to_excel.js";
 import pmDropdownRouter from "./routers/pmDropdown.js";
 import pmGetPmListRouter from "./routers/pmGetPmList.js";
+import pmRouterManage from "./routers/pmRouterManage.js";
 
 const app = new Hono();
 
@@ -30,8 +30,8 @@ app.use('/api/*', cors({
 
 app.route("/api/config/pm", pmConfigRouter);
 // PM NodeB endpoint
+app.route("/api/pmServiceManage", pmRouterManage);
 app.route("/api/pmInsert", pmInsertRouter);
-app.route("/api/site", pmSiteListRouter);
 app.route("/api/pmTitle", pmTitleRouter);
 app.route("/api/pmDropdown", pmDropdownRouter);
 

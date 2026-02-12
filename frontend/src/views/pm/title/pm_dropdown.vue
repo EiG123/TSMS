@@ -42,9 +42,6 @@ const handleDelete = async (id: number) => {
   }
 };
 
-
-
-
 </script>
 
 <template>

@@ -6,8 +6,6 @@ import PM from "../views/PM.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
-import pm_nodeb_site_details from "../views/pm/pm_nodeb_site_details.vue"
-import pm_nodeb_edit from "../views/pm/pm_nodeb_edit.vue";
 
 import pm_title from "../views/pm/title/pm_title.vue";
 import pm_title_add from "../views/pm/title/pm_title_add.vue";
@@ -57,18 +55,6 @@ const routes = [
                 path: "pm_nodeb_new",
                 name: "pm_nodeb_new",
                 component: pm_nodeb_new,
-            },
-            {
-                path: "pm_nodeb_site_details/:id",  // รับ ID เป็น parameter
-                name: "pm_nodeb_site_details",
-                component: pm_nodeb_site_details,
-                props: true  // ส่ง params เป็น props
-            },
-            {
-                path: "pm_nodeb_edit/:id",  // รับ ID เป็น parameter
-                name: "pm_nodeb_edit",
-                component: pm_nodeb_edit,
-                props: true  // ส่ง params เป็น props
             },
             {
                 path: "pm_title",  
