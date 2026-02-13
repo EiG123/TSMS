@@ -17,18 +17,25 @@ const handlePmNodeB = async () => {
 
   try {
     // แปลง kwh_meters array เป็น string หรือ JSON ตามที่ API ต้องการ
+    const generatorData = generatorEnabled.value ? generatorCount.value : 0;
+    const transformerData = transformerEnabled.value
+      ? transformerCount.value
+      : 0;
     const kwhMeterData = kwhMeterEnabled.value ? kwh_meters.value : [];
+    const solarCellData = solarCellEnabled.value ? solarCellCount.value : 0;
+    const mowingData = mowingEnabled.value ? mowingCount.value : 0;
+
     const pmResult = await PMApiService.pm_nodeb({
       site_id: site_id.value,
       region: region.value,
       datetime: datetime.value,
       status: status.value,
       planwork: planwork.value,
-      generatorEnabled: generatorEnabled.value ? generator.value : "",
-      transformerEnabled: transformerEnabled.value ? transformer.value : "",
+      generatorEnabled: generatorData,
+      transformerEnabled: transformerData,
       pm_kwh_meter: kwhMeterData,
-      solarCellEnabled: solarCellEnabled.value ? solar_cell.value : "",
-      mowingEnabled: mowingEnabled.value ? mowing.value : "",
+      solarCellEnabled: solarCellData,
+      mowingEnabled: mowingData,
       created_by: created_by.value,
       remark: remark.value,
     });
@@ -65,8 +72,12 @@ const kwhMeterEnabled = ref(false);
 const solarCellEnabled = ref(false);
 const mowingEnabled = ref(false);
 
-// KWH Meter specific states
+const generatorCount = ref(1);
+const transformerCount = ref(1);
 const kwhMeterCount = ref(1);
+const solarCellCount = ref(1);
+const mowingCount = ref(1);
+// KWH Meter specific states
 const kwh_meters = ref([{ phase: "P1" }]);
 
 // Watch for count changes
@@ -191,41 +202,59 @@ watch(kwhMeterEnabled, (enabled) => {
             <!-- Generator -->
             <div class="form-group">
               <label
-                class="flex items-center text-sm font-medium text-gray-700 mb-2"
+                class="flex items-center text-sm font-medium text-gray-700 mb-3"
               >
                 <span>Generator</span>
                 <input
-                  v-model="generatorEnabled"
+                  v-model="generator"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
               </label>
-              <input
-                v-model="generator"
-                type="text"
-                :disabled="!generatorEnabled"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
+
+              <!-- จำนวน Generator - แสดงตลอดแต่ disable ถ้าไม่ tick -->
+              <div class="flex items-center gap-3 mb-4">
+                <label class="text-sm font-medium text-gray-700">
+                  จำนวน Generator:
+                </label>
+                <input
+                  v-model.number="generatorCount"
+                  type="number"
+                  min="0"
+                  max="10"
+                  :disabled="!generatorEnabled"
+                  class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+              </div>
             </div>
 
             <!-- Transformer -->
             <div class="form-group">
               <label
-                class="flex items-center text-sm font-medium text-gray-700 mb-2"
+                class="flex items-center text-sm font-medium text-gray-700 mb-3"
               >
                 <span>Transformer</span>
                 <input
-                  v-model="transformerEnabled"
+                  v-model="transformer"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
               </label>
-              <input
-                v-model="transformer"
-                type="text"
-                :disabled="!transformerEnabled"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
+
+              <!-- จำนวน Transformer - แสดงตลอดแต่ disable ถ้าไม่ tick -->
+              <div class="flex items-center gap-3 mb-4">
+                <label class="text-sm font-medium text-gray-700">
+                  จำนวน Transformer:
+                </label>
+                <input
+                  v-model.number="transformerCount"
+                  type="number"
+                  min="0"
+                  max="10"
+                  :disabled="!transformerEnabled"
+                  class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+              </div>
             </div>
 
             <!-- KWH Meter - Enhanced Version -->
@@ -307,41 +336,59 @@ watch(kwhMeterEnabled, (enabled) => {
             <!-- Solar Cell -->
             <div class="form-group">
               <label
-                class="flex items-center text-sm font-medium text-gray-700 mb-2"
+                class="flex items-center text-sm font-medium text-gray-700 mb-3"
               >
                 <span>Solar Cell</span>
                 <input
-                  v-model="solarCellEnabled"
+                  v-model="solar_cell"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
               </label>
-              <input
-                v-model="solar_cell"
-                type="text"
-                :disabled="!solarCellEnabled"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
+
+              <!-- จำนวน solar cell - แสดงตลอดแต่ disable ถ้าไม่ tick -->
+              <div class="flex items-center gap-3 mb-4">
+                <label class="text-sm font-medium text-gray-700">
+                  จำนวน Solar Cell:
+                </label>
+                <input
+                  v-model.number="solarCellCount"
+                  type="number"
+                  min="0"
+                  max="10"
+                  :disabled="!solarCellEnabled"
+                  class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+              </div>
             </div>
 
             <!-- Mowing -->
             <div class="form-group">
               <label
-                class="flex items-center text-sm font-medium text-gray-700 mb-2"
+                class="flex items-center text-sm font-medium text-gray-700 mb-3"
               >
                 <span>Mowing</span>
                 <input
-                  v-model="mowingEnabled"
+                  v-model="mowing"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
               </label>
-              <input
-                v-model="mowing"
-                type="text"
-                :disabled="!mowingEnabled"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
+
+              <!-- จำนวน Mowing - แสดงตลอดแต่ disable ถ้าไม่ tick -->
+              <div class="flex items-center gap-3 mb-4">
+                <label class="text-sm font-medium text-gray-700">
+                  จำนวน Mowing:
+                </label>
+                <input
+                  v-model.number="mowingCount"
+                  type="number"
+                  min="0"
+                  max="10"
+                  :disabled="!mowingEnabled"
+                  class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+              </div>
             </div>
 
             <!-- Created by (hidden) -->

@@ -9,7 +9,7 @@ export const pmServiceManage = {
         return response.data;
     },
 
-    async heartbeat(pmId: number, userId: any) {
+    async heartbeat(pmId: any, userId: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmCheckInOut/heartbeat",
             {pmId, userId}
@@ -17,7 +17,7 @@ export const pmServiceManage = {
         return response.data;
     },
 
-    async checkIn(pmId: number, userId: any) {
+    async checkIn(pmId: any, userId: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmCheckInOut/checkIn",
             {pmId, userId}
@@ -25,7 +25,7 @@ export const pmServiceManage = {
         return response.data;
     },
 
-    async checkOut(pmId: number, userId: any) {
+    async checkOut(pmId: any, userId: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmCheckInOut/checkOut",
             {pmId, userId}
