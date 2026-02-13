@@ -48,7 +48,6 @@ const handleDelete = async () => {
 let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
 const userId = authStore.userId;
-console.log(userId);
 
 const startHeartbeat = (pmId: string) => {
   // ล้าง interval เก่าก่อน (ถ้ามี)

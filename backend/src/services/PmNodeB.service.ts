@@ -28,6 +28,7 @@ export const PmService = {
     db: Pool
   ) {
     const client = await db.connect();
+    console.log(data);
     try {
       const query = `
                 INSERT INTO pm (
@@ -52,7 +53,7 @@ export const PmService = {
       const pmId = result.rows[0].id;
 
       //pm_generator
-      if(data.pm_generator?.length){
+      if(data.generator?.length){
         const sql_pm_generator = `
           INSERT INTO pm_generator (
             pm_id,
@@ -71,7 +72,7 @@ export const PmService = {
       }
 
       //pm_transformer
-      if(data.pm_transformer?.length){
+      if(data.transformer?.length){
         const sql_pm_transformer = `
           INSERT INTO pm_transformer (
             pm_id,
@@ -90,7 +91,7 @@ export const PmService = {
       }
 
       // pm_kwh_meter
-      if(data.pm_kwh_meter?.length){
+      if(data.kwh_meter?.length){
         const sql_pm_kwh_meter = `
           INSERT INTO pm_kwh_meter (
             pm_id,
@@ -110,7 +111,7 @@ export const PmService = {
       }
 
       //pm_solar_cell
-      if(data.pm_solar_cell?.length){
+      if(data.solar_cell?.length){
         const sql_pm_solar_cell = `
           INSERT INTO pm_solar_cell (
             pm_id,
@@ -129,7 +130,7 @@ export const PmService = {
       }
 
       //pm_mowing
-      if(data.pm_mowing?.length){
+      if(data.mowing?.length){
         const sql_pm_mowing = `
           INSERT INTO pm_mowing (
             pm_id,
@@ -164,41 +165,4 @@ export const PmService = {
       client.release();
     }
   },
-
-  // ⭐ Insert Site Information
-  // async InsertSiteInformation(pm_id: number, data: any, db: Pool) {
-  //   const client = await db.connect();
-  //   try {
-  //     // สร้าง dynamic query จาก data object
-  //     const fields = Object.keys(data);
-  //     const values = Object.values(data);
-
-  //     const placeholders = fields.map((_, i) => `$${i + 2}`).join(', ');
-  //     const fieldNames = fields.join(', ');
-
-  //     const query = `
-  //               INSERT INTO pm_site_information (
-  //                   pm_id, ${fieldNames}
-  //               ) VALUES ($1, ${placeholders})
-  //           `;
-
-  //     await client.query(query, [pm_id, ...values]);
-
-  //     return {
-  //       success: true,
-  //       message: "บันทึก Site Information สำเร็จ"
-  //     };
-
-  //   } catch (error) {
-  //     console.error('Database error:', error);
-  //     return {
-  //       success: false,
-  //       message: "เกิดข้อผิดพลาดในการบันทึก Site Information"
-  //     };
-  //   } finally {
-  //     client.release();
-  //   }
-  // },
-
-
 };

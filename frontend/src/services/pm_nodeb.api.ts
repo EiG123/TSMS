@@ -14,8 +14,7 @@ api.interceptors.request.use((config) => {
 
 
 export const PMApiService = {
-    async pm_nodeb(
-        data: any) {
+    async pm_nodeb(data: any) {
         const response = await api.post("/pm_nodeb", {
            ...data
         });
