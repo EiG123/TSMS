@@ -31,11 +31,11 @@ const handlePmNodeB = async () => {
       datetime: datetime.value,
       status: status.value,
       planwork: planwork.value,
-      generatorEnabled: generatorData,
-      transformerEnabled: transformerData,
+      generator: generatorData,
+      transformer: transformerData,
       pm_kwh_meter: kwhMeterData,
-      solarCellEnabled: solarCellData,
-      mowingEnabled: mowingData,
+      solarCell: solarCellData,
+      mowing: mowingData,
       created_by: created_by.value,
       remark: remark.value,
     });
@@ -58,10 +58,6 @@ const region = ref("");
 const datetime = ref("");
 const status = ref("");
 const planwork = ref("");
-const generator = ref("");
-const transformer = ref("");
-const solar_cell = ref("");
-const mowing = ref("");
 const created_by = ref("");
 const remark = ref("");
 
@@ -100,6 +96,27 @@ watch(kwhMeterEnabled, (enabled) => {
   if (!enabled) {
     kwhMeterCount.value = 1;
     kwh_meters.value = [{ phase: "P1" }];
+  }
+});
+
+watch(generatorEnabled, (enabled) => {
+  if (!enabled) {
+    generatorCount.value = 1;
+  }
+});
+watch(transformerEnabled, (enabled) => {
+  if (!enabled) {
+    transformerCount.value = 1;
+  }
+});
+watch(solarCellEnabled, (enabled) => {
+  if (!enabled) {
+    solarCellCount.value = 1;
+  }
+});
+watch(mowingEnabled, (enabled) => {
+  if (!enabled) {
+    mowingCount.value = 1;
   }
 });
 </script>
@@ -206,7 +223,7 @@ watch(kwhMeterEnabled, (enabled) => {
               >
                 <span>Generator</span>
                 <input
-                  v-model="generator"
+                  v-model="generatorEnabled"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
@@ -235,7 +252,7 @@ watch(kwhMeterEnabled, (enabled) => {
               >
                 <span>Transformer</span>
                 <input
-                  v-model="transformer"
+                  v-model="transformerEnabled"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
@@ -340,7 +357,7 @@ watch(kwhMeterEnabled, (enabled) => {
               >
                 <span>Solar Cell</span>
                 <input
-                  v-model="solar_cell"
+                  v-model="solarCellEnabled"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
@@ -369,7 +386,7 @@ watch(kwhMeterEnabled, (enabled) => {
               >
                 <span>Mowing</span>
                 <input
-                  v-model="mowing"
+                  v-model="mowingEnabled"
                   type="checkbox"
                   class="ml-2 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
