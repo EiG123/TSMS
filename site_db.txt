@@ -16,14 +16,13 @@ CREATE TABLE pm (
     progress_status VARCHAR(50),
     vendor VARCHAR(50),
     remark TEXT,
-
+    
     checkin_time TIMESTAMP,
     checkout_time TIMESTAMP,
     last_activity_at TIMESTAMP,
     status VARCHAR(20) DEFAULT 'checkout',
     auto_checkout BOOLEAN DEFAULT FALSE,
     user_id INTEGER,
-
 
     created_by VARCHAR(50),
     created_at VARCHAR(50),

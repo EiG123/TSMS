@@ -11,10 +11,26 @@ export const pmServiceManage = {
 
     async heartbeat(pmId: number, userId: any) {
         const response = await axios.post(
-            "http://localhost:3000/api/pmServiceManage/heartbeat",
-            { pmId, userId}
+            "http://localhost:3000/api/pmCheckInOut/heartbeat",
+            {pmId, userId}
         );
         return response.data;
     },
+
+    async checkIn(pmId: number, userId: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/pmCheckInOut/checkIn",
+            {pmId, userId}
+        );
+        return response.data;
+    },
+
+    async checkOut(pmId: number, userId: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/pmCheckInOut/checkOut",
+            {pmId, userId}
+        );
+        return response.data;
+    }
 };
 

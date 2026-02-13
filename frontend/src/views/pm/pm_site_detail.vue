@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
-import {useAuthStore} from "../../stores/auth";
+import { useAuthStore } from "../../stores/auth";
 
 const route = useRoute();
 const router = useRouter();
@@ -19,10 +19,12 @@ const hide = () => {
 };
 
 const goBack = () => {
+  stopHeartbeat(); // หยุด heartbeat ก่อน navigate
   router.back();
 };
 
 const goEdit = () => {
+  stopHeartbeat(); // หยุด heartbeat ก่อน navigate
   router.push(`/pm_nodeb_edit/${pmId.value}`);
 };
 
@@ -33,8 +35,9 @@ const handleDelete = async () => {
   loading.value = true;
 
   try {
+    stopHeartbeat(); // หยุด heartbeat ก่อนลบ
     await pmServiceManage.deletePmById(pmId.value);
-    window.location.reload();
+    router.push(`/pm_nodeb`);
   } catch (error) {
     alert("ไม่สามารถลบข้อมูลได้");
   } finally {
@@ -42,42 +45,127 @@ const handleDelete = async () => {
   }
 };
 
-let heartbeatInterval: any = null;
+let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
 const userId = authStore.userId;
 console.log(userId);
 
-const startHeartbeat = (pmId: any) => {
-  heartbeatInterval = setInterval(async () => {
-    try {
-      await pmServiceManage.heartbeat(pmId, userId);
-      console.log("heartbeat sent");
-    } catch {
-      console.log("session expired");
-      clearInterval(heartbeatInterval);
-    }
+const startHeartbeat = (pmId: string) => {
+  // ล้าง interval เก่าก่อน (ถ้ามี)
+  stopHeartbeat();
+
+  // ส่ง heartbeat ครั้งแรกทันที
+  sendHeartbeat(pmId);
+
+  // ตั้งค่า interval สำหรับส่งต่อเนื่อง
+  heartbeatInterval = setInterval(() => {
+    sendHeartbeat(pmId);
   }, 60000); // 60 วินาที
+};
+
+const sendHeartbeat = async (pmId: any) => {
+  try {
+    await pmServiceManage.heartbeat(pmId, userId);
+    console.log(
+      "Heartbeat sent successfully at",
+      new Date().toLocaleTimeString()
+    );
+  } catch (error) {
+    console.error("Heartbeat failed:", error);
+    // ถ้า heartbeat ล้มเหลว อาจจะหยุด interval
+    stopHeartbeat();
+    // อาจจะแจ้งเตือนผู้ใช้หรือ redirect
+    // alert("Session expired. Please refresh the page.");
+  }
 };
 
 const stopHeartbeat = () => {
   if (heartbeatInterval) {
     clearInterval(heartbeatInterval);
+    heartbeatInterval = null;
+    console.log("Heartbeat stopped");
   }
 };
 
+const isCheckedIn = ref(false);
+const checkInTime = ref<string | null>(null);
+const checkOutTime = ref<string | null>(null);
+
+const handleCheckInOut = async () => {
+  if (!isCheckedIn.value) {
+    // Check In
+    const confirmed = window.confirm(
+      "คุณต้องการ Check in เพื่อเริ่มบันทึกผล PM ใช่หรือไม่?"
+    );
+    if (!confirmed) return;
+
+    loading.value = true;
+
+    try {
+      // เรียก API Check in (ปรับตาม API ของคุณ)
+      await pmServiceManage.checkIn(pmId.value, userId);
+
+      isCheckedIn.value = true;
+      checkInTime.value = new Date().toLocaleString("th-TH");
+      checkOutTime.value = null;
+
+      console.log("Check in successful at", checkInTime.value);
+      alert("Check in สำเร็จ! เริ่มบันทึกผล PM ได้แล้ว");
+    } catch (error) {
+      console.error("Check in failed:", error);
+      alert("ไม่สามารถ Check in ได้ กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      loading.value = false;
+    }
+  } else {
+    // Check Out
+    const confirmed = window.confirm("คุณต้องการ Check out ใช่หรือไม่?");
+    if (!confirmed) return;
+
+    loading.value = true;
+
+    try {
+      // เรียก API Check out (ปรับตาม API ของคุณ)
+      await pmServiceManage.checkOut(pmId.value, userId);
+
+      checkOutTime.value = new Date().toLocaleString("th-TH");
+
+      console.log("Check out successful at", checkOutTime.value);
+      alert("Check out สำเร็จ! บันทึกเวลาเรียบร้อยแล้ว");
+
+      // อาจจะ redirect หรือทำอย่างอื่นหลัง check out
+      // setTimeout(() => {
+      //   router.back();
+      // }, 1500);
+    } catch (error) {
+      console.error("Check out failed:", error);
+      alert("ไม่สามารถ Check out ได้ กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      loading.value = false;
+    }
+  }
+};
 
 onMounted(async () => {
   loading.value = true;
   try {
-    startHeartbeat(pmId.value);
     const res = await getPmList.getPmById(pmId.value);
     pMsiteData.value = res.data.data;
     console.log(res.data.data);
-  } catch {
+
+    // เริ่ม heartbeat หลังจากโหลดข้อมูลสำเร็จ
+    startHeartbeat(pmId.value);
+  } catch (error) {
+    console.error("Failed to load PM data:", error);
     alert("ไม่เจอ API SiteList");
   } finally {
     loading.value = false;
   }
+});
+
+// *** สำคัญ: หยุด heartbeat เมื่อ component ถูก unmount ***
+onBeforeUnmount(() => {
+  stopHeartbeat();
 });
 </script>
 
@@ -202,14 +290,186 @@ onMounted(async () => {
 
       <!-- Site Information Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Check In/Out Section -->
         <div
-          class="lg:col-span-2 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6"
+          class="lg:col-span-3 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6"
         >
-          <div>กรุณา Check in เพื่อเริ่มบันทึกผล PM</div>
-          <button @click="handleCheckIn">
-            Check in
-          </button>
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                :class="[
+                  'w-12 h-12 rounded-lg flex items-center justify-center shadow-lg transition-all duration-300',
+                  !isCheckedIn
+                    ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
+                    : checkOutTime
+                    ? 'bg-gradient-to-br from-purple-500 to-purple-600 shadow-purple-500/30'
+                    : 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/30',
+                ]"
+              >
+                <svg
+                  v-if="!isCheckedIn"
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                  />
+                </svg>
+                <svg
+                  v-else-if="!checkOutTime"
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <svg
+                  v-else
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+
+              <div>
+                <h3 class="text-lg font-semibold text-slate-200">
+                  {{
+                    !isCheckedIn
+                      ? "กรุณา Check in เพื่อเริ่มบันทึกผล PM"
+                      : checkOutTime
+                      ? "Check out เรียบร้อยแล้ว"
+                      : "กำลังทำงาน - พร้อม Check out"
+                  }}
+                </h3>
+
+                <div class="space-y-1 mt-1">
+                  <p v-if="!isCheckedIn" class="text-sm text-slate-400">
+                    คลิกปุ่มด้านล่างเพื่อเริ่มต้นการบันทึก
+                  </p>
+                  <p v-if="checkInTime" class="text-sm text-slate-400">
+                    <span class="text-green-400 font-medium">Check in:</span>
+                    {{ checkInTime }}
+                  </p>
+                  <p v-if="checkOutTime" class="text-sm text-slate-400">
+                    <span class="text-purple-400 font-medium">Check out:</span>
+                    {{ checkOutTime }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              @click="handleCheckInOut"
+              :disabled="loading || checkOutTime !== null"
+              :class="[
+                'flex items-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg whitespace-nowrap',
+                checkOutTime
+                  ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300 cursor-not-allowed opacity-75'
+                  : !isCheckedIn
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:-translate-y-0.5 shadow-blue-500/30 hover:shadow-blue-500/50'
+                  : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white hover:-translate-y-0.5 shadow-orange-500/30 hover:shadow-orange-500/50',
+              ]"
+            >
+              <svg
+                v-if="!isCheckedIn"
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                />
+              </svg>
+              <svg
+                v-else-if="!checkOutTime"
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              <svg
+                v-else
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>
+                {{
+                  !isCheckedIn
+                    ? "Check in"
+                    : checkOutTime
+                    ? "Check out แล้ว"
+                    : "Check out"
+                }}
+              </span>
+            </button>
+          </div>
+
+          <!-- Progress Indicator -->
+          <div
+            v-if="isCheckedIn && !checkOutTime"
+            class="mt-4 pt-4 border-t border-slate-700/50"
+          >
+            <div class="flex items-center gap-2 text-sm text-green-400">
+              <div
+                class="w-2 h-2 rounded-full bg-green-500 animate-pulse"
+              ></div>
+              <span>กำลังทำงาน - พร้อมสำหรับการบันทึกผล PM</span>
+            </div>
+          </div>
+
+          <!-- Completed Indicator -->
+          <div
+            v-if="checkOutTime"
+            class="mt-4 pt-4 border-t border-slate-700/50"
+          >
+            <div class="flex items-center gap-2 text-sm text-purple-400">
+              <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+              <span>เสร็จสิ้นการทำงาน - บันทึกเวลาเรียบร้อยแล้ว</span>
+            </div>
+          </div>
         </div>
+
         <!-- Main Info Box -->
         <div
           class="lg:col-span-2 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6"
@@ -285,7 +545,7 @@ onMounted(async () => {
                   class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="text-slate-200 font-medium font-mono">
-                    {{ pMsiteData.plan_date }}
+                    {{ pMsiteData.date }}
                   </p>
                 </div>
               </div>
@@ -314,6 +574,20 @@ onMounted(async () => {
                 >
                   <p class="text-slate-200 font-medium font-mono">
                     {{ pMsiteData.date }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="group">
+                <label
+                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  >PlanWork</label
+                >
+                <div
+                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                >
+                  <p class="text-slate-200 font-medium font-mono">
+                    {{ pMsiteData.planwork }}
                   </p>
                 </div>
               </div>
