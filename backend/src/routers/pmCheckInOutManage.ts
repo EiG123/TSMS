@@ -10,7 +10,6 @@ pmCheckInOutManage.post("/heartbeat", async (c) => {
     console.log(body);
     try {
         const result = await pmCheckInOutService.heartbeat(body.pmId, body.userId, pool);
-        console.log(result);
         return c.json({
             success: true,
             data: result,
@@ -31,6 +30,7 @@ pmCheckInOutManage.post("/checkIn", async (c) => {
     const body = await c.req.json();
     try {
         const result = await pmCheckInOutService.checkIn(body.pmId, body.userId, pool);
+        console.log(result);
         return c.json({
             success: true,
             data: result,

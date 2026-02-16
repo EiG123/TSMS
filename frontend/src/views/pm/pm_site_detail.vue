@@ -697,6 +697,16 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
+      <!-- Cabinet Section -->
+      <div v-if="isCheckedIn">
+        <label for="">Cabinet</label> 
+        <div>
+          <button @click="addCabinet">
+            + Add
+          </button>
+        </div>
+      </div>
+
       <!-- Modules Section -->
       <div
         class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
