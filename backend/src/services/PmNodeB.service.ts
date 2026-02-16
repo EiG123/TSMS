@@ -22,7 +22,7 @@ export const PmService = {
     }
   },
 
-  
+
 
   async InsertPM(data: any, db: Pool) {
     const bulkInsertNumbered = async (
@@ -93,12 +93,11 @@ export const PmService = {
         INSERT INTO pm_kwh_meter (pm_id, number, phase)
         VALUES ($1, $2, $3)
       `;
-
         for (let i = 0; i < data.kwh_meter.length; i++) {
           await client.query(sql, [
             pmId,
             i + 1,
-            data.kwh_meter[i]
+            data.kwh_meter[i].phase
           ]);
         }
       }
