@@ -16,7 +16,7 @@ const pmCards = [
     path: "/pm_nodeb",
     gradient: "from-blue-500 to-cyan-500",
     icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z",
-    stats: "125 Sites"
+    stats: ""
   },
   {
     title: "PM Small Exchange",
@@ -25,7 +25,7 @@ const pmCards = [
     path: "/small",
     gradient: "from-purple-500 to-pink-500",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
-    stats: "48 Sites"
+    stats: ""
   },
   {
     title: "PM Medium Exchange",
@@ -34,7 +34,7 @@ const pmCards = [
     path: "/medium",
     gradient: "from-green-500 to-emerald-500",
     icon: "M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01",
-    stats: "32 Sites"
+    stats: ""
   },
   {
     title: "PM Broadband",
@@ -43,7 +43,7 @@ const pmCards = [
     path: "/broadband",
     gradient: "from-orange-500 to-red-500",
     icon: "M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0",
-    stats: "67 Sites"
+    stats: ""
   },
   {
     title: "Mowing",
@@ -52,7 +52,7 @@ const pmCards = [
     path: "/mowing",
     gradient: "from-lime-500 to-green-500",
     icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z",
-    stats: "89 Sites"
+    stats: ""
   },
   {
     title: "PM Solar Cell",
@@ -61,7 +61,7 @@ const pmCards = [
     path: "/solar",
     gradient: "from-yellow-500 to-orange-500",
     icon: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z",
-    stats: "43 Sites"
+    stats: ""
   }
 ];
 </script>

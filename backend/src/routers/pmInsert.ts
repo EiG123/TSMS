@@ -17,7 +17,6 @@ const db = new Pool({
 pmInsertRouter.post("/pm_nodeb", async (c) => {
     try {
         const body = await c.req.json();
-        console.log(body);
         const result = await PmService.InsertPM(
             body,
             db

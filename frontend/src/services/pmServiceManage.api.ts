@@ -2,9 +2,9 @@ import axios from "axios";
 
 export const pmServiceManage = {
     async deletePmById(id: any) {
-        const response = await axios.post(
+        const response = await axios.delete(
             "http://localhost:3000/api/pmServiceManage/deletePmById",
-            { id }
+            { data: {id} }
         );
         return response.data;
     },

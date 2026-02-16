@@ -6,30 +6,9 @@ import { success } from "zod";
 
 const pmRouterManage = new Hono();
 
-pmRouterManage.post("/heartbeat", async (c) => {
+pmRouterManage.delete("/deletePmById", async (c) => {
     const body = await c.req.json();
     console.log(body);
-    try {
-        const result = await pmServiceManage.heartbeat(body.pmId, body.userId, pool);
-        console.log(result);
-        return c.json({
-            success: true,
-            data: result,
-        });
-    } catch (error) {
-        console.error("pmSiteList error:", error);
-        return c.json(
-            {
-                success: false,
-                message: "Failed to fetch PM site list",
-            },
-            500
-        );
-    }
-});
-
-pmRouterManage.post("/deletePmById", async (c) => {
-    const body = await c.req.json();
     try {
         const result = await pmServiceManage.deletPmById(body.id, pool);
         return c.json({
