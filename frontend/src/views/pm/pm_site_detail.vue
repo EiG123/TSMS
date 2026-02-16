@@ -102,6 +102,7 @@ const handleCheckInOut = async () => {
 
     try {
       // เรียก API Check in (ปรับตาม API ของคุณ)
+
       await pmServiceManage.checkIn(pmId.value, userId);
 
       isCheckedIn.value = true;
@@ -149,8 +150,12 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res = await getPmList.getPmById(pmId.value);
+    if(res.data.data.status === 'checkin'){
+      isCheckedIn.value = true;
+    }else if(res.data.data.status === 'checkout'){
+      isCheckedIn.value = false; 
+    }
     pMsiteData.value = res.data.data;
-    console.log(res.data.data);
 
     // เริ่ม heartbeat หลังจากโหลดข้อมูลสำเร็จ
     startHeartbeat(pmId.value);

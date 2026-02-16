@@ -74,12 +74,10 @@ export const pmCheckInOutService = {
                 SET status = 'checkout',
                     checkout_time = NOW()
                 WHERE id = $1
-                AND user_id = $2
                 AND status = 'checkin';
                 `;
             const values = [
-                pmId,
-                user_id
+                pmId
             ];
 
             const res = await db.query(sql, values);
