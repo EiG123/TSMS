@@ -22,7 +22,33 @@ export const PmService = {
     }
   },
 
+  
+
   async InsertPM(data: any, db: Pool) {
+    const bulkInsertNumbered = async (
+      client: any,
+      table: string,
+      pmId: number,
+      count: number
+    ) => {
+      if (!count || count <= 0) return;
+
+      const values: any[] = [];
+      const placeholders: string[] = [];
+
+      for (let i = 0; i < count; i++) {
+        const idx = values.length;
+        values.push(pmId, i + 1);
+        placeholders.push(`($${idx + 1}, $${idx + 2})`);
+      }
+
+      await client.query(
+        `INSERT INTO ${table} (pm_id, number)
+        VALUES ${placeholders.join(",")}`,
+        values
+      );
+    };
+
     const client = await db.connect();
 
     try {
@@ -52,30 +78,12 @@ export const PmService = {
       // ===========================
       // pm_generator
       // ===========================
-      if (data.generator > 0) {
-        const sql = `
-        INSERT INTO pm_generator (pm_id, number)
-        VALUES ($1, $2)
-      `;
-
-        for (let i = 0; i < data.generator; i++) {
-          await client.query(sql, [pmId, i + 1]);
-        }
-      }
+      await bulkInsertNumbered(client, "pm_generator", pmId, data.generator);
 
       // ===========================
       // pm_transformer
       // ===========================
-      if (data.transformer > 0) {
-        const sql = `
-        INSERT INTO pm_transformer (pm_id, number)
-        VALUES ($1, $2)
-      `;
-
-        for (let i = 0; i < data.transformer; i++) {
-          await client.query(sql, [pmId, i + 1]);
-        }
-      }
+      await bulkInsertNumbered(client, "pm_transformer", pmId, data.transformer);
 
       // ===========================
       // pm_kwh_meter
@@ -98,30 +106,12 @@ export const PmService = {
       // ===========================
       // pm_solar_cell
       // ===========================
-      if (data.solar_cell > 0) {
-        const sql = `
-        INSERT INTO pm_solar_cell (pm_id, number)
-        VALUES ($1, $2)
-      `;
-
-        for (let i = 0; i < data.solar_cell; i++) {
-          await client.query(sql, [pmId, i + 1]);
-        }
-      }
+      await bulkInsertNumbered(client, "pm_solar_cell", pmId, data.solar_cell);
 
       // ===========================
       // pm_mowing
       // ===========================
-      if (data.mowing > 0) {
-        const sql = `
-        INSERT INTO pm_mowing (pm_id, number)
-        VALUES ($1, $2)
-      `;
-
-        for (let i = 0; i < data.mowing; i++) {
-          await client.query(sql, [pmId, i + 1]);
-        }
-      }
+      await bulkInsertNumbered(client, "pm_mowing", pmId, data.mowing);
 
       // ⭐ ถ้าทุกอย่างผ่าน
       await client.query("COMMIT");
