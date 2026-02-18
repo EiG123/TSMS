@@ -63,5 +63,10 @@ export const pmTitleManage = {
     async deleteTitleById(id: number) {
         const response = await axios.post("http://localhost:3000/api/pmTitle/deleteTitleById", { id });
         return response.data;
+    },
+
+    async getTitleByType(type: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleByType", { type });
+        return response.data;
     }
 };

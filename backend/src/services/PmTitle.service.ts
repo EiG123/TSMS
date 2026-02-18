@@ -1,3 +1,5 @@
+import { success } from "zod";
+
 export const pmTitleService = {
   async InsertTitle(
     pm_name: string,
@@ -302,5 +304,32 @@ export const pmTitleService = {
       success: true
     }
   },
+
+  async getTitleByType(data: any, pool: any) {
+    const client = await pool.connect();
+
+    if(data.type == 'ac_power'){
+      data.type = 'kwh_meter';
+    }
+    try {
+      const sql = `
+        SELECT * FROM pm_title WHERE key = $1;
+      `;
+
+      const result = await client.query(sql, [data.type]);
+
+      return {
+        result: result.rows,
+        success: true
+      };
+
+    } catch (error) {
+      console.error("getTitleByType error:", error);
+      return { success: false };
+    } finally {
+      client.release();
+    }
+  }
+
 
 };
