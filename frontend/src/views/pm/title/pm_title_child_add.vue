@@ -6,7 +6,7 @@ import { pmTitleManage } from "../../../services/PmTitle/pmTitleManage.api";
 
 const router = useRouter();
 const route = useRoute();
-const pmId = ref(route.params.id as string);
+const title_id = ref(route.params.id as string);
 
 const title_child_name = ref("");
 const description = ref("");
@@ -71,13 +71,13 @@ onMounted(async () => {
 });
 
 const handleCancel = () => {
-  router.push(`/pm_title_child/${pmId.value}`);
+  router.push(`/pm_title_child/${title_id.value}`);
 };
 
 const handleSubmit = async () => {
   console.log("Submitting...");
   const res = await pmTitleManage.AddpmTitleChild({
-    pm_id: pmId.value,
+    title_id: title_id.value,
     title_child_name: title_child_name.value,
     description: description.value,
     status: status.value,
@@ -90,7 +90,7 @@ const handleSubmit = async () => {
     image_descriptions: image_descriptions.value,
   });
   if (res.data.success) {
-    router.push(`/pm_title_child/${pmId.value}`);
+    router.push(`/pm_title_child/${title_id.value}`);
   } else {
     alert("Submit ไม่ผ่าน");
   }

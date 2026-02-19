@@ -159,95 +159,48 @@ export const pmTitleService = {
 
   async InsertTitleChild(data: any, pool: any) {
     const client = await pool.connect();
+    console.log(data);
     try {
       await client.query("BEGIN");
 
-      /* ==================== pm_title_child ==================== */
-      const sqlTitleChild = `
-      INSERT INTO pm_title_child (
-        title_id,
-        title_child_name,
-        description,
-        rank,
-        status
-      )
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING id
-    `;
-
-      const { rows } = await client.query(sqlTitleChild, [
-        data.pm_id,
-        data.title_child_name,
-        data.description,
-        data.rank,
-        data.status
-      ]);
-
-      const titleChildId = rows[0].id;
 
       /* ==================== pm_value (BULK) ==================== */
       if (Array.isArray(data.values) && data.values.length > 0) {
-        const valuePlaceholders: string[] = [];
-        const valueParams: any[] = [];
+        const placeholders: string[] = [];
+        const params: any[] = [];
 
         data.values.forEach((item: any, index: number) => {
           const baseIndex = index * 6;
 
-          valuePlaceholders.push(
-            `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5})`
+          placeholders.push(
+            `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6})`
           );
-          valueParams.push(
-            data.pm_id,
-            titleChildId,
-            item.name,
-            item.input_type,
-            index + 1,
+
+          params.push(
+            data.title_id,
+            data.title_child_name,
+            item.input_type,   // title_child_type
+            data.description,
+            data.rank,
+            data.status
           );
         });
 
-        const sqlPmValue = `
-        INSERT INTO pm_details (
-          title_id,
-          title_child_id,
-          name,
-          input_type,
-          number
-        )
-        VALUES ${valuePlaceholders.join(", ")}
-      `;
+        const sqlTitleChild = `
+          INSERT INTO pm_title_child (
+            title_id,
+            title_child_name,
+            title_child_type,
+            description,
+            rank,
+            status
+          )
+          VALUES ${placeholders.join(", ")}
+        `;
 
-        const responseValue = await client.query(sqlPmValue, valueParams);
+        await client.query(sqlTitleChild, params);
       }
-      console.log("pass");
 
-      /* ==================== pm_image (BULK) ==================== */
-      if (
-        Array.isArray(data.image_descriptions) &&
-        data.image_descriptions.length > 0
-      ) {
-        const imagePlaceholders: string[] = [];
-        const imageParams: any[] = [];
-
-        data.image_descriptions.forEach((desc: string, index: number) => {
-          const baseIndex = index * 2;
-
-          imagePlaceholders.push(
-            `($${baseIndex + 1}, $${baseIndex + 2})`
-          );
-
-          imageParams.push(titleChildId, desc);
-        });
-
-        const sqlPmImage = `
-        INSERT INTO pm_images (
-          title_child_id,
-          description
-        )
-        VALUES ${imagePlaceholders.join(", ")}
-      `;
-
-        await client.query(sqlPmImage, imageParams);
-      }
 
       await client.query("COMMIT");
 
@@ -335,7 +288,8 @@ export const pmTitleService = {
     const client = await pool.connect();
     try {
       const sql = `
-        SELECT * FROM pm_title_child WHERE title_id = $1;
+        SELECT * FROM pm_title_child WHERE title_id = $1 
+        LEFT JOIN ON pm_details;
       `;
       const result = await client.query(sql, [data.title_id]);
 

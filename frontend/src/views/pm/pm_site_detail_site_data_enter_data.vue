@@ -21,7 +21,7 @@ const title_id = computed(() => props.title_id);
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
-const kwh_meters_list = ref<any[]>([]);
+const title_child_list = ref<any[]>([]);
 const title_list = ref<any[]>([]);
 const showModules = ref(true);
 
@@ -40,8 +40,7 @@ onMounted(async () => {
       title: title.value,
       title_id: title_id.value,
     });
-
-    console.log(res_title_child);
+    title_child_list.value = res_title_child.data.result;
   } catch (error) {
   } finally {
     loading.value = false;
@@ -50,6 +49,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>hello</div>
+  <div>
+    <label for="">{{ title }}</label>
+    <div class="container">
+      <div v-for="(title_child, index) in title_child_list" 
+      :key="index">
+      <div>
+        {{title_child.title_child_name}}
+      </div>
+      </div>
+    </div>
+  </div>
 </template>
 

@@ -108,6 +108,7 @@ CREATE TABLE pm_title_child (
     id SERIAL PRIMARY KEY,
     title_id INTEGER NOT NULL,
     title_child_name VARCHAR(100) NOT NULL,
+    title_child_type VARCHAR(100),
     description TEXT,
     rank INTEGER NOT NULL,
     status VARCHAR(30) NOT NULL,
@@ -169,6 +170,5 @@ DROP TABLE IF EXISTS pm_mowing;
 DROP TABLE IF EXISTS pm;
 DROP TABLE IF EXISTS sites;
 
-
-DROP TABLE IF EXISTS pm_dropdown_head;
 DROP TABLE IF EXISTS pm_dropdown_member;
+DROP TABLE IF EXISTS pm_dropdown_head;
