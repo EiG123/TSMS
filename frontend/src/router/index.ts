@@ -9,6 +9,7 @@ import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
 import pm_site_detail from "../views/pm/pm_site_detail.vue";
 import pm_site_detail_site_data from "../views/pm/pm_site_detail_site_data.vue";
 import pm_site_detail_site_data_data from "../views/pm/pm_site_detail_site_data_data.vue";
+import pm_site_detail_site_data_enter_data from "../views/pm/pm_site_detail_site_data_enter_data.vue";
 
 import pm_title from "../views/pm/title/pm_title.vue";
 import pm_title_add from "../views/pm/title/pm_title_add.vue";
@@ -78,12 +79,23 @@ const routes = [
                 props: true
             },
             {
-                path: "pm_title",  
+                path: "pm_site_detail_site_data_enter_data/:id?",
+                name: "pm_site_detail_site_data_enter_data",
+                component: pm_site_detail_site_data_enter_data,
+                props: route => ({
+                    id: route.params.id,
+                    title: route.query.title,
+                    title_id: route.query.title_id,
+                })
+            },
+
+            {
+                path: "pm_title",
                 name: "pm_title",
-                component: pm_title 
+                component: pm_title
             },
             {
-                path: "pm_title_edit/:id",  
+                path: "pm_title_edit/:id",
                 name: "pm_title_edit",
                 component: pm_title_edit,
                 props: true
@@ -146,7 +158,7 @@ const routes = [
         ],
     },
 
-    
+
 ];
 
 const router = createRouter({

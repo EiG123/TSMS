@@ -19,12 +19,10 @@ const hide = () => {
 };
 
 const goBack = () => {
-  stopHeartbeat();
   router.back();
 };
 
 const goEdit = () => {
-  stopHeartbeat();
   router.push(`/pm_nodeb_edit/${pmId.value}`);
 };
 
@@ -35,7 +33,6 @@ const handleDelete = async () => {
   loading.value = true;
 
   try {
-    stopHeartbeat();
     await pmServiceManage.deletePmById(pmId.value);
     router.push(`/pm_nodeb`);
   } catch (error) {
@@ -45,34 +42,8 @@ const handleDelete = async () => {
   }
 };
 
-let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 const userId = authStore.userId;
 
-const startHeartbeat = (pmId: string) => {
-  stopHeartbeat();
-  sendHeartbeat(pmId);
-  heartbeatInterval = setInterval(() => {
-    sendHeartbeat(pmId);
-  }, 60000);
-};
-
-const sendHeartbeat = async (pmId: any) => {
-  try {
-    await pmServiceManage.heartbeat(pmId, userId);
-    console.log("Heartbeat sent successfully at", new Date().toLocaleTimeString());
-  } catch (error) {
-    console.error("Heartbeat failed:", error);
-    stopHeartbeat();
-  }
-};
-
-const stopHeartbeat = () => {
-  if (heartbeatInterval) {
-    clearInterval(heartbeatInterval);
-    heartbeatInterval = null;
-    console.log("Heartbeat stopped");
-  }
-};
 
 const isCheckedIn = ref(false);
 const checkInTime = ref<string | null>(null);
@@ -126,7 +97,6 @@ onMounted(async () => {
       isCheckedIn.value = false;
     }
     pMsiteData.value = res.data.data;
-    startHeartbeat(pmId.value);
   } catch (error) {
     console.error("Failed to load PM data:", error);
     alert("ไม่เจอ API SiteList");
@@ -135,9 +105,6 @@ onMounted(async () => {
   }
 });
 
-onBeforeUnmount(() => {
-  stopHeartbeat();
-});
 
 // Navigation functions
 const navigations = [

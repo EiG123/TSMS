@@ -9,14 +9,6 @@ export const pmServiceManage = {
         return response.data;
     },
 
-    async heartbeat(pmId: any, userId: any) {
-        const response = await axios.post(
-            "http://localhost:3000/api/pmCheckInOut/heartbeat",
-            {pmId, userId}
-        );
-        return response.data;
-    },
-
     async checkIn(pmId: any, userId: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmCheckInOut/checkIn",

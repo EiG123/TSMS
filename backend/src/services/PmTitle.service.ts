@@ -308,7 +308,7 @@ export const pmTitleService = {
   async getTitleByType(data: any, pool: any) {
     const client = await pool.connect();
 
-    if(data.type == 'ac_power'){
+    if (data.type == 'ac_power') {
       data.type = 'kwh_meter';
     }
     try {
@@ -317,6 +317,27 @@ export const pmTitleService = {
       `;
 
       const result = await client.query(sql, [data.type]);
+
+      return {
+        result: result.rows,
+        success: true
+      };
+
+    } catch (error) {
+      console.error("getTitleByType error:", error);
+      return { success: false };
+    } finally {
+      client.release();
+    }
+  },
+
+  async getTitleChildByTitle(data: any, pool: any) {
+    const client = await pool.connect();
+    try {
+      const sql = `
+        SELECT * FROM pm_title_child WHERE title_id = $1;
+      `;
+      const result = await client.query(sql, [data.title_id]);
 
       return {
         result: result.rows,

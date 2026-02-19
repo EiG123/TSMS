@@ -26,9 +26,9 @@ export const pmTitleManage = {
         data: any
     ) {
         const response = await axios.post(
-                "http://localhost:3000/api/pmTitle/EditpmTitle", {
-                ...data
-            }
+            "http://localhost:3000/api/pmTitle/EditpmTitle", {
+            ...data
+        }
         );
         return response.data;
     },
@@ -67,6 +67,11 @@ export const pmTitleManage = {
 
     async getTitleByType(type: any) {
         const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleByType", { type });
+        return response.data;
+    },
+
+    async getTitleChildByTitle(data: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildByTitle", { ...data });
         return response.data;
     }
 };
