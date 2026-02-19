@@ -108,7 +108,6 @@ CREATE TABLE pm_title_child (
     id SERIAL PRIMARY KEY,
     title_id INTEGER NOT NULL,
     title_child_name VARCHAR(100) NOT NULL,
-    title_child_type VARCHAR(100),
     description TEXT,
     rank INTEGER NOT NULL,
     status VARCHAR(30) NOT NULL,
@@ -120,6 +119,15 @@ CREATE TABLE pm_title_child (
 );
 CREATE INDEX idx_pm_title_child
 ON pm_title_child(title_id);
+
+
+CREATE TABLE pm_title_child_value (
+    id SERIAL PRIMARY KEY,
+    title_id INTEGER,
+    title_child_id INTEGER,
+    name VARCHAR(255),
+    input_type VARCHAR(50)
+);
 
 CREATE TABLE pm_details (
     id SERIAL PRIMARY KEY,
