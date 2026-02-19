@@ -8,7 +8,6 @@ const route = useRoute();
 
 const Id = ref(route.params.id as string);
 
-const loading = ref(false);
 const dropdown_member = ref("");
 
 const handleSubmit = async () => {
@@ -23,22 +22,7 @@ const handleSubmit = async () => {
   }
 };
 
-const handleDelete = async (id: number) => {
-  const confirmed = window.confirm("คุณต้องการลบ Dropdown นี้ใช่หรือไม่?");
 
-  if (!confirmed) return;
-
-  loading.value = true;
-
-  try {
-    await pmDropdownManage.deleteDropdownById(id);
-    window.location.reload();
-  } catch (error) {
-    alert("ไม่สามารถลบข้อมูลได้");
-  } finally {
-    loading.value = false;
-  }
-};
 </script>
 
 <template>
