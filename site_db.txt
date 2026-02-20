@@ -132,11 +132,7 @@ CREATE TABLE pm_title_child_value (
 CREATE TABLE pm_details (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER,
-    title_id INTEGER,
-    title_child_id INTEGER,
-    name VARCHAR(255),
-    input_type VARCHAR(50),
-    number INTEGER,
+    title_child_value_id INTEGER,
     value VARCHAR(255)
 );
 
@@ -167,6 +163,7 @@ CREATE TABLE pm_dropdown_member (
 
 DROP TABLE IF EXISTS pm_images;
 DROP TABLE IF EXISTS pm_details;
+DROP TABLE IF EXISTS pm_title_child_value;
 DROP TABLE IF EXISTS pm_title_child;
 DROP TABLE IF EXISTS pm_title;
 DROP TABLE IF EXISTS pm_key_manager;

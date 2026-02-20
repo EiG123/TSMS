@@ -333,10 +333,38 @@ export const pmTitleService = {
     const client = await pool.connect();
     try {
       const sql = `
-        SELECT * FROM pm_title_child WHERE title_id = $1 
-        LEFT JOIN ON pm_title_child_value;
+        SELECT *
+        FROM pm_title_child tc
+        WHERE tc.title_id = $1
+        AND EXISTS (
+          SELECT 1
+          FROM pm_title_child_value tcv
+          WHERE tcv.title_child_id = tc.id
+        );
       `;
       const result = await client.query(sql, [data.title_id]);
+
+      return {
+        result: result.rows,
+        success: true
+      };
+
+    } catch (error) {
+      console.error("getTitleByType error:", error);
+      return { success: false };
+    } finally {
+      client.release();
+    }
+  },
+
+  async getTitleChildValueByTitle(data: any, pool: any) {
+    const client = await pool.connect();
+    try {
+      const sql = `
+        SELECT * FROM pm_title_child_value
+        WHERE title_id = $1 AND title_child_id = $2
+      `;
+      const result = await client.query(sql, [data.title_id, data.title_child_id]);
 
       return {
         result: result.rows,

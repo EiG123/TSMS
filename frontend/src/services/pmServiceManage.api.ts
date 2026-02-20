@@ -23,6 +23,14 @@ export const pmServiceManage = {
             {pmId, userId}
         );
         return response.data;
+    },
+
+    async valuePmByIdTitleIdTitleChildId(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/pmServiceManage/valuePmByIdTitleIdTitleChildId",
+            { ...data }
+        );
+        return response.data;
     }
 };
 

@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { success } from "zod";
 export const PmService = {
   async getData(
     db: any
@@ -133,6 +134,68 @@ export const PmService = {
     } finally {
       client.release();
     }
+  },
+
+  async PmsubmitData(data: any, pool: any) {
+    const client = await pool.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      const rows = Object.values(data);
+
+      if (rows.length === 0) {
+        throw new Error("No data provided");
+      }
+
+      const placeholders: string[] = [];
+      const params: any[] = [];
+
+      rows.forEach((item: any, index: number) => {
+        const baseIndex = index * 3;
+
+        placeholders.push(
+          `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3})`
+        );
+
+        params.push(
+          item.pmId,
+          item.title_child_value_id,
+          item.value
+        );
+      });
+
+      const sql = `
+      INSERT INTO pm_details
+      (
+        pm_id,
+        title_child_value_id,
+        value
+      )
+      VALUES ${placeholders.join(", ")}
+    `;
+
+      const res = await client.query(sql, params);
+
+      await client.query("COMMIT");
+
+      return { success: true };
+
+    } catch (error: any) {
+      await client.query("ROLLBACK");
+      console.error("PmsubmitData error:", error);
+
+      return {
+        success: false,
+        error: error.message
+      };
+
+    } finally {
+      client.release();
+    }
   }
+
+
+
 
 };

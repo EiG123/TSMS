@@ -10,6 +10,7 @@ import pm_site_detail from "../views/pm/pm_site_detail.vue";
 import pm_site_detail_site_data from "../views/pm/pm_site_detail_site_data.vue";
 import pm_site_detail_site_data_data from "../views/pm/pm_site_detail_site_data_data.vue";
 import pm_site_detail_site_data_enter_data from "../views/pm/pm_site_detail_site_data_enter_data.vue";
+import pm_enter_data from "../views/pm/pm_enter_data.vue";
 
 import pm_title from "../views/pm/title/pm_title.vue";
 import pm_title_add from "../views/pm/title/pm_title_add.vue";
@@ -86,6 +87,16 @@ const routes = [
                     id: route.params.id,
                     title: route.query.title,
                     title_id: route.query.title_id,
+                })
+            },
+            {
+                path: "pm_enter_data",
+                name: "pm_enter_data",
+                component: pm_enter_data,
+                props: route => ({
+                    pmId: route.query.pmId,
+                    title_id: route.query.title_id,
+                    title_child_id: route.query.title_child_id,
                 })
             },
 

@@ -29,4 +29,11 @@ export const PMApiService = {
     //     });
     //     return response.data;
     // },
+
+    async PmsubmitData(data: any){
+        const response = await api.post("/PmsubmitData", {
+           ...data
+        });
+        return response.data;
+    }
 };

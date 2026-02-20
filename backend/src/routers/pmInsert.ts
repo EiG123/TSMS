@@ -44,6 +44,32 @@ pmInsertRouter.post("/pm_nodeb", async (c) => {
     }
 });
 
+pmInsertRouter.post("/PmsubmitData", async (c) => {
+    try {
+        const body = await c.req.json();
+        const result = await PmService.PmsubmitData(
+            body,
+            db
+        );
+        if (result.success) {
+            // ⭐ ต้อง return pm_id กลับไปด้วย
+            return c.json({
+                success: true,
+                message: "บันทึกข้อมูล PM สำเร็จ",
+            });
+        } else {
+            return c.json(result, 401);
+        }
+
+    } catch (error) {
+        console.error('PM NodeB error:', error);
+        return c.json({
+            success: false,
+            message: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        }, 500);
+    }
+});
+
 // // ⭐ API สำหรับบันทึก Site Information
 // pmInsertRouter.post("/pm_site_information", async (c) => {
 //     try {
