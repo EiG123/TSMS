@@ -112,18 +112,6 @@ CREATE TABLE pm_title_child (
     rank INTEGER NOT NULL,
     status VARCHAR(30) NOT NULL,
 
-    value_status_1 VARCHAR(50),
-    value_name_1 TEXT,
-    value_input_type_1 VARCHAR(50),
-
-    value_status_2 VARCHAR(50),
-    value_name_2 TEXT,
-    value_input_type_2 VARCHAR(50),
-
-    value_status_3 VARCHAR(50),
-    value_name_3 TEXT,
-    value_input_type_3 VARCHAR(50),
-
     CONSTRAINT fk_title_child_title
         FOREIGN KEY (title_id)
         REFERENCES pm_title(id)
@@ -132,15 +120,22 @@ CREATE TABLE pm_title_child (
 CREATE INDEX idx_pm_title_child
 ON pm_title_child(title_id);
 
+
+CREATE TABLE pm_title_child_value (
+    id SERIAL PRIMARY KEY,
+    title_id INTEGER,
+    title_child_id INTEGER,
+    name VARCHAR(255),
+    input_type VARCHAR(50)
+);
+
 CREATE TABLE pm_details (
     id SERIAL PRIMARY KEY,
 
     pm_id INTEGER NOT NULL,
-    title_id INTEGER NOT NULL,
-    title_child_id INTEGER NOT NULL,
-    value_1 TEXT,
-    value_2 TEXT,
-    value_3 TEXT
+    title_child_value_id INTEGER NOT NULL,
+
+    value TEXT,
 
     CONSTRAINT unique_pm_title_child
         UNIQUE (pm_id, title_child_value_id)

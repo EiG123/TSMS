@@ -246,5 +246,24 @@ pmTitleRouter.post("/getTitleChildById", async (c) => {
 });
 
 
+pmTitleRouter.post("/EditpmTitleChild", async (c) => {
+    const body = await c.req.json();
+    const data = await pmTitleService.EditpmTitleChild(
+        body.data,
+        pool
+    );
+    if (data.success) {
+        return c.json({
+            data: data,
+            success: true
+        });
+    } else {
+        return c.json({
+            success: false
+        });
+    }
+});
+
+
 
 export default pmTitleRouter;

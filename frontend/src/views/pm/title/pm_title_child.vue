@@ -23,7 +23,6 @@ onMounted(async () => {
 
     const resTitleChild = await pmTitleManage.getAllPmTitleChild(pmId.value);
     pmTitlesChild.value = resTitleChild.data.result;
-    console.log(resTitleChild.data.result);
   } catch {
     alert("ไม่เจอ API getAllPmTitleChild");
   } finally {
@@ -31,10 +30,10 @@ onMounted(async () => {
   }
 });
 
-const goEdit = (title_child_id: any) => {
+const goEdit = (title_id: any,title_child_id: any) => {
   router.push({
     name: "pm_title_child_edit",
-    query: { title_child_id: title_child_id },
+    query: { title_id: title_id, title_child_id: title_child_id },
   });
 };
 
@@ -205,7 +204,7 @@ const handleDelete = async (id: number) => {
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <div class="flex gap-2">
                   <button
-                    @click="goEdit(item.id)"
+                    @click="goEdit(pmTitles.id,item.id)"
                     class="px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded hover:bg-yellow-600 transition-colors"
                   >
                     Edit

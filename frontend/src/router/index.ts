@@ -156,6 +156,7 @@ const routes = [
                 name: "pm_title_child_edit",
                 component: pm_title_child_edit,
                 props: route => ({
+                    title_id: route.query.title_id,
                     title_child_id: route.query.title_child_id,
                 })
             },

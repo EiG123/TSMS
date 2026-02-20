@@ -7,9 +7,11 @@ import { pmTitleManage } from "../../../services/PmTitle/pmTitleManage.api";
 const router = useRouter();
 const route = useRoute();
 const props = defineProps<{
+  title_id: any;
   title_child_id: any;
 }>();
 
+const title_id = computed(() => props.title_id);
 const title_child_id = computed(() => props.title_child_id);
 
 const title_child_name = ref("");
@@ -106,6 +108,23 @@ const handleCancel = () => {
 
 const handleSubmit = async () => {
   console.log("Submitting...");
+  try{
+    await pmTitleManage.EditpmTitleChild({
+      title_id: title_id.value,
+      title_child_name: title_child_name.value,
+      description: description.value,
+      status: status.value,
+      rank: rank.value,
+      value_status: value_status.value,
+      value_number: value_number.value,
+      values: values.value,
+      image_status: image_status.value,
+      image_number: image_number.value,
+      image_descriptions: image_descriptions.value,
+    });
+  }catch(error){
+    console.log(error);
+  }
 };
 </script>
 

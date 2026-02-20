@@ -358,51 +358,6 @@ export const pmTitleService = {
     }
   },
 
-  async getTitleChildValueByTitle(data: any, pool: any) {
-    const client = await pool.connect();
-    try {
-      const sql = `
-        SELECT * FROM pm_title_child_value
-        WHERE title_id = $1 AND title_child_id = $2
-      `;
-      const result = await client.query(sql, [data.title_id, data.title_child_id]);
-
-      return {
-        result: result.rows,
-        success: true
-      };
-
-    } catch (error) {
-      return { success: false };
-    } finally {
-      client.release();
-    }
-  },
-  
-  async getTitleChildById(data: any, pool: any) {
-    const client = await pool.connect();
-    try {
-      const sql = `
-        SELECT *
-        FROM pm_title_child AS ptc
-        LEFT JOIN pm_title_child_value AS ptcv
-            ON ptc.id = ptcv.title_child_id
-        WHERE ptc.id = $1;
-      `;
-      const result = await client.query(sql, [data]);
-
-      return {
-        result: result.rows,
-        success: true
-      };
-    } catch (error) {
-      return {
-        success: false
-      }
-    } finally {
-      client.release();
-    }
-  }
 
 
 };
