@@ -17,6 +17,7 @@ import pm_title_add from "../views/pm/title/pm_title_add.vue";
 import pm_title_edit from "../views/pm/title/pm_title_edit.vue";
 import pm_title_child from "../views/pm/title/pm_title_child.vue";
 import pm_title_child_add from "../views/pm/title/pm_title_child_add.vue";
+import pm_title_child_edit from "../views/pm/title/pm_title_child_edit.vue";
 
 import pm_dropdown from "../views/pm/title/pm_dropdown.vue";
 import pm_dropdown_add from "../views/pm/title/pm_dropdown_add.vue";
@@ -149,6 +150,14 @@ const routes = [
                 name: "pm_title_child",
                 component: pm_title_child,
                 props: true
+            },
+            {
+                path: "pm_title_child_edit",
+                name: "pm_title_child_edit",
+                component: pm_title_child_edit,
+                props: route => ({
+                    title_child_id: route.query.title_child_id,
+                })
             },
             {
                 path: "pm_title_child_add/:id",

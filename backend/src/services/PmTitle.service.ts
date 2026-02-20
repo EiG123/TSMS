@@ -1,4 +1,5 @@
 import { success } from "zod";
+import { fi } from "zod/locales";
 
 export const pmTitleService = {
   async InsertTitle(
@@ -372,8 +373,32 @@ export const pmTitleService = {
       };
 
     } catch (error) {
-      console.error("getTitleByType error:", error);
       return { success: false };
+    } finally {
+      client.release();
+    }
+  },
+  
+  async getTitleChildById(data: any, pool: any) {
+    const client = await pool.connect();
+    try {
+      const sql = `
+        SELECT *
+        FROM pm_title_child AS ptc
+        LEFT JOIN pm_title_child_value AS ptcv
+            ON ptc.id = ptcv.title_child_id
+        WHERE ptc.id = $1;
+      `;
+      const result = await client.query(sql, [data]);
+
+      return {
+        result: result.rows,
+        success: true
+      };
+    } catch (error) {
+      return {
+        success: false
+      }
     } finally {
       client.release();
     }

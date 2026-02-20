@@ -31,12 +31,19 @@ onMounted(async () => {
   }
 });
 
+const goEdit = (title_child_id: any) => {
+  router.push({
+    name: "pm_title_child_edit",
+    query: { title_child_id: title_child_id },
+  });
+};
+
 const handleDelete = async (id: number) => {
   const confirmed = window.confirm("คุณต้องการลบ Tittle Child นี้หรือไม่?");
 
-  if(!confirmed) return;
+  if (!confirmed) return;
 
-  loading.value =true;
+  loading.value = true;
 
   try {
     await pmTitleManage.deleteTitleChildById(id);
@@ -46,7 +53,7 @@ const handleDelete = async (id: number) => {
   } finally {
     loading.value = false;
   }
-}
+};
 </script>
 
 <template>
@@ -171,10 +178,7 @@ const handleDelete = async (id: number) => {
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 {{ item.rank }}
               </td>
-              <td
-                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                @click="goTitleChild(item.id)"
-              >
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 [{{ item.id }}] {{ item.title_child_name }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -201,7 +205,7 @@ const handleDelete = async (id: number) => {
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <div class="flex gap-2">
                   <button
-                    @click="router.push(`/pm_title_edit/${item.id}`)"
+                    @click="goEdit(item.id)"
                     class="px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded hover:bg-yellow-600 transition-colors"
                   >
                     Edit
