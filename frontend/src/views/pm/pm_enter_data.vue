@@ -30,6 +30,7 @@ const handleCancel = () => {
 
 const title_child_value_list = ref<any[]>([]);
 const formData = ref<Record<string, any>>({});
+const InsertORUpdate = ref(true);
 
 onMounted(async () => {
   loading.value = true;
@@ -56,7 +57,10 @@ onMounted(async () => {
         title_child_value_list: idList,
       });
 
-    console.log(valuePmByIdTitleIdTitleChildId.data);
+    console.log(valuePmByIdTitleIdTitleChildId.data.length);
+    if (valuePmByIdTitleIdTitleChildId.data.length != 0){
+      InsertORUpdate.value = false
+    }
 
     // ✅ เอาข้อมูลเก่ามาใส่ใน formData เพื่อ edit
     const existingValues = valuePmByIdTitleIdTitleChildId.data;
@@ -88,7 +92,9 @@ const handleSubmit = async () => {
     console.log("Submitting:", submitData);
 
     // Call your API here
-    await PMApiService.PmsubmitData(submitData);
+    if(InsertORUpdate){
+      await PMApiService.PmsubmitData(submitData);
+    }
 
     alert("Data saved successfully!");
     router.back();

@@ -166,14 +166,17 @@ export const PmService = {
       });
 
       const sql = `
-      INSERT INTO pm_details
-      (
-        pm_id,
-        title_child_value_id,
-        value
-      )
-      VALUES ${placeholders.join(", ")}
-    `;
+        INSERT INTO pm_details
+        (
+          pm_id,
+          title_child_value_id,
+          value
+        )
+        VALUES ${placeholders.join(", ")}
+        ON CONFLICT (pm_id, title_child_value_id)
+        DO UPDATE
+        SET value = EXCLUDED.value
+      `;
 
       const res = await client.query(sql, params);
 

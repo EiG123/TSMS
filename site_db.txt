@@ -131,12 +131,24 @@ CREATE TABLE pm_title_child_value (
 
 CREATE TABLE pm_details (
     id SERIAL PRIMARY KEY,
-    pm_id INTEGER,
-    title_child_value_id INTEGER,
-    value VARCHAR(255),
 
-    FOREIGN KEY (title_child_value_id)
-    REFERENCES pm_title_child_value(id)
+    pm_id INTEGER NOT NULL,
+    title_child_value_id INTEGER NOT NULL,
+
+    value TEXT,
+
+    CONSTRAINT unique_pm_title_child
+        UNIQUE (pm_id, title_child_value_id),
+
+    CONSTRAINT fk_pm_details_pm
+        FOREIGN KEY (pm_id)
+        REFERENCES pm(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_pm_details_title_child
+        FOREIGN KEY (title_child_value_id)
+        REFERENCES pm_title_child_value(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE pm_images (
