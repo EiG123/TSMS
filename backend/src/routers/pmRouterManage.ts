@@ -61,12 +61,11 @@ pmRouterManage.get("/pmGetPmList", async (c) => {
 
 pmRouterManage.post("/valuePmByIdTitleIdTitleChildId", async (c) => {
     const body = await c.req.json();
-    console.log(body);
     try {
         const res = await pmServiceManage.valuePmByIdTitleIdTitleChildId(body, pool);
-        console.log(res);
         return c.json({
-            success: true
+            success: true,
+            data: res.data
         })
 
     } catch (error) {

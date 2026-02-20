@@ -133,7 +133,10 @@ CREATE TABLE pm_details (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER,
     title_child_value_id INTEGER,
-    value VARCHAR(255)
+    value VARCHAR(255),
+
+    FOREIGN KEY (title_child_value_id)
+    REFERENCES pm_title_child_value(id)
 );
 
 CREATE TABLE pm_images (

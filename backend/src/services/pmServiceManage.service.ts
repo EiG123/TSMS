@@ -142,7 +142,7 @@ export const pmServiceManage = {
             const idList = data.title_child_value_list
                 .map(Number)
                 .filter(n => Number.isInteger(n));
-            console.log(idList);
+            
             if (idList.length === 0) {
                 throw new Error("Invalid id list");
             }
@@ -151,7 +151,7 @@ export const pmServiceManage = {
                 SELECT *
                 FROM pm_details
                 WHERE pm_id = $1
-                AND title_child_value_id = ANY($2::int[])
+                AND title_child_value_id = ANY($2::int[]);
             `;
 
             const result = await client.query(sql, [

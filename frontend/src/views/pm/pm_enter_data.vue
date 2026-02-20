@@ -43,12 +43,10 @@ onMounted(async () => {
     title_child_value_list.value = res_title_child_value.data.result || [];
     console.log(title_child_value_list.value);
 
-    // Initialize formData
+    // Initialize formData with default values
     title_child_value_list.value.forEach((item) => {
       formData.value[item.id] = item.default_value || "";
     });
-
-    console.log("Title Child Value List:", title_child_value_list.value);
 
     const idList = title_child_value_list.value.map((item) => item.id);
 
@@ -57,6 +55,16 @@ onMounted(async () => {
         pmId: pmId.value,
         title_child_value_list: idList,
       });
+
+    console.log(valuePmByIdTitleIdTitleChildId.data);
+
+    // ✅ เอาข้อมูลเก่ามาใส่ใน formData เพื่อ edit
+    const existingValues = valuePmByIdTitleIdTitleChildId.data;
+    Object.values(existingValues).forEach((item: any) => {
+      if (item.title_child_value_id in formData.value) {
+        formData.value[item.title_child_value_id] = item.value;
+      }
+    });
   } catch (error) {
     console.error("Failed to load data:", error);
   } finally {
@@ -415,24 +423,6 @@ const getInputIcon = (inputType: string) => {
             Save Data
           </span>
         </button>
-      </div>
-
-      <!-- Progress Indicator -->
-      <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4"
-      >
-        <div class="flex items-center justify-between text-sm mb-2">
-          <span class="text-slate-400">Form Progress</span>
-          <span class="text-slate-300 font-medium"
-            >0 / {{ title_child_value_list.length }} completed</span
-          >
-        </div>
-        <div class="w-full bg-slate-700/50 rounded-full h-2">
-          <div
-            class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-300"
-            style="width: 0%"
-          ></div>
-        </div>
       </div>
     </form>
   </div>

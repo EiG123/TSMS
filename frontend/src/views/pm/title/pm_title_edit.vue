@@ -46,7 +46,6 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res = await pmTitleManage.getPmTitleById(Id.value);
-    console.log(res);
     pm_name.value = res.data.result.title || "";
     pm_description.value = res.data.result.description || "";
     pm_key.value = res.data.result.key || "";
