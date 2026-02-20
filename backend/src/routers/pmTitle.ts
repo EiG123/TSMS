@@ -121,7 +121,7 @@ pmTitleRouter.post("/getAllPmTitleChild", async (c) => {
 pmTitleRouter.post("/AddPmTitleChild", async (c) => {
     const body = await c.req.json();
     const data = await pmTitleService.InsertTitleChild(
-        body,
+        body.data,
         pool
     );
     if (data.success) {

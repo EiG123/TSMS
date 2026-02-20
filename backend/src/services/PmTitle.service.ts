@@ -1,4 +1,4 @@
-import { success } from "zod";
+import { date, success } from "zod";
 import { fi } from "zod/locales";
 
 export const pmTitleService = {
@@ -170,54 +170,46 @@ export const pmTitleService = {
         title_child_name,
         description,
         rank,
-        status
+        status,
+
+        value_status_1,
+        value_name_1,
+        value_input_type_1,
+
+        value_status_2,
+        value_name_2,
+        value_input_type_2,
+
+        value_status_3,
+        value_name_3,
+        value_input_type_3
       )
-      VALUES ($1, $2, $3, $4, $5)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       RETURNING id
     `;
 
+      console.log(data);
       const { rows } = await client.query(sqlTitleChild, [
         data.title_id,
         data.title_child_name,
         data.description,
         data.rank,
-        data.status
+        data.status,
+
+        data.value_status_1,
+        data.value_name_1,
+        data.value_input_type_1,
+
+        data.value_status_2,
+        data.value_name_2,
+        data.value_input_type_2,
+
+        data.value_status_3,
+        data.value_name_3,
+        data.value_input_type_3
       ]);
 
       const titleChildId = rows[0].id;
-
-      /* ==================== pm_value (BULK) ==================== */
-      if (Array.isArray(data.values) && data.values.length > 0) {
-        const valuePlaceholders: string[] = [];
-        const valueParams: any[] = [];
-
-        data.values.forEach((item: any, index: number) => {
-          const baseIndex = index * 4;
-
-          valuePlaceholders.push(
-            `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4})`
-          );
-          valueParams.push(
-            data.title_id,
-            titleChildId,
-            item.name,
-            item.input_type,
-          );
-        });
-
-        const sqlPmValue = `
-        INSERT INTO pm_title_child_value (
-          title_id,
-          title_child_id,
-          name,
-          input_type
-        )
-        VALUES ${valuePlaceholders.join(", ")}
-      `;
-
-        const responseValue = await client.query(sqlPmValue, valueParams);
-      }
-      console.log("pass");
 
       /* ==================== pm_image (BULK) ==================== */
       if (

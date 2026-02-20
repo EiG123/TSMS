@@ -51,7 +51,7 @@ export const pmTitleManage = {
     async AddpmTitleChild(data: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmTitle/AddPmTitleChild",
-            { ...data }
+            { data }
         );
         return response.data;
     },

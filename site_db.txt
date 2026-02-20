@@ -141,9 +141,6 @@ CREATE TABLE pm_details (
     value_1 TEXT,
     value_2 TEXT,
     value_3 TEXT
-
-    CONSTRAINT unique_pm_title_child
-        UNIQUE (pm_id, title_child_value_id)
 );
 
 CREATE TABLE pm_images (
