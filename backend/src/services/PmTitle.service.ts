@@ -121,26 +121,15 @@ export const pmTitleService = {
     }
   },
 
-  async getAllPmTitleChild(pool: any, id: number) {
+  async getAllPmTitleChild(pool: any, title_id: number) {
     const client = await pool.connect();
     try {
       const sql = `
-          SELECT
-            ptc.id,
-            ptc.title_child_name,
-            ptc.rank,
-            ptc.status,
-            COUNT(pd.id) AS pm_detail_count
-          FROM pm_title_child ptc
-          LEFT JOIN pm_title_child_value pd
-            ON pd.title_child_id = ptc.id
-          WHERE ptc.title_id = $1
-          GROUP BY ptc.id
-          ORDER BY ptc.rank ASC;
+          SELECT * FROM pm_title_child WHERE title_id = $1
       `;
 
 
-      const values = [id];
+      const values = [title_id];
       const result = await client.query(sql, values);
 
       console.log(result.rows);
