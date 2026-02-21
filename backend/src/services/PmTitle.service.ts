@@ -313,16 +313,10 @@ export const pmTitleService = {
 
   async getTitleChildByTitle(data: any, pool: any) {
     const client = await pool.connect();
+    console.log(data);
     try {
       const sql = `
-        SELECT *
-        FROM pm_title_child tc
-        WHERE tc.title_id = $1
-        AND EXISTS (
-          SELECT 1
-          FROM pm_title_child_value tcv
-          WHERE tcv.title_child_id = tc.id
-        );
+        SELECT * FROM pm_title_child WHERE title_id = $1
       `;
       const result = await client.query(sql, [data.title_id]);
 
