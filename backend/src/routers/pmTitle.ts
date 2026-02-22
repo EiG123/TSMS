@@ -209,5 +209,23 @@ pmTitleRouter.post("/getTitleChildByTitle", async (c) => {
 });
 
 
+pmTitleRouter.post("/getTitleChildData", async (c) => {
+    const body = await c.req.json();
+    const data = await pmTitleService.getTitleChildData(
+        body.data,
+        pool
+    );
+    if (data.success) {
+        return c.json({
+            data: data,
+            success: true
+        });
+    } else {
+        return c.json({
+            success: false
+        });
+    }
+});
+
 
 export default pmTitleRouter;

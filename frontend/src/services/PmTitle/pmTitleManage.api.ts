@@ -88,5 +88,10 @@ export const pmTitleManage = {
     async EditpmTitleChild(data: any) {
         const response = await axios.post("http://localhost:3000/api/pmTitle/EditpmTitleChild", {data})
         return response.data;
+    },
+
+    async getTitleChildData(data: any){
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildData", {data})
+        return response.data;
     }
 };

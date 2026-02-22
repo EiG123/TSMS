@@ -313,7 +313,6 @@ export const pmTitleService = {
 
   async getTitleChildByTitle(data: any, pool: any) {
     const client = await pool.connect();
-    console.log(data);
     try {
       const sql = `
         SELECT * FROM pm_title_child WHERE title_id = $1
@@ -333,6 +332,25 @@ export const pmTitleService = {
     }
   },
 
+  async getTitleChildData(data: any, pool: any) {
+    const client = await pool.connect();
+    try {
+      const sql = `
+        SELECT * FROM pm_title_child WHERE id = $1 AND title_id = $2
+      `;
+      const result = await client.query(sql, [data.title_child_id, data.title_id]);
 
+      return {
+        result: result.rows,
+        success: true
+      };
+
+    } catch (error) {
+      console.error("getTitleByType error:", error);
+      return { success: false };
+    } finally {
+      client.release();
+    }
+  }
 
 };

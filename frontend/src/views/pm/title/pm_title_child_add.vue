@@ -66,7 +66,7 @@ onMounted(async () => {
 });
 
 const handleCancel = () => {
-  router.push(`/pm_title_child/${title_id.value}`);
+  router.back();
 };
 
 const handleSubmit = async () => {
