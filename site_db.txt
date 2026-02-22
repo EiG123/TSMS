@@ -138,6 +138,7 @@ CREATE TABLE pm_details (
     pm_id INTEGER NOT NULL,
     title_id INTEGER NOT NULL,
     title_child_id INTEGER NOT NULL,
+
     value_1 TEXT,
     value_2 TEXT,
     value_3 TEXT
@@ -145,7 +146,9 @@ CREATE TABLE pm_details (
 
 CREATE TABLE pm_images (
     id SERIAL PRIMARY KEY,
+    title_id INTEGER,
     title_child_id INTEGER,
+    img_number INTEGER,
     description VARCHAR(255),
     file_path VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -170,7 +173,6 @@ CREATE TABLE pm_dropdown_member (
 
 DROP TABLE IF EXISTS pm_images;
 DROP TABLE IF EXISTS pm_details;
-DROP TABLE IF EXISTS pm_title_child_value;
 DROP TABLE IF EXISTS pm_title_child;
 DROP TABLE IF EXISTS pm_title;
 DROP TABLE IF EXISTS pm_key_manager;

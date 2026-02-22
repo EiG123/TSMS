@@ -177,7 +177,6 @@ export const pmTitleService = {
       RETURNING id
     `;
 
-      console.log(data);
       const { rows } = await client.query(sqlTitleChild, [
         data.title_id,
         data.title_child_name,
@@ -195,7 +194,9 @@ export const pmTitleService = {
 
         data.value_status_3,
         data.value_name_3,
-        data.value_input_type_3
+        data.value_input_type_3,
+
+        
       ]);
 
       const titleChildId = rows[0].id;
@@ -209,17 +210,18 @@ export const pmTitleService = {
         const imageParams: any[] = [];
 
         data.image_descriptions.forEach((desc: string, index: number) => {
-          const baseIndex = index * 2;
+          const baseIndex = index * 3;
 
           imagePlaceholders.push(
-            `($${baseIndex + 1}, $${baseIndex + 2})`
+            `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3})`
           );
 
-          imageParams.push(titleChildId, desc);
+          imageParams.push(data.title_id, titleChildId, desc);
         });
 
         const sqlPmImage = `
         INSERT INTO pm_images (
+          title_id,
           title_child_id,
           description
         )
