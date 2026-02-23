@@ -55,6 +55,10 @@ const value_input_type_3 = ref("");
 
 const status = ref("");
 
+const img_status = ref("");
+
+const img_description = ref<any[]>([]);
+
 onMounted(async () => {
   loading.value = true;
   try {
@@ -82,6 +86,14 @@ onMounted(async () => {
     value_name_3.value = data.value_name_3 || "";
     value_status_3.value = data.value_status_3 || "";
     value_input_type_3.value = data.value_input_type_3 || "";
+
+    formData.value.value_1 = data.value_1 || "";
+    formData.value.value_2 = data.value_2 || "";
+    formData.value.value_3 = data.value_3 || "";
+
+    img_status.value = data.img_status || "";
+    img_description.value = data.pm_images || [];
+    console.log(img_description.value);
   } catch (error) {
     console.error("Failed to load data:", error);
     alert("Failed to load form data");
@@ -99,12 +111,12 @@ const handleSubmit = async () => {
     console.log("Submitting data:", formData.value);
 
     // Call your API here
-    // await PMApiService.submitData({
-    //   pm_id: pmId.value,
-    //   title_id: title_id.value,
-    //   title_child_id: title_child_id.value,
-    //   ...formData.value
-    // });
+    await PMApiService.PmsubmitData({
+      pm_id: pmId.value,
+      title_id: title_id.value,
+      title_child_id: title_child_id.value,
+      ...formData.value
+    });
 
     alert("Data saved successfully!");
     router.back();
@@ -114,6 +126,24 @@ const handleSubmit = async () => {
   } finally {
     isSubmitting.value = false;
   }
+};
+
+// เก็บ file ที่ upload แต่ละรูป
+const uploadedImages = ref<(File | null)[]>([]);
+
+const handleImageUpload = (event: Event, index: number) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  // เก็บ file สำหรับ submit
+  uploadedImages.value[index] = file;
+
+  // Preview โดย update img_url ชั่วคราว
+  const url = URL.createObjectURL(file);
+  img_description.value[index] = {
+    ...img_description.value[index],
+    img_url: url,
+  };
 };
 
 // Get icon based on input type
@@ -528,12 +558,101 @@ const getInputIcon = (inputType: string) => {
               </div>
             </div>
 
+            <!-- Image Section -->
+            <div
+              v-if="img_status === 'active'"
+              class="space-y-4 pt-3 border-t border-slate-700/30"
+            >
+              <label
+                class="flex items-center gap-2 text-sm font-medium text-slate-300"
+              >
+                <svg
+                  class="w-4 h-4 text-yellow-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                Images
+              </label>
+
+              <div
+                v-for="(img, index) in img_description"
+                :key="index"
+                class="p-4 bg-slate-900/40 border border-slate-700/50 rounded-xl space-y-3"
+              >
+                <!-- Description label -->
+                <p class="text-xs text-slate-400 font-medium">
+                  Image #{{ index + 1 }}
+                  <span v-if="img.description" class="text-slate-500">
+                    — {{ img.description }}</span
+                  >
+                </p>
+
+                <!-- Preview (ถ้ามี img_url) -->
+                <div
+                  v-if="img.img_url"
+                  class="rounded-lg overflow-hidden border border-slate-700/50"
+                >
+                  <img
+                    :src="img.img_url"
+                    :alt="img.description || `Image ${index + 1}`"
+                    class="w-full max-h-60 object-contain bg-slate-900"
+                  />
+                </div>
+
+                <!-- Upload input -->
+                <div class="flex items-center gap-3">
+                  <label
+                    class="flex items-center gap-2 px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 rounded-lg hover:bg-yellow-500/30 transition-all text-sm font-medium cursor-pointer"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                      />
+                    </svg>
+                    Upload Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      class="hidden"
+                      @change="(e) => handleImageUpload(e, index)"
+                    />
+                  </label>
+                  <span class="text-slate-500 text-xs">PNG, JPG, WEBP</span>
+                </div>
+              </div>
+
+              <!-- Empty state ถ้าไม่มี images -->
+              <div
+                v-if="img_description.length === 0"
+                class="text-center py-6 text-slate-500 text-sm"
+              >
+                No images configured
+              </div>
+            </div>
+
             <!-- Empty State -->
             <div
               v-if="
                 value_status_1 !== 'active' &&
                 value_status_2 !== 'active' &&
-                value_status_3 !== 'active'
+                value_status_3 !== 'active' &&
+                img_status !== 'active'
               "
               class="text-center py-12"
             >

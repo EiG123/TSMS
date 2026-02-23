@@ -135,16 +135,21 @@ CREATE INDEX idx_pm_title_child
 ON pm_title_child(title_id);
 
 CREATE TABLE pm_details (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
 
     pm_id INTEGER NOT NULL,
     title_id INTEGER NOT NULL,
     title_child_id INTEGER NOT NULL,
 
-    value_1 TEXT,
-    value_2 TEXT,
-    value_3 TEXT
+    value_1 VARCHAR(255),
+    value_2 VARCHAR(255),
+    value_3 VARCHAR(255),
+
+    CONSTRAINT unique_pm_detail
+    UNIQUE (pm_id, title_id, title_child_id)
 );
+CREATE INDEX idx_pm_details_pm_id
+ON pm_details (pm_id);
 
 CREATE TABLE pm_images (
     id SERIAL PRIMARY KEY,

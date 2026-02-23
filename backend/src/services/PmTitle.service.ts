@@ -320,10 +320,39 @@ export const pmTitleService = {
     const client = await pool.connect();
     try {
       const sql = `
-        SELECT * FROM pm_title_child WHERE title_id = $1
+        SELECT
+            ptc.*,
+
+            -- รวม images เป็น array
+            COALESCE(pimg.images, '[]') AS pm_images,
+
+            -- detail
+            pd.value_1,
+            pd.value_2,
+            pd.value_3
+
+        FROM pm_title_child AS ptc
+
+        -- 🔹 Aggregate images แยก
+        LEFT JOIN LATERAL (
+            SELECT json_agg(
+                json_build_object(
+                    'id', pi.id,
+                    'file_path', pi.file_path,
+                    'description', pi.description
+                )
+            ) AS images
+            FROM pm_images pi
+            WHERE pi.title_child_id = ptc.id
+        ) pimg ON true
+
+        -- 🔹 join detail ปกติ (ควรเป็น 1:1 ด้วย unique constraint)
+        LEFT JOIN pm_details pd
+            ON ptc.id = pd.title_child_id
+
+        WHERE ptc.title_id = $1;
       `;
       const result = await client.query(sql, [data.title_id]);
-
       return {
         result: result.rows,
         success: true
@@ -416,7 +445,6 @@ export const pmTitleService = {
       console.log(data.title_id);
       console.log(data.title_child_id);
 
-      /* ==================== pm_images (UPDATE each row) ==================== */
       /* ==================== pm_images ==================== */
       if (Array.isArray(data.image_descriptions)) {
         // 1. ดึงจำนวน images ที่มีอยู่ใน DB

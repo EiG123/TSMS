@@ -138,47 +138,35 @@ export const PmService = {
 
   async PmsubmitData(data: any, pool: any) {
     const client = await pool.connect();
-
+    console.log(data);
     try {
       await client.query("BEGIN");
-
-      const rows = Object.values(data);
-
-      if (rows.length === 0) {
-        throw new Error("No data provided");
-      }
-
-      const placeholders: string[] = [];
-      const params: any[] = [];
-
-      rows.forEach((item: any, index: number) => {
-        const baseIndex = index * 3;
-
-        placeholders.push(
-          `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3})`
-        );
-
-        params.push(
-          item.pmId,
-          item.title_child_value_id,
-          item.value
-        );
-      });
 
       const sql = `
         INSERT INTO pm_details
         (
           pm_id,
-          title_child_value_id,
-          value
+          title_id,
+          title_child_id,
+          value_1,
+          value_2,
+          value_3
         )
-        VALUES ${placeholders.join(", ")}
-        ON CONFLICT (pm_id, title_child_value_id)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        ON CONFLICT (pm_id, title_id, title_child_id)
         DO UPDATE
-        SET value = EXCLUDED.value
+        SET
+          value_1 = EXCLUDED.value_1
+          WHERE pm_details.value_1 IS DISTINCT FROM EXCLUDED.value_1;
       `;
-
-      const res = await client.query(sql, params);
+      const res = await client.query(sql, [
+        data.pm_id,
+        data.title_id,
+        data.title_child_id,
+        data.value_1,
+        data.value_2,
+        data.value_3
+      ]);
 
       await client.query("COMMIT");
 
