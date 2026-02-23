@@ -124,6 +124,8 @@ CREATE TABLE pm_title_child (
     value_name_3 TEXT,
     value_input_type_3 VARCHAR(50),
 
+    img_status VARCHAR(50),
+
     CONSTRAINT fk_title_child_title
         FOREIGN KEY (title_id)
         REFERENCES pm_title(id)

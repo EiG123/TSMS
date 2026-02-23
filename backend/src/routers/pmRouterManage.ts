@@ -59,22 +59,22 @@ pmRouterManage.get("/pmGetPmList", async (c) => {
     }
 });
 
-pmRouterManage.post("/valuePmByIdTitleIdTitleChildId", async (c) => {
-    const body = await c.req.json();
-    try {
-        const res = await pmServiceManage.valuePmByIdTitleIdTitleChildId(body, pool);
-        return c.json({
-            success: true,
-            data: res.data
-        })
+// pmRouterManage.post("/valuePmByIdTitleIdTitleChildId", async (c) => {
+//     const body = await c.req.json();
+//     try {
+//         const res = await pmServiceManage.valuePmByIdTitleIdTitleChildId(body, pool);
+//         return c.json({
+//             success: true,
+//             data: res.data
+//         })
 
-    } catch (error) {
-        return c.json({
-            success: false
-        })
-    } finally {
+//     } catch (error) {
+//         return c.json({
+//             success: false
+//         })
+//     } finally {
 
-    }
-});
+//     }
+// });
 
 export default pmRouterManage;

@@ -35,7 +35,7 @@ const title_child_name = ref("");
 const formData = ref({
   value_1: "",
   value_2: "",
-  value_3: ""
+  value_3: "",
 });
 
 // Value 1
@@ -53,6 +53,8 @@ const value_name_3 = ref("");
 const value_status_3 = ref("");
 const value_input_type_3 = ref("");
 
+const status = ref("");
+
 onMounted(async () => {
   loading.value = true;
   try {
@@ -60,10 +62,12 @@ onMounted(async () => {
       title_id: title_id.value,
       title_child_id: title_child_id.value,
     });
-    
+
     const data = res_title_child_value.data.result[0] || {};
     title_child_value_list.value = data;
     console.log("Title Child Value:", title_child_value_list.value);
+
+    status.value = data.status || "inactive";
 
     title_child_name.value = data.title_child_name || "";
 
@@ -88,12 +92,12 @@ onMounted(async () => {
 
 const handleSubmit = async () => {
   if (isSubmitting.value) return;
-  
+
   isSubmitting.value = true;
-  
+
   try {
     console.log("Submitting data:", formData.value);
-    
+
     // Call your API here
     // await PMApiService.submitData({
     //   pm_id: pmId.value,
@@ -101,7 +105,7 @@ const handleSubmit = async () => {
     //   title_child_id: title_child_id.value,
     //   ...formData.value
     // });
-    
+
     alert("Data saved successfully!");
     router.back();
   } catch (error) {
@@ -126,38 +130,80 @@ const getInputIcon = (inputType: string) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8">
+  <div
+    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+  >
     <!-- Loading State -->
-    <div v-if="loading" class="flex flex-col items-center justify-center h-96 animate-fade-in">
-      <div class="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+    <div
+      v-if="loading"
+      class="flex flex-col items-center justify-center h-96 animate-fade-in"
+    >
+      <div
+        class="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"
+      ></div>
       <p class="text-slate-400 text-lg">Loading form...</p>
     </div>
 
     <!-- Main Content -->
-    <form v-else @submit.prevent="handleSubmit" class="max-w-4xl mx-auto space-y-6 animate-slide-up">
-      
+    <form
+      v-else
+      @submit.prevent="handleSubmit"
+      class="max-w-4xl mx-auto space-y-6 animate-slide-up"
+    >
       <!-- Back Button -->
-      <button type="button" @click="handleCancel" class="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 mb-4">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      <button
+        type="button"
+        @click="handleCancel"
+        class="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 mb-4"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
         <span class="font-medium">Back</span>
       </button>
 
       <!-- Header Section -->
-      <div class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
+      <div
+        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+      >
         <div class="relative">
-          <div class="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10"></div>
-          
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10"
+          ></div>
+
           <div class="relative px-8 py-6">
             <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              <div
+                class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30"
+              >
+                <svg
+                  class="w-7 h-7 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
                 </svg>
               </div>
               <div>
-                <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
+                <h1
+                  class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400"
+                >
                   {{ title_child_name }}
                 </h1>
                 <p class="text-slate-400 mt-1">
@@ -170,66 +216,35 @@ const getInputIcon = (inputType: string) => {
       </div>
 
       <!-- Form Fields -->
-      <div class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden">
-        <div class="p-8 space-y-6">
-          
-          <!-- Value 1 -->
-          <div v-if="value_status_1 === 'active'" class="space-y-3">
-            <label class="flex items-center gap-2 text-sm font-medium text-slate-300">
-              <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getInputIcon(value_input_type_1)" />
-              </svg>
-              {{ value_name_1 }}
-              <span class="text-red-400">*</span>
-            </label>
-
-            <!-- Text Input -->
-            <div v-if="value_input_type_1 === 'text'">
-              <input
-                v-model="formData.value_1"
-                type="text"
-                :placeholder="`Enter ${value_name_1.toLowerCase()}`"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Number Input -->
-            <div v-else-if="value_input_type_1 === 'number'">
-              <input
-                v-model.number="formData.value_1"
-                type="number"
-                :placeholder="`Enter ${value_name_1.toLowerCase()}`"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Date Input -->
-            <div v-else-if="value_input_type_1 === 'date'">
-              <input
-                v-model="formData.value_1"
-                type="date"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Dropdown Input -->
-            <div v-else-if="value_input_type_1 === 'dropdown'">
-              <select
-                v-model="formData.value_1"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+      <div v-if="status === 'active'">
+        <div
+          class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        >
+          <div class="p-8 space-y-6">
+            <!-- Value 1 -->
+            <div v-if="value_status_1 === 'active'" class="space-y-3">
+              <label
+                class="flex items-center gap-2 text-sm font-medium text-slate-300"
               >
-                <option value="" class="bg-slate-800">Select an option...</option>
-                <!-- Add options here -->
-              </select>
-            </div>
+                <svg
+                  class="w-4 h-4 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    :d="getInputIcon(value_input_type_1)"
+                  />
+                </svg>
+                {{ value_name_1 }}
+                <span class="text-red-400">*</span>
+              </label>
 
-            <!-- OCR Input -->
-            <div v-else-if="value_input_type_1 === 'ocr'">
-              <div class="space-y-3">
+              <!-- Text Input -->
+              <div v-if="value_input_type_1 === 'text'">
                 <input
                   v-model="formData.value_1"
                   type="text"
@@ -237,78 +252,102 @@ const getInputIcon = (inputType: string) => {
                   required
                   class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
-                <button
-                  type="button"
-                  class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-all text-sm font-medium"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Scan with OCR
-                </button>
               </div>
+
+              <!-- Number Input -->
+              <div v-else-if="value_input_type_1 === 'number'">
+                <input
+                  v-model.number="formData.value_1"
+                  type="number"
+                  :placeholder="`Enter ${value_name_1.toLowerCase()}`"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <!-- Date Input -->
+              <div v-else-if="value_input_type_1 === 'date'">
+                <input
+                  v-model="formData.value_1"
+                  type="date"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <!-- Dropdown Input -->
+              <div v-else-if="value_input_type_1 === 'dropdown'">
+                <select
+                  v-model="formData.value_1"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                >
+                  <option value="" class="bg-slate-800">
+                    Select an option...
+                  </option>
+                  <!-- Add options here -->
+                </select>
+              </div>
+
+              <!-- OCR Input -->
+              <div v-else-if="value_input_type_1 === 'ocr'">
+                <div class="space-y-3">
+                  <input
+                    v-model="formData.value_1"
+                    type="text"
+                    :placeholder="`Enter ${value_name_1.toLowerCase()}`"
+                    required
+                    class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  />
+                  <button
+                    type="button"
+                    class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-all text-sm font-medium"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Scan with OCR
+                  </button>
+                </div>
+              </div>
+
+              <div class="pt-3 border-b border-slate-700/30"></div>
             </div>
 
-            <div class="pt-3 border-b border-slate-700/30"></div>
-          </div>
-
-          <!-- Value 2 -->
-          <div v-if="value_status_2 === 'active'" class="space-y-3">
-            <label class="flex items-center gap-2 text-sm font-medium text-slate-300">
-              <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getInputIcon(value_input_type_2)" />
-              </svg>
-              {{ value_name_2 }}
-              <span class="text-red-400">*</span>
-            </label>
-
-            <!-- Text Input -->
-            <div v-if="value_input_type_2 === 'text'">
-              <input
-                v-model="formData.value_2"
-                type="text"
-                :placeholder="`Enter ${value_name_2.toLowerCase()}`"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Number Input -->
-            <div v-else-if="value_input_type_2 === 'number'">
-              <input
-                v-model.number="formData.value_2"
-                type="number"
-                :placeholder="`Enter ${value_name_2.toLowerCase()}`"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Date Input -->
-            <div v-else-if="value_input_type_2 === 'date'">
-              <input
-                v-model="formData.value_2"
-                type="date"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Dropdown Input -->
-            <div v-else-if="value_input_type_2 === 'dropdown'">
-              <select
-                v-model="formData.value_2"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            <!-- Value 2 -->
+            <div v-if="value_status_2 === 'active'" class="space-y-3">
+              <label
+                class="flex items-center gap-2 text-sm font-medium text-slate-300"
               >
-                <option value="" class="bg-slate-800">Select an option...</option>
-                <!-- Add options here -->
-              </select>
-            </div>
+                <svg
+                  class="w-4 h-4 text-purple-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    :d="getInputIcon(value_input_type_2)"
+                  />
+                </svg>
+                {{ value_name_2 }}
+                <span class="text-red-400">*</span>
+              </label>
 
-            <!-- OCR Input -->
-            <div v-else-if="value_input_type_2 === 'ocr'">
-              <div class="space-y-3">
+              <!-- Text Input -->
+              <div v-if="value_input_type_2 === 'text'">
                 <input
                   v-model="formData.value_2"
                   type="text"
@@ -316,78 +355,102 @@ const getInputIcon = (inputType: string) => {
                   required
                   class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
-                <button
-                  type="button"
-                  class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-all text-sm font-medium"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Scan with OCR
-                </button>
               </div>
+
+              <!-- Number Input -->
+              <div v-else-if="value_input_type_2 === 'number'">
+                <input
+                  v-model.number="formData.value_2"
+                  type="number"
+                  :placeholder="`Enter ${value_name_2.toLowerCase()}`"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <!-- Date Input -->
+              <div v-else-if="value_input_type_2 === 'date'">
+                <input
+                  v-model="formData.value_2"
+                  type="date"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <!-- Dropdown Input -->
+              <div v-else-if="value_input_type_2 === 'dropdown'">
+                <select
+                  v-model="formData.value_2"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                >
+                  <option value="" class="bg-slate-800">
+                    Select an option...
+                  </option>
+                  <!-- Add options here -->
+                </select>
+              </div>
+
+              <!-- OCR Input -->
+              <div v-else-if="value_input_type_2 === 'ocr'">
+                <div class="space-y-3">
+                  <input
+                    v-model="formData.value_2"
+                    type="text"
+                    :placeholder="`Enter ${value_name_2.toLowerCase()}`"
+                    required
+                    class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
+                  <button
+                    type="button"
+                    class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-all text-sm font-medium"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Scan with OCR
+                  </button>
+                </div>
+              </div>
+
+              <div class="pt-3 border-b border-slate-700/30"></div>
             </div>
 
-            <div class="pt-3 border-b border-slate-700/30"></div>
-          </div>
-
-          <!-- Value 3 -->
-          <div v-if="value_status_3 === 'active'" class="space-y-3">
-            <label class="flex items-center gap-2 text-sm font-medium text-slate-300">
-              <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getInputIcon(value_input_type_3)" />
-              </svg>
-              {{ value_name_3 }}
-              <span class="text-red-400">*</span>
-            </label>
-
-            <!-- Text Input -->
-            <div v-if="value_input_type_3 === 'text'">
-              <input
-                v-model="formData.value_3"
-                type="text"
-                :placeholder="`Enter ${value_name_3.toLowerCase()}`"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Number Input -->
-            <div v-else-if="value_input_type_3 === 'number'">
-              <input
-                v-model.number="formData.value_3"
-                type="number"
-                :placeholder="`Enter ${value_name_3.toLowerCase()}`"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Date Input -->
-            <div v-else-if="value_input_type_3 === 'date'">
-              <input
-                v-model="formData.value_3"
-                type="date"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <!-- Dropdown Input -->
-            <div v-else-if="value_input_type_3 === 'dropdown'">
-              <select
-                v-model="formData.value_3"
-                required
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+            <!-- Value 3 -->
+            <div v-if="value_status_3 === 'active'" class="space-y-3">
+              <label
+                class="flex items-center gap-2 text-sm font-medium text-slate-300"
               >
-                <option value="" class="bg-slate-800">Select an option...</option>
-                <!-- Add options here -->
-              </select>
-            </div>
+                <svg
+                  class="w-4 h-4 text-orange-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    :d="getInputIcon(value_input_type_3)"
+                  />
+                </svg>
+                {{ value_name_3 }}
+                <span class="text-red-400">*</span>
+              </label>
 
-            <!-- OCR Input -->
-            <div v-else-if="value_input_type_3 === 'ocr'">
-              <div class="space-y-3">
+              <!-- Text Input -->
+              <div v-if="value_input_type_3 === 'text'">
                 <input
                   v-model="formData.value_3"
                   type="text"
@@ -395,63 +458,173 @@ const getInputIcon = (inputType: string) => {
                   required
                   class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 />
-                <button
-                  type="button"
-                  class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-all text-sm font-medium"
+              </div>
+
+              <!-- Number Input -->
+              <div v-else-if="value_input_type_3 === 'number'">
+                <input
+                  v-model.number="formData.value_3"
+                  type="number"
+                  :placeholder="`Enter ${value_name_3.toLowerCase()}`"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <!-- Date Input -->
+              <div v-else-if="value_input_type_3 === 'date'">
+                <input
+                  v-model="formData.value_3"
+                  type="date"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <!-- Dropdown Input -->
+              <div v-else-if="value_input_type_3 === 'dropdown'">
+                <select
+                  v-model="formData.value_3"
+                  required
+                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Scan with OCR
-                </button>
+                  <option value="" class="bg-slate-800">
+                    Select an option...
+                  </option>
+                  <!-- Add options here -->
+                </select>
+              </div>
+
+              <!-- OCR Input -->
+              <div v-else-if="value_input_type_3 === 'ocr'">
+                <div class="space-y-3">
+                  <input
+                    v-model="formData.value_3"
+                    type="text"
+                    :placeholder="`Enter ${value_name_3.toLowerCase()}`"
+                    required
+                    class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  />
+                  <button
+                    type="button"
+                    class="flex items-center gap-2 px-4 py-2 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-all text-sm font-medium"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Scan with OCR
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Empty State -->
-          <div v-if="value_status_1 !== 'active' && value_status_2 !== 'active' && value_status_3 !== 'active'" class="text-center py-12">
-            <svg class="w-16 h-16 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <p class="text-slate-400 text-lg">No active fields to fill</p>
+            <!-- Empty State -->
+            <div
+              v-if="
+                value_status_1 !== 'active' &&
+                value_status_2 !== 'active' &&
+                value_status_3 !== 'active'
+              "
+              class="text-center py-12"
+            >
+              <svg
+                class="w-16 h-16 mx-auto text-slate-600 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <p class="text-slate-400 text-lg">No active fields to fill</p>
+            </div>
           </div>
         </div>
-      </div>
+        <!-- Action Buttons -->
+        <div
+          class="flex flex-col sm:flex-row justify-end gap-4 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6"
+        >
+          <button
+            type="button"
+            @click="handleCancel"
+            class="px-8 py-3.5 bg-slate-700/50 border border-slate-600/50 text-slate-200 font-semibold rounded-xl hover:bg-slate-700 hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 transition-all duration-200"
+          >
+            <span class="flex items-center justify-center gap-2">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+              Cancel
+            </span>
+          </button>
 
-      <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row justify-end gap-4 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6">
-        <button
-          type="button"
-          @click="handleCancel"
-          class="px-8 py-3.5 bg-slate-700/50 border border-slate-600/50 text-slate-200 font-semibold rounded-xl hover:bg-slate-700 hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 transition-all duration-200"
-        >
-          <span class="flex items-center justify-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            Cancel
-          </span>
-        </button>
-        
-        <button
-          type="submit"
-          :disabled="isSubmitting"
-          class="px-8 py-3.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-green-500/20 transition-all duration-300"
-        >
-          <span v-if="isSubmitting" class="flex items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Saving...
-          </span>
-          <span v-else class="flex items-center justify-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            Save Data
-          </span>
-        </button>
+          <button
+            type="submit"
+            :disabled="isSubmitting"
+            class="px-8 py-3.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-green-500/20 transition-all duration-300"
+          >
+            <span
+              v-if="isSubmitting"
+              class="flex items-center justify-center gap-2"
+            >
+              <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Saving...
+            </span>
+            <span v-else class="flex items-center justify-center gap-2">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Save Data
+            </span>
+          </button>
+        </div>
       </div>
     </form>
   </div>

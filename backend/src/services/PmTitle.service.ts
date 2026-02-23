@@ -171,9 +171,11 @@ export const pmTitleService = {
 
         value_status_3,
         value_name_3,
-        value_input_type_3
+        value_input_type_3,
+
+        img_status
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING id
     `;
 
@@ -196,6 +198,7 @@ export const pmTitleService = {
         data.value_name_3,
         data.value_input_type_3,
 
+        data.img_status,
         
       ]);
 

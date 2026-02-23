@@ -49,6 +49,8 @@ const isCheckedIn = ref(false);
 const checkInTime = ref<string | null>(null);
 const checkOutTime = ref<string | null>(null);
 
+const service_status = ref("");
+
 const handleCheckInOut = async () => {
   if (!isCheckedIn.value) {
     const confirmed = window.confirm("คุณต้องการ Check in เพื่อเริ่มบันทึกผล PM ใช่หรือไม่?");
@@ -97,6 +99,7 @@ onMounted(async () => {
       isCheckedIn.value = false;
     }
     pMsiteData.value = res.data.data;
+    service_status.value = res.data.data.service_status;
   } catch (error) {
     console.error("Failed to load PM data:", error);
     alert("ไม่เจอ API SiteList");
@@ -233,7 +236,7 @@ const handleSectionClick = (section: any) => {
                   </div>
                   <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50"></div>
-                    <span class="text-xs text-green-400">Active</span>
+                    <span class="text-xs text-green-400">{{service_status}}</span>
                   </div>
                 </div>
               </div>

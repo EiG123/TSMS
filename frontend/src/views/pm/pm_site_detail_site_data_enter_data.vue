@@ -24,6 +24,8 @@ const pMsiteData = ref<any>(null);
 const title_child_list = ref<any[]>([]);
 const showModules = ref(true);
 
+const status = ref("");
+
 const hide = () => {
   showModules.value = !showModules.value;
 };
@@ -58,6 +60,8 @@ onMounted(async () => {
     });
     title_child_list.value = res_title_child.data.result || [];
     console.log("Title Child List:", title_child_list.value);
+    const data = res_title_child.data.result[0] || {};
+    status.value = data.status || "inactive";
   } catch (error) {
     console.error("Failed to load title child:", error);
   } finally {
@@ -68,7 +72,11 @@ onMounted(async () => {
 const handleEnterData = (title_id: any, title_child_id: any) => {
   router.push({
     name: "pm_enter_data",
-    query: { pmId: pmId.value, title_id: title_id, title_child_id: title_child_id},
+    query: {
+      pmId: pmId.value,
+      title_id: title_id,
+      title_child_id: title_child_id,
+    },
   });
 };
 </script>
@@ -156,82 +164,84 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
       </div>
 
       <!-- Grouped Title Child List -->
-      <div class="space-y-6">
-        <div
-          v-for="(items, groupName) in groupedTitleChild"
-          :key="groupName"
-          class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
-        >
-          <!-- Group Header -->
+      <div v-if="status === 'active'">
+        <div class="space-y-6">
           <div
-            class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-slate-700/50 px-6 py-4"
+            v-for="(items, groupName) in groupedTitleChild"
+            :key="groupName"
+            class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
           >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30"
-                >
-                  <svg
-                    class="w-5 h-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            <!-- Group Header -->
+            <div
+              class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-slate-700/50 px-6 py-4"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-                    />
-                  </svg>
+                    <svg
+                      class="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold text-slate-200">
+                      {{ groupName }}
+                    </h3>
+                    <p class="text-sm text-slate-400 mt-0.5">
+                      {{ items.length }}
+                      {{ items.length === 1 ? "item" : "items" }}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 class="text-xl font-semibold text-slate-200">
-                    {{ groupName }}
-                  </h3>
-                  <p class="text-sm text-slate-400 mt-0.5">
-                    {{ items.length }}
-                    {{ items.length === 1 ? "item" : "items" }}
-                  </p>
-                </div>
-              </div>
 
-              <div
-                class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg text-sm font-semibold border border-blue-500/30"
-              >
-                {{ items.length }} Total
+                <div
+                  class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg text-sm font-semibold border border-blue-500/30"
+                >
+                  {{ items.length }} Total
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Group Items -->
-          <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div
-                v-for="(item, index) in items"
-                :key="index"
-                class="group bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:bg-slate-900/60 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1"
-              >
-                <!-- Enter Data Button -->
-                <button
-                  @click="handleEnterData(item.title_id, item.id)"
-                  class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-200 hover:-translate-y-0.5"
+            <!-- Group Items -->
+            <div class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                  v-for="(item, index) in items"
+                  :key="index"
+                  class="group bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:bg-slate-900/60 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <!-- Enter Data Button -->
+                  <button
+                    @click="handleEnterData(item.title_id, item.id)"
+                    class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-200 hover:-translate-y-0.5"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Enter Data
-                </button>
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                    Enter Data
+                  </button>
+                </div>
               </div>
             </div>
           </div>

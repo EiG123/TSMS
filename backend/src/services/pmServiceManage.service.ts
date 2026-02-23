@@ -122,59 +122,59 @@ export const pmServiceManage = {
         }
     },
 
-    async valuePmByIdTitleIdTitleChildId(data: any, pool: any) {
-        const client = await pool.connect();
+    // async valuePmByIdTitleIdTitleChildId(data: any, pool: any) {
+    //     const client = await pool.connect();
 
-        try {
-            // ===== Validate input =====
-            if (!Array.isArray(data.title_child_value_list)) {
-                throw new Error("title_child_value_list must be an array");
-            }
+    //     try {
+    //         // ===== Validate input =====
+    //         if (!Array.isArray(data.title_child_value_list)) {
+    //             throw new Error("title_child_value_list must be an array");
+    //         }
 
-            if (data.title_child_value_list.length === 0) {
-                return {
-                    success: true,
-                    data: []
-                };
-            }
+    //         if (data.title_child_value_list.length === 0) {
+    //             return {
+    //                 success: true,
+    //                 data: []
+    //             };
+    //         }
 
-            // แปลงเป็น number และกรองค่าที่ไม่ใช่ตัวเลข
-            const idList = data.title_child_value_list
-                .map(Number)
-                .filter(n => Number.isInteger(n));
+    //         // แปลงเป็น number และกรองค่าที่ไม่ใช่ตัวเลข
+    //         const idList = data.title_child_value_list
+    //             .map(Number)
+    //             .filter(n => Number.isInteger(n));
             
-            if (idList.length === 0) {
-                throw new Error("Invalid id list");
-            }
+    //         if (idList.length === 0) {
+    //             throw new Error("Invalid id list");
+    //         }
 
-            const sql = `
-                SELECT *
-                FROM pm_details
-                WHERE pm_id = $1
-                AND title_child_value_id = ANY($2::int[]);
-            `;
+    //         const sql = `
+    //             SELECT *
+    //             FROM pm_details
+    //             WHERE pm_id = $1
+    //             AND title_child_value_id = ANY($2::int[]);
+    //         `;
 
-            const result = await client.query(sql, [
-                data.pmId,
-                idList
-            ]);
+    //         const result = await client.query(sql, [
+    //             data.pmId,
+    //             idList
+    //         ]);
 
-            return {
-                success: true,
-                data: result.rows
-            };
+    //         return {
+    //             success: true,
+    //             data: result.rows
+    //         };
 
-        } catch (error: any) {
+    //     } catch (error: any) {
 
-            console.error("valuePmByIdTitleIdTitleChildId error:", error);
+    //         console.error("valuePmByIdTitleIdTitleChildId error:", error);
 
-            return {
-                success: false,
-                message: error.message
-            };
+    //         return {
+    //             success: false,
+    //             message: error.message
+    //         };
 
-        } finally {
-            client.release();
-        }
-    }
+    //     } finally {
+    //         client.release();
+    //     }
+    // }
 };
