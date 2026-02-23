@@ -212,20 +212,21 @@ export const pmTitleService = {
         const imageParams: any[] = [];
 
         data.image_descriptions.forEach((desc: string, index: number) => {
-          const baseIndex = index * 3;
+          const baseIndex = index * 4;
 
           imagePlaceholders.push(
-            `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3})`
+            `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4})`
           );
 
-          imageParams.push(data.title_id, titleChildId, desc);
+          imageParams.push(data.title_id, titleChildId, desc, index + 1);
         });
 
         const sqlPmImage = `
         INSERT INTO pm_images (
           title_id,
           title_child_id,
-          description
+          description,
+          img_number
         )
         VALUES ${imagePlaceholders.join(", ")}
       `;
@@ -358,6 +359,114 @@ export const pmTitleService = {
     } finally {
       client.release();
     }
-  }
+  },
+
+  async EditpmTitleChild(data: any, pool: any) {
+    const client = await pool.connect();
+    try {
+      // ✅ แก้เป็น UPDATE และนับ $placeholder ให้ถูก
+      const sql = `
+      UPDATE pm_title_child SET
+        title_child_name  = $3,
+        description       = $4,
+        rank              = $5,
+        status            = $6,
+
+        value_status_1    = $7,
+        value_name_1      = $8,
+        value_input_type_1 = $9,
+
+        value_status_2    = $10,
+        value_name_2      = $11,
+        value_input_type_2 = $12,
+
+        value_status_3    = $13,
+        value_name_3      = $14,
+        value_input_type_3 = $15,
+
+        img_status        = $16
+      WHERE title_id = $1 AND id = $2
+      RETURNING id
+    `;
+
+      const { rows } = await client.query(sql, [
+        data.title_id,         // $1
+        data.title_child_id,   // $2
+
+        data.title_child_name, // $3
+        data.description,      // $4
+        data.rank,             // $5
+        data.status,           // $6
+
+        data.value_status_1,   // $7
+        data.value_name_1,     // $8
+        data.value_input_type_1, // $9
+
+        data.value_status_2,   // $10
+        data.value_name_2,     // $11
+        data.value_input_type_2, // $12
+
+        data.value_status_3,   // $13
+        data.value_name_3,     // $14
+        data.value_input_type_3, // $15
+
+        data.image_status,     // $16
+      ]);
+
+      console.log(data.title_id);
+      console.log(data.title_child_id);
+
+      /* ==================== pm_images (UPDATE each row) ==================== */
+      /* ==================== pm_images ==================== */
+      if (Array.isArray(data.image_descriptions)) {
+        // 1. ดึงจำนวน images ที่มีอยู่ใน DB
+        const { rows: existingImages } = await client.query(
+          `SELECT img_number FROM pm_images 
+          WHERE title_id = $1 AND title_child_id = $2 
+          ORDER BY img_number`,
+          [data.title_id, data.title_child_id]
+        );
+
+        const existingCount = existingImages.length;
+        const newCount = data.image_descriptions.length;
+
+        for (let i = 0; i < newCount; i++) {
+          if (i < existingCount) {
+            // ✅ UPDATE row ที่มีอยู่แล้ว
+            await client.query(
+              `UPDATE pm_images 
+         SET description = $3
+            WHERE title_id = $1 AND title_child_id = $2 AND img_number = $4`,
+              [data.title_id, data.title_child_id, data.image_descriptions[i], i + 1]
+            );
+          } else {
+            // ✅ INSERT row ที่เพิ่มมาใหม่
+            await client.query(
+              `INSERT INTO pm_images (title_id, title_child_id, description, img_number)
+              VALUES ($1, $2, $3, $4)`,
+              [data.title_id, data.title_child_id, data.image_descriptions[i], i + 1]
+            );
+          }
+        }
+
+        // ✅ DELETE row ที่เกิน (กรณีใหม่น้อยกว่าเดิม)
+        if (newCount < existingCount) {
+          await client.query(
+            `DELETE FROM pm_images
+            WHERE title_id = $1 AND title_child_id = $2 AND img_number > $3`,
+            [data.title_id, data.title_child_id, newCount]
+          );
+        }
+      }
+
+      return { success: true };
+
+    } catch (error) {
+      console.error("EditpmTitleChild error:", error);
+      return { success: false };
+    } finally {
+      client.release();
+    }
+  },
 
 };

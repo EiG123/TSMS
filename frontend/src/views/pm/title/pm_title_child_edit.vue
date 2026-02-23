@@ -73,9 +73,7 @@ onMounted(async () => {
       title_id: title_id.value,
       title_child_id: title_child_id.value,
     });
-    console.log(getTitleChildByTitle);
-    title_child_name.value =
-      getTitleChildByTitle.data.result[0].title_child_name;
+    title_child_name.value = getTitleChildByTitle.data.result[0].title_child_name;
     description.value = getTitleChildByTitle.data.result[0].description;
     status.value = getTitleChildByTitle.data.result[0].status;
     rank.value = getTitleChildByTitle.data.result[0].rank;
@@ -132,8 +130,9 @@ const handleCancel = () => {
 
 const handleSubmit = async () => {
   console.log("Submitting...");
-  const res = await pmTitleManage.AddpmTitleChild({
+  const res = await pmTitleManage.EditpmTitleChild({
     title_id: title_id.value,
+    title_child_id: title_child_id.value,
     title_child_name: title_child_name.value,
     description: description.value,
     status: status.value,
