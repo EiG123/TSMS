@@ -198,8 +198,7 @@ export const pmTitleService = {
         data.value_name_3,
         data.value_input_type_3,
 
-        data.img_status,
-        
+        data.image_status,
       ]);
 
       const titleChildId = rows[0].id;
@@ -344,9 +343,12 @@ export const pmTitleService = {
         SELECT * FROM pm_title_child WHERE id = $1 AND title_id = $2
       `;
       const result = await client.query(sql, [data.title_child_id, data.title_id]);
+      const sql_img = `SELECT * FROM pm_images WHERE title_id = $1 AND title_child_id = $2`;
+      const img_result = await client.query(sql_img, [data.title_id, data.title_child_id]);
 
       return {
         result: result.rows,
+        img_result: img_result.rows,
         success: true
       };
 
