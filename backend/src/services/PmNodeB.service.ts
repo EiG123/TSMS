@@ -1,5 +1,7 @@
 import { Pool } from "pg";
 import { success } from "zod";
+import fs from "fs";
+import path from "path";
 export const PmService = {
   async getData(
     db: any
@@ -142,51 +144,78 @@ export const PmService = {
     try {
       await client.query("BEGIN");
 
+      /* ==================== pm_details ==================== */
       const sql = `
-        INSERT INTO pm_details
-        (
-          pm_id,
-          title_id,
-          title_child_id,
-          value_1,
-          value_2,
-          value_3
-        )
-        VALUES ($1, $2, $3, $4, $5, $6)
-        ON CONFLICT (pm_id, title_id, title_child_id)
-        DO UPDATE
-        SET
-          value_1 = EXCLUDED.value_1
-          WHERE pm_details.value_1 IS DISTINCT FROM EXCLUDED.value_1;
-      `;
-      const res = await client.query(sql, [
+      INSERT INTO pm_details (
+        pm_id,
+        title_id,
+        title_child_id,
+        value_1,
+        value_2,
+        value_3
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      ON CONFLICT (pm_id, title_id, title_child_id)
+      DO UPDATE SET
+        value_1 = EXCLUDED.value_1,
+        value_2 = EXCLUDED.value_2,
+        value_3 = EXCLUDED.value_3
+    `;
+
+      await client.query(sql, [
         data.pm_id,
         data.title_id,
         data.title_child_id,
-        data.value_1,
-        data.value_2,
-        data.value_3
+        data.value_1 || null,
+        data.value_2 || null,
+        data.value_3 || null,
       ]);
 
-      await client.query("COMMIT");
+      /* ==================== pm_image ==================== */
+      let i = 1;
+      while (data[`images_${i}`]) {
+        const file = data[`images_${i}`]; // File object จาก parseBody
+        const imgNumber = data[`img_numbers_${i}`];
 
+        // บันทึก file ลง disk
+        const uploadDir = `uploads/pm/`;
+        fs.mkdirSync(uploadDir, { recursive: true });
+
+        const ext = path.extname(file.name);
+        const fileName = `${Date.now()}_${i}${ext}`;
+        const filePath = `${uploadDir}/${fileName}`;
+
+        // เขียน file
+        const buffer = await file.arrayBuffer();
+        fs.writeFileSync(filePath, Buffer.from(buffer));
+
+        const sql_img = `
+          UPDATE INTO pm_images (pm_id, title_id, title_child_id, img_number, file_path, created_at)
+          VALUES ($1, $2, $3, $4, $5, NOW())
+          ON CONFLICT (pm_id, title_id, title_child_id, img_number)
+          DO UPDATE SET file_path = EXCLUDED.file_path
+        `;
+        await client.query(sql_img, [
+          data.pm_id,
+          data.title_id,
+          data.title_child_id,
+          imgNumber,
+          filePath,
+        ]);
+
+        i++;
+      }
+
+      await client.query("COMMIT");
       return { success: true };
 
     } catch (error: any) {
       await client.query("ROLLBACK");
       console.error("PmsubmitData error:", error);
-
-      return {
-        success: false,
-        error: error.message
-      };
+      return { success: false, error: error.message };
 
     } finally {
       client.release();
     }
   }
-
-
-
-
 };

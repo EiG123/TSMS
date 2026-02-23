@@ -45,8 +45,8 @@ pmInsertRouter.post("/pm_nodeb", async (c) => {
 });
 
 pmInsertRouter.post("/PmsubmitData", async (c) => {
+    const body = await c.req.parseBody({ all: true });
     try {
-        const body = await c.req.json();
         const result = await PmService.PmsubmitData(
             body,
             db

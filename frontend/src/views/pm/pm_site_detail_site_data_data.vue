@@ -86,7 +86,7 @@ const handleAddNew = () => {
 const goEnterData = (title: string, title_id: any) => {
   router.push({
     name: "pm_site_detail_site_data_enter_data",
-    params: { id: 1 },
+    params: { id: pmId.value },
     query: { title: title, title_id: title_id },
   });
 };

@@ -222,7 +222,7 @@ export const pmTitleService = {
         });
 
         const sqlPmImage = `
-        INSERT INTO pm_images (
+        INSERT INTO pm_title_images (
           title_id,
           title_child_id,
           description,
@@ -343,16 +343,17 @@ export const pmTitleService = {
                 )
             ) AS images
             FROM pm_images pi
-            WHERE pi.title_child_id = ptc.id
+            WHERE pi.title_child_id = ptc.id AND pi.pm_id = $2
         ) pimg ON true
 
         -- 🔹 join detail ปกติ (ควรเป็น 1:1 ด้วย unique constraint)
         LEFT JOIN pm_details pd
-            ON ptc.id = pd.title_child_id
+            ON ptc.id = pd.title_child_id 
+            AND pd.pm_id = $2
 
         WHERE ptc.title_id = $1;
       `;
-      const result = await client.query(sql, [data.title_id]);
+      const result = await client.query(sql, [data.title_id, data.pm_id]);
       return {
         result: result.rows,
         success: true
@@ -449,7 +450,7 @@ export const pmTitleService = {
       if (Array.isArray(data.image_descriptions)) {
         // 1. ดึงจำนวน images ที่มีอยู่ใน DB
         const { rows: existingImages } = await client.query(
-          `SELECT img_number FROM pm_images 
+          `SELECT img_number FROM pm_title_images 
           WHERE title_id = $1 AND title_child_id = $2 
           ORDER BY img_number`,
           [data.title_id, data.title_child_id]
@@ -462,7 +463,7 @@ export const pmTitleService = {
           if (i < existingCount) {
             // ✅ UPDATE row ที่มีอยู่แล้ว
             await client.query(
-              `UPDATE pm_images 
+              `UPDATE pm_title_images 
          SET description = $3
             WHERE title_id = $1 AND title_child_id = $2 AND img_number = $4`,
               [data.title_id, data.title_child_id, data.image_descriptions[i], i + 1]
@@ -470,7 +471,7 @@ export const pmTitleService = {
           } else {
             // ✅ INSERT row ที่เพิ่มมาใหม่
             await client.query(
-              `INSERT INTO pm_images (title_id, title_child_id, description, img_number)
+              `INSERT INTO pm_title_images (title_id, title_child_id, description, img_number)
               VALUES ($1, $2, $3, $4)`,
               [data.title_id, data.title_child_id, data.image_descriptions[i], i + 1]
             );
@@ -480,7 +481,7 @@ export const pmTitleService = {
         // ✅ DELETE row ที่เกิน (กรณีใหม่น้อยกว่าเดิม)
         if (newCount < existingCount) {
           await client.query(
-            `DELETE FROM pm_images
+            `DELETE FROM pm_title_images
             WHERE title_id = $1 AND title_child_id = $2 AND img_number > $3`,
             [data.title_id, data.title_child_id, newCount]
           );

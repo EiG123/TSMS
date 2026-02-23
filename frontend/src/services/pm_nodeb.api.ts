@@ -16,7 +16,7 @@ api.interceptors.request.use((config) => {
 export const PMApiService = {
     async pm_nodeb(data: any) {
         const response = await api.post("/pm_nodeb", {
-           ...data
+            ...data
         });
         return response.data;
     },
@@ -30,10 +30,14 @@ export const PMApiService = {
     //     return response.data;
     // },
 
-    async PmsubmitData(data: any){
-        const response = await api.post("/PmsubmitData", {
-           ...data
-        });
+    async PmsubmitData(data: any) {
+        const response = await api.post("/PmsubmitData",
+            data
+            , {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
         return response.data;
     }
 };

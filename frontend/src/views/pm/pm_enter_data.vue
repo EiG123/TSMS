@@ -63,6 +63,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res_title_child_value = await pmTitleManage.getTitleChildByTitle({
+      pm_id: pmId.value,
       title_id: title_id.value,
       title_child_id: title_child_id.value,
     });
@@ -92,8 +93,9 @@ onMounted(async () => {
     formData.value.value_3 = data.value_3 || "";
 
     img_status.value = data.img_status || "";
+    // ✅ เพิ่มใน onMounted หลัง set img_description
     img_description.value = data.pm_images || [];
-    console.log(img_description.value);
+    uploadedImages.value = new Array(img_description.value.length).fill(null);
   } catch (error) {
     console.error("Failed to load data:", error);
     alert("Failed to load form data");
@@ -104,19 +106,47 @@ onMounted(async () => {
 
 const handleSubmit = async () => {
   if (isSubmitting.value) return;
-
   isSubmitting.value = true;
 
   try {
-    console.log("Submitting data:", formData.value);
+    // Validate images
+    // if (img_status.value === "active") {
+    //   const allUploaded = img_description.value.every(
+    //     (_, index) => uploadedImages.value[index] != null
+    //   );
+    //   if (!allUploaded) {
+    //     alert("กรุณาอัปโหลดรูปภาพให้ครบทุกช่อง");
+    //     return;
+    //   }
+    // }
 
-    // Call your API here
-    await PMApiService.PmsubmitData({
-      pm_id: pmId.value,
-      title_id: title_id.value,
-      title_child_id: title_child_id.value,
-      ...formData.value
+    const form = new FormData();
+    form.append("pm_id", pmId.value);
+    form.append("title_id", title_id.value);
+    form.append("title_child_id", title_child_id.value);
+
+    form.append("value_1", formData.value.value_1 ?? "");
+    form.append("value_2", formData.value.value_2 ?? "");
+    form.append("value_3", formData.value.value_3 ?? "");
+
+    // ส่ง input type ไปด้วยให้หลังบ้าน cast ได้ถูก
+    form.append("value_input_type_1", value_input_type_1.value);
+    form.append("value_input_type_2", value_input_type_2.value);
+    form.append("value_input_type_3", value_input_type_3.value);
+
+    uploadedImages.value.forEach((file, index) => {
+      if (file) {
+        // ✅ ใช้ key ต่างกันแต่ละรูป
+        form.append(`images_${index + 1}`, file);
+        form.append(`img_numbers_${index + 1}`, String(index + 1));
+      }
     });
+
+    // แทน console.log(form) ใช้อันนี้แทน
+    // for (const [key, value] of form.entries()) {
+    //   console.log(key, value);
+    // }
+    await PMApiService.PmsubmitData(form);
 
     alert("Data saved successfully!");
     router.back();
@@ -135,14 +165,16 @@ const handleImageUpload = (event: Event, index: number) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
-  // เก็บ file สำหรับ submit
-  uploadedImages.value[index] = file;
+  // ✅ Revoke URL เก่าก่อน สร้างใหม่
+  if (img_description.value[index]?.file_path?.startsWith("blob:")) {
+    URL.revokeObjectURL(img_description.value[index].file_path);
+  }
 
-  // Preview โดย update img_url ชั่วคราว
+  uploadedImages.value[index] = file;
   const url = URL.createObjectURL(file);
   img_description.value[index] = {
     ...img_description.value[index],
-    img_url: url,
+    file_path: url,
   };
 };
 
@@ -597,11 +629,11 @@ const getInputIcon = (inputType: string) => {
 
                 <!-- Preview (ถ้ามี img_url) -->
                 <div
-                  v-if="img.img_url"
+                  v-if="img.file_path"
                   class="rounded-lg overflow-hidden border border-slate-700/50"
                 >
                   <img
-                    :src="img.img_url"
+                    :src="img.file_path"
                     :alt="img.description || `Image ${index + 1}`"
                     class="w-full max-h-60 object-contain bg-slate-900"
                   />
