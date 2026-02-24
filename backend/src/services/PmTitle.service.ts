@@ -342,7 +342,7 @@ export const pmTitleService = {
       const sql = `
         SELECT
             ptc.*,
-            COALESCE(pimg.images, '[]') AS pm_images,
+            COALESCE(pimg.images, '[]'::json) AS pm_images,
             pd.value_1,
             pd.value_2,
             pd.value_3
@@ -363,6 +363,7 @@ export const pmTitleService = {
             LEFT JOIN pm_images pmi
                 ON pmi.title_image_id = pti.id
                 AND pmi.pm_id = $2
+                AND pmi.title_child_id = ptc.id
             WHERE pti.title_id = $1
               AND pti.title_child_id = ptc.id
         ) pimg ON true

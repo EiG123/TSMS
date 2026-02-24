@@ -6,6 +6,7 @@ console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono';
 import { cors } from 'hono/cors'
+import { serveStatic } from '@hono/node-server/serve-static'
 import { AuthService } from './services/auth.service.js';
 import { Pool } from 'pg';
 import pmConfigRouter from "./routers/pmConfig.js";
@@ -27,6 +28,10 @@ app.use('/api/*', cors({
   allowHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }))
+
+// images
+app.use('/uploads/pm/*', serveStatic({ root: './' }));
+
 
 app.route("/api/config/pm", pmConfigRouter);
 // PM NodeB endpoint

@@ -6,6 +6,8 @@ import { pmTitleManage } from "../../services/PmTitle/pmTitleManage.api";
 import { PMApiService } from "../../services/pm_nodeb.api";
 import { useAuthStore } from "../../stores/auth";
 
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/";
+
 const router = useRouter();
 const authStore = useAuthStore();
 const username = authStore.currentUser;
@@ -177,17 +179,20 @@ const handleImageUpload = (event: Event, index: number) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
-  // ✅ Revoke URL เก่าก่อน สร้างใหม่
+  // Revoke blob URL เก่าก่อน
   if (img_description.value[index]?.file_path?.startsWith("blob:")) {
     URL.revokeObjectURL(img_description.value[index].file_path);
   }
 
-  uploadedImages.value[index] = file;
-  const url = URL.createObjectURL(file);
-  img_description.value[index] = {
-    ...img_description.value[index],
-    file_path: url,
-  };
+  // ✅ uploadedImages — แก้ถูกแล้ว
+  const newArr = [...uploadedImages.value];
+  newArr[index] = file;
+  uploadedImages.value = newArr;
+
+  // ✅ img_description — แก้แบบเดียวกัน
+  const newImgs = [...img_description.value];
+  newImgs[index] = { ...newImgs[index], file_path: URL.createObjectURL(file) };
+  img_description.value = newImgs;
 };
 
 // Get icon based on input type
@@ -645,7 +650,11 @@ const getInputIcon = (inputType: string) => {
                   class="rounded-lg overflow-hidden border border-slate-700/50"
                 >
                   <img
-                    :src="img.file_path"
+                    :src="
+                      img.file_path?.startsWith('blob:')
+                        ? img.file_path
+                        : BASE_URL + img.file_path
+                    "
                     :alt="img.description || `Image ${index + 1}`"
                     class="w-full max-h-60 object-contain bg-slate-900"
                   />
