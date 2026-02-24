@@ -174,6 +174,7 @@ export const PmService = {
       /* ==================== pm_image ==================== */
       let i = 1;
       while (data[`images_${i}`]) {
+        const title_image_id = data[`title_image_id`][i];
         const file = data[`images_${i}`]; // File object จาก parseBody
         const imgNumber = data[`img_numbers_${i}`];
 
@@ -190,8 +191,8 @@ export const PmService = {
         fs.writeFileSync(filePath, Buffer.from(buffer));
 
         const sql_img = `
-          UPDATE INTO pm_images (pm_id, title_id, title_child_id, img_number, file_path, created_at)
-          VALUES ($1, $2, $3, $4, $5, NOW())
+          INSERT INTO pm_images (pm_id, title_id, title_child_id, title_image_id, img_number, file_path, created_at)
+          VALUES ($1, $2, $3, $4, $5, $6, NOW())
           ON CONFLICT (pm_id, title_id, title_child_id, img_number)
           DO UPDATE SET file_path = EXCLUDED.file_path
         `;
@@ -199,6 +200,7 @@ export const PmService = {
           data.pm_id,
           data.title_id,
           data.title_child_id,
+          title_image_id,
           imgNumber,
           filePath,
         ]);

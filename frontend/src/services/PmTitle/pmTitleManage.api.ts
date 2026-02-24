@@ -75,23 +75,28 @@ export const pmTitleManage = {
         return response.data;
     },
 
-    async getTitleChildValueByTitle(data: any){
+    async getTitleChildDataByTitle(data: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildDataByTitle", { ...data });
+        return response.data;
+    },
+
+    async getTitleChildValueByTitle(data: any) {
         const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildValueByTitle", { ...data });
         return response.data;
     },
 
     async getTitleChildById(data: any) {
-        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildById", {data})
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildById", { data })
         return response.data;
     },
 
     async EditpmTitleChild(data: any) {
-        const response = await axios.post("http://localhost:3000/api/pmTitle/EditpmTitleChild", {data})
+        const response = await axios.post("http://localhost:3000/api/pmTitle/EditpmTitleChild", { data })
         return response.data;
     },
 
-    async getTitleChildData(data: any){
-        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildData", {data})
+    async getTitleChildData(data: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildData", { data })
         return response.data;
     }
 };

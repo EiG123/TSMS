@@ -59,10 +59,12 @@ const img_status = ref("");
 
 const img_description = ref<any[]>([]);
 
+const pm_images = ref<any[]>([]);
+
 onMounted(async () => {
   loading.value = true;
   try {
-    const res_title_child_value = await pmTitleManage.getTitleChildByTitle({
+    const res_title_child_value = await pmTitleManage.getTitleChildDataByTitle({
       pm_id: pmId.value,
       title_id: title_id.value,
       title_child_id: title_child_id.value,
@@ -71,6 +73,8 @@ onMounted(async () => {
     const data = res_title_child_value.data.result[0] || {};
     title_child_value_list.value = data;
     console.log("Title Child Value:", title_child_value_list.value);
+
+    pm_images.value = title_child_value_list.value.pm_images;
 
     status.value = data.status || "inactive";
 
@@ -124,6 +128,7 @@ const handleSubmit = async () => {
     form.append("pm_id", pmId.value);
     form.append("title_id", title_id.value);
     form.append("title_child_id", title_child_id.value);
+    // form.append('title_image_id', )
 
     form.append("value_1", formData.value.value_1 ?? "");
     form.append("value_2", formData.value.value_2 ?? "");
@@ -133,10 +138,11 @@ const handleSubmit = async () => {
     form.append("value_input_type_1", value_input_type_1.value);
     form.append("value_input_type_2", value_input_type_2.value);
     form.append("value_input_type_3", value_input_type_3.value);
-
+    
     uploadedImages.value.forEach((file, index) => {
       if (file) {
         // ✅ ใช้ key ต่างกันแต่ละรูป
+        form.append(`title_image_id`, pm_images.value[index].title_image_id);
         form.append(`images_${index + 1}`, file);
         form.append(`img_numbers_${index + 1}`, String(index + 1));
       }
