@@ -320,9 +320,41 @@ export const pmTitleService = {
     const client = await pool.connect();
     try {
       const sql = `
-        SELECT * FROM pm_title_child WHERE title_id = $1
+        SELECT
+            ptc.*,
+            COALESCE(pimg.images, '[]'::json) AS pm_images,
+            pd.value_1,
+            pd.value_2,
+            pd.value_3
+        FROM pm_title_child ptc
+
+        LEFT JOIN LATERAL (
+            SELECT json_agg(
+                json_build_object(
+                    'title_image_id', pti.id,
+                    'description', pti.description,
+                    'img_number', pti.img_number,
+                    'file_path', pmi.file_path,
+                    'pm_image_id', pmi.id
+                )
+                ORDER BY pti.img_number
+            ) AS images
+            FROM pm_title_images pti
+            LEFT JOIN pm_images pmi
+                ON pmi.title_image_id = pti.id
+                AND pmi.pm_id = $2
+                AND pmi.title_child_id = ptc.id
+            WHERE pti.title_id = $1
+              AND pti.title_child_id = ptc.id
+        ) pimg ON true
+
+        LEFT JOIN pm_details pd
+            ON ptc.id = pd.title_child_id
+            AND pd.pm_id = $2
+
+        WHERE ptc.title_id = $1;
       `;
-      const result = await client.query(sql, [data.title_id]);
+      const result = await client.query(sql, [data.title_id, data.pm_id]);
       return {
         result: result.rows,
         success: true
@@ -363,18 +395,18 @@ export const pmTitleService = {
             LEFT JOIN pm_images pmi
                 ON pmi.title_image_id = pti.id
                 AND pmi.pm_id = $2
-                AND pmi.title_child_id = ptc.id
+                AND pmi.title_child_id = $3
             WHERE pti.title_id = $1
-              AND pti.title_child_id = ptc.id
+              AND pti.title_child_id = $3
         ) pimg ON true
 
         LEFT JOIN pm_details pd
             ON ptc.id = pd.title_child_id
             AND pd.pm_id = $2
 
-        WHERE ptc.title_id = $1;
+        WHERE ptc.title_id = $1 AND ptc.id = $3;
       `;
-      const result = await client.query(sql, [data.title_id ,data.pm_id]);
+      const result = await client.query(sql, [data.title_id, data.pm_id, data.title_child_id]);
       return {
         result: result.rows,
         success: true
@@ -395,7 +427,7 @@ export const pmTitleService = {
         SELECT * FROM pm_title_child WHERE id = $1 AND title_id = $2
       `;
       const result = await client.query(sql, [data.title_child_id, data.title_id]);
-      const sql_img = `SELECT * FROM pm_images WHERE title_id = $1 AND title_child_id = $2`;
+      const sql_img = `SELECT * FROM pm_title_images WHERE title_id = $1 AND title_child_id = $2`;
       const img_result = await client.query(sql_img, [data.title_id, data.title_child_id]);
 
       return {

@@ -15,6 +15,8 @@ const props = defineProps<{
   title_id?: any;
 }>();
 
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/";
+
 const pmId = computed(() => props.id);
 const title = computed(() => props.title);
 const title_id = computed(() => props.title_id);
@@ -214,34 +216,75 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
             </div>
 
             <!-- Group Items -->
-            <div class="p-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              v-for="(item, itemIndex) in items"
+              :key="itemIndex"
+              class="group bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:bg-slate-900/60 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1"
+            >
+              <!-- Item Header -->
+              <div class="p-4 border-b border-slate-700/30">
+                <p class="text-slate-200 font-medium text-sm">
+                  {{ item.title_child_name }}
+                </p>
+              </div>
+
+              <!-- Images -->
+              <div
+                v-if="item.pm_images && item.pm_images.length > 0"
+                class="p-3 space-y-2"
+              >
                 <div
-                  v-for="(item, index) in items"
-                  :key="index"
-                  class="group bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:bg-slate-900/60 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1"
+                  v-for="(img, imgIndex) in item.pm_images"
+                  :key="imgIndex"
+                  class="rounded-lg overflow-hidden border border-slate-700/50"
                 >
-                  <!-- Enter Data Button -->
-                  <button
-                    @click="handleEnterData(item.title_id, item.id)"
-                    class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-200 hover:-translate-y-0.5"
+                  <img
+                    :src="
+                      img.file_path?.startsWith('blob:')
+                        ? img.file_path
+                        : BASE_URL + img.file_path
+                    "
+                    :alt="img.description || `Image ${imgIndex + 1}`"
+                    class="w-full max-h-48 object-contain bg-slate-900"
+                  />
+                  <p
+                    v-if="img.description"
+                    class="text-xs text-slate-500 px-2 py-1"
                   >
-                    <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
-                    Enter Data
-                  </button>
+                    {{ img.description }}
+                  </p>
                 </div>
+              </div>
+
+              <!-- No image placeholder -->
+              <div
+                v-else
+                class="p-4 flex items-center justify-center text-slate-600 text-xs"
+              >
+                No images
+              </div>
+
+              <!-- Enter Data Button -->
+              <div class="p-3 pt-0">
+                <button
+                  @click="handleEnterData(item.title_id, item.id)"
+                  class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-200 hover:-translate-y-0.5"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                  Enter Data
+                </button>
               </div>
             </div>
           </div>

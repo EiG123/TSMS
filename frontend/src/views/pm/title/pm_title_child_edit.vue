@@ -111,7 +111,7 @@ onMounted(async () => {
     // Set image_number หลัง (watch จะ trigger แต่ num === current.length จะไม่เปลี่ยน array)
     image_number.value = imgResults.length;
 
-    console.log(image_descriptions.value[0]);
+    console.log(getTitleChildByTitle.data.result);
     // image_status = ref("inactive");
     // image_number = ref(0);
     // image_descriptions = ref<string[]>([]);
