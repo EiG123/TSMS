@@ -322,18 +322,15 @@ export const pmTitleService = {
       const sql = `
         SELECT
             ptc.*,
-            COALESCE(pimg.images, '[]'::json) AS pm_images,
-            pd.value_1,
-            pd.value_2,
-            pd.value_3
+            COALESCE(pimg.images, '[]'::json) AS pm_images
         FROM pm_title_child ptc
 
         LEFT JOIN LATERAL (
             SELECT json_agg(
                 json_build_object(
                     'title_image_id', pti.id,
-                    'description', pti.description,
                     'img_number', pti.img_number,
+                    'description', pti.description,
                     'file_path', pmi.file_path,
                     'pm_image_id', pmi.id
                 )
@@ -343,14 +340,9 @@ export const pmTitleService = {
             LEFT JOIN pm_images pmi
                 ON pmi.title_image_id = pti.id
                 AND pmi.pm_id = $2
-                AND pmi.title_child_id = ptc.id
-            WHERE pti.title_id = $1
+            WHERE pti.title_id = ptc.title_id
               AND pti.title_child_id = ptc.id
         ) pimg ON true
-
-        LEFT JOIN pm_details pd
-            ON ptc.id = pd.title_child_id
-            AND pd.pm_id = $2
 
         WHERE ptc.title_id = $1;
       `;
@@ -395,18 +387,20 @@ export const pmTitleService = {
             LEFT JOIN pm_images pmi
                 ON pmi.title_image_id = pti.id
                 AND pmi.pm_id = $2
-                AND pmi.title_child_id = $3
-            WHERE pti.title_id = $1
-              AND pti.title_child_id = $3
+                AND pmi.order_number = $4
+            WHERE pti.title_id = ptc.title_id
+              AND pti.title_child_id = ptc.id
         ) pimg ON true
 
         LEFT JOIN pm_details pd
             ON ptc.id = pd.title_child_id
             AND pd.pm_id = $2
+            AND pd.order_number = $4
 
-        WHERE ptc.title_id = $1 AND ptc.id = $3;
+        WHERE ptc.title_id = $1
+          AND ptc.id = $3;
       `;
-      const result = await client.query(sql, [data.title_id, data.pm_id, data.title_child_id]);
+      const result = await client.query(sql, [data.title_id, data.pm_id, data.title_child_id, data.order_number]);
       return {
         result: result.rows,
         success: true

@@ -140,6 +140,7 @@ CREATE TABLE pm_details (
     pm_id INTEGER NOT NULL,
     title_id INTEGER NOT NULL,
     title_child_id INTEGER NOT NULL,
+    order_number INTEGER NOT NULL,
 
     value_1 VARCHAR(255),
     value_2 VARCHAR(255),
@@ -167,10 +168,9 @@ CREATE TABLE pm_title_images (
 CREATE TABLE pm_images (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER,
-    title_id INTEGER,
-    title_child_id INTEGER,
     title_image_id INTEGER,
     img_number INTEGER,
+    order_number INTEGER NOT NULL,
     file_path VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
@@ -180,7 +180,7 @@ CREATE TABLE pm_images (
         ON DELETE CASCADE,
 
     CONSTRAINT unique_pm_images
-    UNIQUE (pm_id, title_id, title_child_id, img_number)
+    UNIQUE (pm_id, img_number)
 );
 
 CREATE TABLE pm_dropdown_head (

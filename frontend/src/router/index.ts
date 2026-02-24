@@ -75,19 +75,23 @@ const routes = [
                 props: true
             },
             {
-                path: "pm_site_detail_site_data_data/:id/:type",
+                path: "pm_site_detail_site_data_data",
                 name: "pm_site_detail_site_data_data",
                 component: pm_site_detail_site_data_data,
-                props: true
+                props: route => ({
+                    id: route.query.id,
+                    type: route.query.type,
+                })
             },
             {
-                path: "pm_site_detail_site_data_enter_data/:id?",
+                path: "pm_site_detail_site_data_enter_data",
                 name: "pm_site_detail_site_data_enter_data",
                 component: pm_site_detail_site_data_enter_data,
                 props: route => ({
-                    id: route.params.id,
+                    pmId: route.query.pmId,
                     title: route.query.title,
                     title_id: route.query.title_id,
+                    order_number: route.query.order_number,
                 })
             },
             {
@@ -98,6 +102,7 @@ const routes = [
                     pmId: route.query.pmId,
                     title_id: route.query.title_id,
                     title_child_id: route.query.title_child_id,
+                    order_number: route.query.order_number,
                 })
             },
 

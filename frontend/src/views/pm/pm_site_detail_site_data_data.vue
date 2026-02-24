@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
@@ -9,8 +9,16 @@ import { pmTitleManage } from "../../services/PmTitle/pmTitleManage.api";
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
-const pmId = ref(route.params.id as string);
-const type = ref(route.params.type as string);
+const props = defineProps<{
+  id: string;
+  type: string;
+}>();
+
+const pmId = computed(() => props.id);
+const type = computed(() => props.type);
+
+console.log(pmId.value);
+console.log(type.value);
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
@@ -52,8 +60,6 @@ onMounted(async () => {
     const res = await getPmList.getPmById(pmId.value);
     pMsiteData.value = res.data.data;
     kwh_meters_list.value = res.data.data.kwh_meters || [];
-
-    console.log(type.value);
     const res_title = await pmTitleManage.getTitleByType(type.value);
     title_list.value = res_title.data.result || [];
     console.log("Title List:", title_list.value);
@@ -83,11 +89,15 @@ const handleAddNew = () => {
   alert(`Add new ${getSectionTitle()} item`);
 };
 
-const goEnterData = (title: string, title_id: any) => {
+const goEnterData = (title: string, title_id: any, order_number: any) => {
   router.push({
     name: "pm_site_detail_site_data_enter_data",
-    params: { id: pmId.value },
-    query: { title: title, title_id: title_id },
+    query: {
+      pmId: pmId.value,
+      title: title,
+      title_id: title_id,
+      order_number: order_number,
+    },
   });
 };
 </script>
@@ -245,7 +255,10 @@ const goEnterData = (title: string, title_id: any) => {
                 </div>
 
                 <!-- Title Content -->
-                <div class="flex-1 min-w-0" @click="goEnterData(title.title, title.id)">
+                <div
+                  class="flex-1 min-w-0"
+                  @click="goEnterData(title.title, title.id, kwh.number)"
+                >
                   <p class="text-slate-200 font-medium">{{ title.title }}</p>
                   <p
                     v-if="title.description"

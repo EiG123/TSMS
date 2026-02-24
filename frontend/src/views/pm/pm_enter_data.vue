@@ -20,11 +20,16 @@ const props = defineProps<{
   pmId?: any;
   title_id?: any;
   title_child_id?: any;
+  order_number?: any;
 }>();
 
 const pmId = computed(() => props.pmId);
 const title_id = computed(() => props.title_id);
 const title_child_id = computed(() => props.title_child_id);
+const order_number = computed(() => props.order_number);
+
+console.log(pmId.value);
+console.log(order_number.value);
 
 const handleCancel = () => {
   router.back();
@@ -70,6 +75,7 @@ onMounted(async () => {
       pm_id: pmId.value,
       title_id: title_id.value,
       title_child_id: title_child_id.value,
+      order_number: order_number.value,
     });
 
     const data = res_title_child_value.data.result[0] || {};

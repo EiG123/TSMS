@@ -10,16 +10,18 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const props = defineProps<{
-  id: string;
-  title?: string;
+  pmId?: any;
+  title?: any;
   title_id?: any;
+  order_number?: any;
 }>();
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/";
 
-const pmId = computed(() => props.id);
+const pmId = computed(() => props.pmId);
 const title = computed(() => props.title);
 const title_id = computed(() => props.title_id);
+const order_number = computed(() => props.order_number);
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
@@ -57,6 +59,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res_title_child = await pmTitleManage.getTitleChildByTitle({
+      pm_id: pmId.value,
       title: title.value,
       title_id: title_id.value,
     });
@@ -78,6 +81,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
       pmId: pmId.value,
       title_id: title_id,
       title_child_id: title_child_id,
+      order_number: order_number.value,
     },
   });
 };
