@@ -138,15 +138,21 @@ const handleSubmit = async () => {
     form.append("value_input_type_1", value_input_type_1.value);
     form.append("value_input_type_2", value_input_type_2.value);
     form.append("value_input_type_3", value_input_type_3.value);
-    
+
+    const imagesMeta: any[] = [];
+
     uploadedImages.value.forEach((file, index) => {
       if (file) {
-        // ✅ ใช้ key ต่างกันแต่ละรูป
-        form.append(`title_image_id`, pm_images.value[index].title_image_id);
-        form.append(`images_${index + 1}`, file);
-        form.append(`img_numbers_${index + 1}`, String(index + 1));
+        imagesMeta.push({
+          title_image_id: pm_images.value[index].title_image_id,
+          img_number: index + 1,
+        });
+
+        form.append("files", file); // key เดียวกันหมด
       }
     });
+
+    form.append("images_meta", JSON.stringify(imagesMeta));
 
     // แทน console.log(form) ใช้อันนี้แทน
     // for (const [key, value] of form.entries()) {

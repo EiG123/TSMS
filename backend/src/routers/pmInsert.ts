@@ -46,9 +46,29 @@ pmInsertRouter.post("/pm_nodeb", async (c) => {
 
 pmInsertRouter.post("/PmsubmitData", async (c) => {
     const body = await c.req.parseBody({ all: true });
+
+    // meta เป็น string
+    const imagesMeta = JSON.parse(body.images_meta || "[]");
+
+    // files อาจเป็น File หรือ File[]
+    let files = body.files;
+
+    if (!files) files = [];
+    if (!Array.isArray(files)) files = [files];
+
+    if (imagesMeta.length !== files.length) {
+        return c.json({ success: false, message: "Image meta mismatch" }, 400);
+    }
+
+    const images = imagesMeta.map((meta: any, index: number) => ({
+        title_image_id: Number(meta.title_image_id),
+        img_number: Number(meta.img_number),
+        file: files[index] as File
+    }));
     try {
         const result = await PmService.PmsubmitData(
             body,
+            images,
             db
         );
         if (result.success) {

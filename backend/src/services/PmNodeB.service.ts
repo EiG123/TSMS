@@ -138,7 +138,7 @@ export const PmService = {
     }
   },
 
-  async PmsubmitData(data: any, pool: any) {
+  async PmsubmitData(data: any, images: any, pool: any) {
     const client = await pool.connect();
     console.log(data);
     try {
@@ -172,41 +172,47 @@ export const PmService = {
       ]);
 
       /* ==================== pm_image ==================== */
-      let i = 1;
-      while (data[`images_${i}`]) {
-        const title_image_id = data[`title_image_id`][i];
-        const file = data[`images_${i}`]; // File object จาก parseBody
-        const imgNumber = data[`img_numbers_${i}`];
+      for (const img of images) {
+        const { title_image_id, img_number, file } = img;
 
-        // บันทึก file ลง disk
-        const uploadDir = `uploads/pm/`;
+        const uploadDir = "uploads/pm/";
         fs.mkdirSync(uploadDir, { recursive: true });
 
         const ext = path.extname(file.name);
-        const fileName = `${Date.now()}_${i}${ext}`;
+        const fileName = `${Date.now()}_${img_number}${ext}`;
         const filePath = `${uploadDir}/${fileName}`;
 
-        // เขียน file
         const buffer = await file.arrayBuffer();
         fs.writeFileSync(filePath, Buffer.from(buffer));
 
-        const sql_img = `
-          INSERT INTO pm_images (pm_id, title_id, title_child_id, title_image_id, img_number, file_path, created_at)
-          VALUES ($1, $2, $3, $4, $5, $6, NOW())
+        await client.query(
+          `
+          INSERT INTO pm_images (
+            pm_id,
+            title_id,
+            title_child_id,
+            title_image_id,
+            img_number,
+            file_path,
+            created_at
+          )
+          VALUES ($1,$2,$3,$4,$5,$6,NOW())
           ON CONFLICT (pm_id, title_id, title_child_id, img_number)
-          DO UPDATE SET file_path = EXCLUDED.file_path
-        `;
-        await client.query(sql_img, [
-          data.pm_id,
-          data.title_id,
-          data.title_child_id,
-          title_image_id,
-          imgNumber,
-          filePath,
-        ]);
-
-        i++;
+          DO UPDATE SET
+            file_path = EXCLUDED.file_path,
+            title_image_id = EXCLUDED.title_image_id
+          `,
+          [
+            data.pm_id,
+            data.title_id,
+            data.title_child_id,
+            title_image_id,
+            img_number,
+            filePath
+          ]
+        );
       }
+
 
       await client.query("COMMIT");
       return { success: true };
