@@ -4,7 +4,7 @@ export const pmServiceManage = {
     async deletePmById(id: any) {
         const response = await axios.delete(
             "http://localhost:3000/api/pmServiceManage/deletePmById",
-            { data: {id} }
+            { data: { id } }
         );
         return response.data;
     },
@@ -12,7 +12,7 @@ export const pmServiceManage = {
     async checkIn(pmId: any, userId: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmCheckInOut/checkIn",
-            {pmId, userId}
+            { pmId, userId }
         );
         return response.data;
     },
@@ -20,7 +20,7 @@ export const pmServiceManage = {
     async checkOut(pmId: any, userId: any) {
         const response = await axios.post(
             "http://localhost:3000/api/pmCheckInOut/checkOut",
-            {pmId, userId}
+            { pmId, userId }
         );
         return response.data;
     },
@@ -31,6 +31,14 @@ export const pmServiceManage = {
             { ...data }
         );
         return response.data;
-    }
+    },
+
+    async AddCabinet(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/pmCabinet/AddCabinet",
+            { data }
+        );
+        return response.data;
+    },
 };
 

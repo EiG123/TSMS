@@ -50,6 +50,8 @@ const checkOutTime = ref<string | null>(null);
 
 const service_status = ref("");
 
+const cabinets = ref([]);
+
 const handleCheckInOut = async () => {
   if (!isCheckedIn.value) {
     const confirmed = window.confirm(
@@ -99,6 +101,8 @@ onMounted(async () => {
       isCheckedIn.value = true;
       const cabinet = await getPmList.getPmCabinetById(pmId.value);
       console.log(cabinet);
+      cabinets.value = cabinet.data.result.cabinets;
+      console.log(cabinets.value);
     } else if (res.data.data.status === "checkout") {
       isCheckedIn.value = false;
     }
@@ -141,7 +145,12 @@ const navigations = [
 ];
 
 const AddCabinets = () => {
-  alert("AddCabinets");
+  router.push({
+    name: "pm_add_cabinet",
+    query: {
+      pmId: pmId.value
+    },
+  });
 };
 </script>
 
@@ -761,6 +770,7 @@ const AddCabinets = () => {
       </div>
       <!-- Cabinets Section -->
       <div
+        v-if="isCheckedIn"
         class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div
@@ -808,6 +818,8 @@ const AddCabinets = () => {
             </svg>
           </button>
         </div>
+        <div v-if="cabinets.length != 0">hello cabinet</div>
+        <div v-else><div @click="AddCabinets">Add Cabinets</div></div>
 
         <div v-if="showModules" class="px-8 py-6 space-y-4">
           <!-- Cabinet Module -->

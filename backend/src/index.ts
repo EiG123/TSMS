@@ -17,7 +17,9 @@ import txt_to_excelRouter from "./routers/txt_to_excel.js";
 import pmDropdownRouter from "./routers/pmDropdown.js";
 import pmGetPmData from "./routers/pmGetPmData.js";
 
+
 import pmCheckInOutManage from "./routers/pmCheckInOutManage.js";
+import pmCabinetRouter from "./routers/pmCabinetRouter.js";
 
 const app = new Hono();
 
@@ -40,6 +42,7 @@ app.route("/api/pmInsert", pmInsertRouter);
 app.route("/api/pmTitle", pmTitleRouter);
 app.route("/api/pmDropdown", pmDropdownRouter);
 app.route("/api/pmCheckInOut", pmCheckInOutManage);
+app.route("/api/pmCabinet", pmCabinetRouter);
 
 app.route("/api/pmGetPmData", pmGetPmData);
 
