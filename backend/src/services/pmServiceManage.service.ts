@@ -122,6 +122,40 @@ export const pmServiceManage = {
         }
     },
 
+
+    async getPmCabinetById(data: any, db: any) {
+        const client = await db.connect();
+        try {
+            const sql = `
+            SELECT 
+                p.id, 
+                COALESCE(
+                    (
+                        SELECT json_agg(cab)
+                        FROM pm_cabinet cab
+                        WHERE cab.pm_id = p.id
+                    ),
+                    '[]'
+                ) AS cabinets
+            FROM pm p 
+            WHERE p.id = $1
+            `;
+            const res = await client.query(sql, [data.id]);
+            console.log(res.rows[0]);
+            return {
+                success: true,
+                result: res.rows[0]
+            }
+        } catch (err) {
+            console.log(err);
+            return {
+                success: false
+            }
+        } finally {
+            client.release();
+        }
+    },
+
     // async valuePmByIdTitleIdTitleChildId(data: any, pool: any) {
     //     const client = await pool.connect();
 
@@ -142,7 +176,7 @@ export const pmServiceManage = {
     //         const idList = data.title_child_value_list
     //             .map(Number)
     //             .filter(n => Number.isInteger(n));
-            
+
     //         if (idList.length === 0) {
     //             throw new Error("Invalid id list");
     //         }

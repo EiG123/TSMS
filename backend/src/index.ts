@@ -15,7 +15,7 @@ import pmInsertRouter from "./routers/pmInsert.js";
 import pmTitleRouter from "./routers/pmTitle.js";
 import txt_to_excelRouter from "./routers/txt_to_excel.js";
 import pmDropdownRouter from "./routers/pmDropdown.js";
-import pmRouterManage from "./routers/pmRouterManage.js";
+import pmGetPmData from "./routers/pmGetPmData.js";
 
 import pmCheckInOutManage from "./routers/pmCheckInOutManage.js";
 
@@ -35,13 +35,13 @@ app.use('/uploads/pm/*', serveStatic({ root: './' }));
 
 app.route("/api/config/pm", pmConfigRouter);
 // PM NodeB endpoint
-app.route("/api/pmServiceManage", pmRouterManage);
+app.route("/api/pmServiceManage", pmGetPmData);
 app.route("/api/pmInsert", pmInsertRouter);
 app.route("/api/pmTitle", pmTitleRouter);
 app.route("/api/pmDropdown", pmDropdownRouter);
 app.route("/api/pmCheckInOut", pmCheckInOutManage);
 
-app.route("/api/pmGetPmData", pmRouterManage);
+app.route("/api/pmGetPmData", pmGetPmData);
 
 //Txt To Excel
 app.route("/api/txt-to-excel", txt_to_excelRouter);

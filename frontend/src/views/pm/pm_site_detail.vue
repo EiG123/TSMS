@@ -94,8 +94,11 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res = await getPmList.getPmById(pmId.value);
+
     if (res.data.data.status === "checkin") {
       isCheckedIn.value = true;
+      const cabinet = await getPmList.getPmCabinetById(pmId.value);
+      console.log(cabinet);
     } else if (res.data.data.status === "checkout") {
       isCheckedIn.value = false;
     }
@@ -757,9 +760,122 @@ const AddCabinets = () => {
         </div>
       </div>
       <!-- Cabinets Section -->
-      <div v-if="isCheckedIn">
-        <label for="">Cabinets</label>
-        <button @click="AddCabinets">+ Add</button>
+      <div
+        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+      >
+        <div
+          @click="hide"
+          class="flex items-center justify-between px-8 py-6 cursor-pointer hover:bg-slate-800/60 transition-all duration-200 border-b border-slate-700/50"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
+              </svg>
+            </div>
+            <h2 class="text-xl font-semibold text-slate-200">Cabinets</h2>
+          </div>
+
+          <button
+            class="flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors"
+          >
+            {{ showModules ? "Hide" : "Show" }}
+            <svg
+              class="w-5 h-5 transition-transform duration-300"
+              :class="{ 'rotate-180': !showModules }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div v-if="showModules" class="px-8 py-6 space-y-4">
+          <!-- Cabinet Module -->
+
+          <!-- Solar Cell Module -->
+          <div
+            v-if="pMsiteData.solar_cell?.length"
+            class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-5 hover:from-yellow-500/15 hover:to-orange-500/15 transition-all duration-200"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center shadow-lg shadow-yellow-500/30"
+                >
+                  <svg
+                    class="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-slate-200 text-lg">Solar Cell</p>
+                  <p class="text-sm text-slate-400">Solar power system</p>
+                </div>
+              </div>
+              <div
+                class="px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg"
+              >
+                <span class="text-yellow-300 font-bold">{{
+                  pMsiteData.solar_cell.length
+                }}</span>
+                <span class="text-yellow-400 text-sm ml-1">items</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State for Modules -->
+          <div
+            v-if="!pMsiteData.mowing?.length && !pMsiteData.solar_cell?.length"
+            class="text-center py-8"
+          >
+            <svg
+              class="w-16 h-16 mx-auto text-slate-600 mb-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
+            </svg>
+            <p class="text-slate-400 font-medium">No modules available</p>
+            <p class="text-slate-500 text-sm mt-1">
+              Modules will appear here when added
+            </p>
+          </div>
+        </div>
       </div>
 
       <!-- Modules Section -->

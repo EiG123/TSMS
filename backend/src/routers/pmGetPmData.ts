@@ -4,9 +4,9 @@ import pool from "../services/db.js";
 import { success } from "zod";
 
 
-const pmRouterManage = new Hono();
+const pmGetPmData = new Hono();
 
-pmRouterManage.delete("/deletePmById", async (c) => {
+pmGetPmData.delete("/deletePmById", async (c) => {
     const body = await c.req.json();
     console.log(body);
     try {
@@ -27,7 +27,7 @@ pmRouterManage.delete("/deletePmById", async (c) => {
     }
 });
 
-pmRouterManage.post("/getPmDataById", async (c) => {
+pmGetPmData.post("/getPmDataById", async (c) => {
     const body = await c.req.json();
     try {
         const res = await pmServiceManage.getPmDataById(body.id, pool);
@@ -42,11 +42,29 @@ pmRouterManage.post("/getPmDataById", async (c) => {
     }
 });
 
-pmRouterManage.get("/pmGetPmList", async (c) => {
+pmGetPmData.get("/pmGetPmList", async (c) => {
     try {
         const res = await pmServiceManage.getData(pool);
         return c.json({
             data: res.data,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
+pmGetPmData.post("/getPmCabinetById", async (c) => {
+    const body = await c.req.json();
+    try {
+        const res = await pmServiceManage.getPmCabinetById(body, pool);
+        return c.json({
+            data: res,
             success: true
         })
 
@@ -77,4 +95,4 @@ pmRouterManage.get("/pmGetPmList", async (c) => {
 //     }
 // });
 
-export default pmRouterManage;
+export default pmGetPmData;
