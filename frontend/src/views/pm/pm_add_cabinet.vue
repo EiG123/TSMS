@@ -63,6 +63,7 @@ const handleSubmit = async () => {
   });
   try {
     await pmServiceManage.AddCabinet({
+      pm_id: pmId.value,
       cabinet_name: cabinet_name.value,
       cabinet_network: cabinet_network.value,
       rectifier: {

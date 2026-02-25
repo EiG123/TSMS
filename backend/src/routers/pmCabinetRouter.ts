@@ -7,10 +7,8 @@ const pmCabinetRouter = new Hono();
 
 pmCabinetRouter.post("/AddCabinet", async (c) => {
     const body = await c.req.json();
-    console.log(body.data);
     try {
         const result = await pmCabinetService.AddCabinet(body.data, pool);
-        console.log(result);
         return c.json({
             success: true,
             data: result,

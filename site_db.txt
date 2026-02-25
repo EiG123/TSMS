@@ -34,6 +34,8 @@ CREATE TABLE pm (
 
 CREATE TABLE pm_cabinet (
     id BIGSERIAL PRIMARY KEY,
+    cabinet_name VARCHAR(50),
+    cabinet_network VARCHAR(50),
     pm_id INTEGER NOT NULL,
 
     CONSTRAINT fk_pm_cabinet
@@ -56,6 +58,7 @@ CREATE TABLE pm_battery (
     id BIGSERIAL PRIMARY KEY,
     cabinet_id INTEGER NOT NULL,
     battery_number INTEGER NOT NULL,
+    battery_type VARCHAR(50),
 
     CONSTRAINT fk_pm_battery
         FOREIGN KEY (cabinet_id)
@@ -251,10 +254,10 @@ DROP TABLE IF EXISTS pm_kwh_meter;
 DROP TABLE IF EXISTS pm_transformer;
 DROP TABLE IF EXISTS pm_solar_cell;
 DROP TABLE IF EXISTS pm_mowing;
-DROP TABLE IF EXISTS pm_cabinet;
 DROP TABLE IF EXISTS pm_rectifier;
 DROP TABLE IF EXISTS pm_battery;
 DROP TABLE IF EXISTS pm_battery_backup;
+DROP TABLE IF EXISTS pm_cabinet;
 DROP TABLE IF EXISTS pm;
 DROP TABLE IF EXISTS sites;
 
