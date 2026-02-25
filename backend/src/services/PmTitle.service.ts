@@ -340,13 +340,14 @@ export const pmTitleService = {
             LEFT JOIN pm_images pmi
                 ON pmi.title_image_id = pti.id
                 AND pmi.pm_id = $2
+                AND pmi.order_number = $3
             WHERE pti.title_id = ptc.title_id
               AND pti.title_child_id = ptc.id
         ) pimg ON true
 
         WHERE ptc.title_id = $1;
       `;
-      const result = await client.query(sql, [data.title_id, data.pm_id]);
+      const result = await client.query(sql, [data.title_id, data.pm_id, data.order_number]);
       return {
         result: result.rows,
         success: true

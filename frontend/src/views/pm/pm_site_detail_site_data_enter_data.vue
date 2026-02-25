@@ -62,6 +62,7 @@ onMounted(async () => {
       pm_id: pmId.value,
       title: title.value,
       title_id: title_id.value,
+      order_number: order_number.value,
     });
     title_child_list.value = res_title_child.data.result || [];
     console.log("Title Child List:", title_child_list.value);
@@ -220,75 +221,157 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
             </div>
 
             <!-- Group Items -->
-            <div
-              v-for="(item, itemIndex) in items"
-              :key="itemIndex"
-              class="group bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:bg-slate-900/60 hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1"
-            >
-              <!-- Item Header -->
-              <div class="p-4 border-b border-slate-700/30">
-                <p class="text-slate-200 font-medium text-sm">
-                  {{ item.title_child_name }}
-                </p>
-              </div>
-
-              <!-- Images -->
+            <div class="p-6 space-y-4">
               <div
-                v-if="item.pm_images && item.pm_images.length > 0"
-                class="p-3 space-y-2"
+                v-for="(item, itemIndex) in items"
+                :key="itemIndex"
+                class="bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
               >
+                <!-- Item Header -->
                 <div
-                  v-for="(img, imgIndex) in item.pm_images"
-                  :key="imgIndex"
-                  class="rounded-lg overflow-hidden border border-slate-700/50"
+                  class="px-6 py-4 bg-gradient-to-r from-slate-800/60 to-slate-900/60 border-b border-slate-700/50"
                 >
-                  <img
-                    :src="
-                      img.file_path?.startsWith('blob:')
-                        ? img.file_path
-                        : BASE_URL + img.file_path
-                    "
-                    :alt="img.description || `Image ${imgIndex + 1}`"
-                    class="w-full max-h-48 object-contain bg-slate-900"
-                  />
-                  <p
-                    v-if="img.description"
-                    class="text-xs text-slate-500 px-2 py-1"
-                  >
-                    {{ img.description }}
-                  </p>
+                  <h4 class="text-lg font-semibold text-slate-200">
+                    {{ item.title_child_name }}
+                  </h4>
                 </div>
-              </div>
 
-              <!-- No image placeholder -->
-              <div
-                v-else
-                class="p-4 flex items-center justify-center text-slate-600 text-xs"
-              >
-                No images
-              </div>
-
-              <!-- Enter Data Button -->
-              <div class="p-3 pt-0">
-                <button
-                  @click="handleEnterData(item.title_id, item.id)"
-                  class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-200 hover:-translate-y-0.5"
+                <!-- Images Grid (3 columns) -->
+                <div
+                  v-if="item.pm_images && item.pm_images.length > 0"
+                  class="p-6"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <div
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Enter Data
-                </button>
+                    <div
+                      v-for="(img, imgIndex) in item.pm_images"
+                      :key="imgIndex"
+                      class="group relative rounded-xl overflow-hidden border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
+                    >
+                      <!-- Image -->
+                      <div class="aspect-square bg-slate-900 overflow-hidden">
+                        <img
+                          v-if="img.file_path"
+                          :src="
+                            img.file_path.startsWith('blob:')
+                              ? img.file_path
+                              : BASE_URL + img.file_path
+                          "
+                          :alt="img.description || `Image ${imgIndex + 1}`"
+                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+
+                        <!-- กรณีไม่มีรูป -->
+                        <div
+                          v-else
+                          class="w-full h-full flex items-center justify-center text-center text-sm text-slate-400 p-4 border border-dashed border-slate-600"
+                        >
+                          {{ img.description || "No Image Available" }}
+                        </div>
+                      </div>
+
+                      <!-- Image Overlay -->
+                      <div
+                        class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      >
+                        <div class="absolute bottom-0 left-0 right-0 p-3">
+                          <p
+                            v-if="img.description"
+                            class="text-xs text-slate-200 font-medium"
+                          >
+                            {{ img.description }}
+                          </p>
+                          <p v-else class="text-xs text-slate-400">
+                            Image {{ imgIndex + 1 }}
+                          </p>
+                        </div>
+                      </div>
+
+                      <!-- Image Number Badge -->
+                      <div
+                        class="absolute top-2 right-2 w-8 h-8 rounded-lg bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 flex items-center justify-center"
+                      >
+                        <span class="text-xs font-bold text-slate-300">{{
+                          imgIndex + 1
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Description List (if available) -->
+                  <!-- <div
+                    v-if="item.pm_images.some((img: any) => img.description)"
+                    class="mt-4 space-y-2"
+                  >
+                    <div
+                      v-for="(img, imgIndex) in item.pm_images.filter((i: any) => i.description)"
+                      :key="imgIndex"
+                      class="flex items-start gap-2 text-sm"
+                    >
+                      <span
+                        class="flex-shrink-0 w-6 h-6 rounded bg-blue-500/20 text-blue-300 flex items-center justify-center text-xs font-bold"
+                      >
+                        {{ imgIndex + 1 }}
+                      </span>
+                      <span class="text-slate-400">{{ img.description }}</span>
+                    </div>
+                  </div> -->
+                </div>
+
+                <!-- No image placeholder -->
+                <div v-else class="p-8">
+                  <div
+                    class="flex flex-col items-center justify-center text-center"
+                  >
+                    <div
+                      class="w-16 h-16 rounded-xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center mb-3"
+                    >
+                      <svg
+                        class="w-8 h-8 text-slate-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <p class="text-slate-500 text-sm font-medium">
+                      No images available
+                    </p>
+                    <p class="text-slate-600 text-xs mt-1">
+                      Upload images to see them here
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Enter Data Button -->
+                <div class="px-6 pb-6">
+                  <button
+                    @click="handleEnterData(item.title_id, item.id)"
+                    class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-200 hover:-translate-y-0.5"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                    Enter Data
+                  </button>
+                </div>
               </div>
             </div>
           </div>

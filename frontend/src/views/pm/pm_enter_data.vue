@@ -147,6 +147,8 @@ const handleSubmit = async () => {
     form.append("value_input_type_2", value_input_type_2.value);
     form.append("value_input_type_3", value_input_type_3.value);
 
+    form.append("order_number", order_number.value);
+
     const imagesMeta: any[] = [];
 
     uploadedImages.value.forEach((file, index) => {

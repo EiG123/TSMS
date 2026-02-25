@@ -150,12 +150,13 @@ export const PmService = {
         pm_id,
         title_id,
         title_child_id,
+        order_number,
         value_1,
         value_2,
         value_3
       )
-      VALUES ($1, $2, $3, $4, $5, $6)
-      ON CONFLICT (pm_id, title_id, title_child_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      ON CONFLICT (pm_id, title_id, title_child_id, order_number)
       DO UPDATE SET
         value_1 = EXCLUDED.value_1,
         value_2 = EXCLUDED.value_2,
@@ -166,6 +167,7 @@ export const PmService = {
         data.pm_id,
         data.title_id,
         data.title_child_id,
+        data.order_number,
         data.value_1 || null,
         data.value_2 || null,
         data.value_3 || null,
@@ -189,25 +191,23 @@ export const PmService = {
           `
           INSERT INTO pm_images (
             pm_id,
-            title_id,
-            title_child_id,
             title_image_id,
             img_number,
+            order_number,
             file_path,
             created_at
           )
-          VALUES ($1,$2,$3,$4,$5,$6,NOW())
-          ON CONFLICT (pm_id, title_id, title_child_id, img_number)
+          VALUES ($1,$2,$3,$4,$5,NOW())
+          ON CONFLICT (pm_id, order_number, img_number)
           DO UPDATE SET
             file_path = EXCLUDED.file_path,
             title_image_id = EXCLUDED.title_image_id
           `,
           [
             data.pm_id,
-            data.title_id,
-            data.title_child_id,
             title_image_id,
             img_number,
+            data.order_number,
             filePath
           ]
         );
