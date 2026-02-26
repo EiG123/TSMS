@@ -992,7 +992,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         />
                       </svg>
                       <span class="text-2xl font-bold text-green-400">{{
-                        cab.rectifiers?.length || 0
+                        cab.rectifier_count
                       }}</span>
                     </div>
                     <p class="text-xs text-slate-400 font-medium">Rectifiers</p>

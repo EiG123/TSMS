@@ -36,6 +36,7 @@ CREATE TABLE pm_cabinet (
     id BIGSERIAL PRIMARY KEY,
     cabinet_name VARCHAR(50),
     cabinet_network VARCHAR(50),
+    rectifier VARCHAR(50),
     pm_id INTEGER NOT NULL,
 
     CONSTRAINT fk_pm_cabinet

@@ -50,6 +50,7 @@ const handleSubmit = async () => {
   console.log({
     cabinet_name: cabinet_name.value,
     cabinet_network: cabinet_network.value,
+    rectifier_count: RectifierCount.value,
     rectifier: {
       enabled: RectifierEnabled.value,
       count: RectifierCount.value,
@@ -66,6 +67,7 @@ const handleSubmit = async () => {
       pm_id: pmId.value,
       cabinet_name: cabinet_name.value,
       cabinet_network: cabinet_network.value,
+      rectifier_count: RectifierCount.value,
       rectifier: {
         enabled: RectifierEnabled.value,
         count: RectifierCount.value,
@@ -77,6 +79,7 @@ const handleSubmit = async () => {
       },
       online_equipment: OnlineEquipmentEnabled.value,
     });
+    router.back();
   } catch (err) {
     alert(err);
   }

@@ -15,6 +15,7 @@ export const pmCabinetService = {
                                 'id', cab.id,
                                 'cabinet_name', cab.cabinet_name,
                                 'cabinet_network', cab.cabinet_network,
+                                'rectifier_count', cab.rectifier,
 
                                 -- rectifiers
                                 'rectifiers', COALESCE(r.rectifiers, '[]'),
@@ -68,14 +69,15 @@ export const pmCabinetService = {
         try {
             await client.query("BEGIN");
             const sql = `
-                INSERT INTO pm_cabinet (pm_id, cabinet_name, cabinet_network) VALUES ($1, $2, $3)
+                INSERT INTO pm_cabinet (pm_id, cabinet_name, cabinet_network, rectifier) VALUES ($1, $2, $3, $4)
                 RETURNING id;
             `;
 
             const cabinetResult = await client.query(sql, [
                 data.pm_id,
                 data.cabinet_name,
-                data.cabinet_network
+                data.cabinet_network,
+                data.rectifier_count,
             ]);
 
             const cabinet_id = cabinetResult.rows[0].id;
