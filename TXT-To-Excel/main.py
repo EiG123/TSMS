@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
+from fastapi import BackgroundTasks
 import uuid
 import os
 import shutil
@@ -25,23 +26,44 @@ app.add_middleware(
     allow_headers=["*"],          # สำคัญมาก
 )
 
-@app.post("/txt-to-excel")
-async def txt_to_excel(file: UploadFile = File(...)):
-    task_id = str(uuid.uuid4())
+def run_processing(task_id: str, txt_path: str):
+    try:
+        output_files = process_csv_to_filtered_excel(
+            input_file=txt_path,
+            filter_column="SPL_D_SCCD_SA1234_SGMD",
+            filter_value="Regional Management 4 (North)",
+            output_prefix=f"output_{task_id}",
+            enable_verification=True,
+            task_id=task_id
+        )
 
+        progress_status[task_id] = {
+            "status": "done",
+            "output_files": output_files
+        }
+
+    except Exception as e:
+        progress_status[task_id] = {
+            "status": "error",
+            "message": str(e)
+        }
+
+@app.post("/txt-to-excel")
+async def txt_to_excel(
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...)
+):
+    task_id = str(uuid.uuid4())
     txt_path = f"{TMP_DIR}/{task_id}.txt"
 
     with open(txt_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    process_csv_to_filtered_excel(
-        input_file=txt_path,
-        filter_column="SPL_D_SCCD_SA1234_SGMD",
-        filter_value="Regional Management 4 (North)",
-        output_prefix=f"output_{task_id}",
-        enable_verification=True,
-        task_id=task_id
-    )
+    progress_status[task_id] = {
+        "status": "processing"
+    }
+
+    background_tasks.add_task(run_processing, task_id, txt_path)
 
     return {
         "task_id": task_id,
