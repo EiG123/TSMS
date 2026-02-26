@@ -14,8 +14,6 @@ const props = defineProps<{
 
 const pmId = computed(() => props.pmId);
 
-console.log(pmId.value);
-
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
 const showModules = ref(true);
@@ -96,7 +94,6 @@ const navigations = [
   {
     name: "Cabinets",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
-    action: () => alert("Go to CabinetsPage"),
   },
   {
     name: "Problems",
@@ -118,6 +115,15 @@ const AddCabinets = () => {
     },
   });
 };
+
+const handleCabinetDetail = (cabinets_id: any) => {
+  router.push({
+    name: "pm_cabinet_detail_page",
+    query: {
+      cabinet_id: cabinets_id,
+    },
+  })
+}
 
 const handleCabinet = (cabinet_id: any) => {
   alert(cabinet_id);
@@ -426,6 +432,29 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                     </div>
                   </div>
 
+                  <div @click="handleCabinetDetail(cab.id)">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-device-desktop"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path
+                        d="M3 5a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10"
+                      />
+                      <path d="M7 20h10" />
+                      <path d="M9 16v4" />
+                      <path d="M15 16v4" />
+                    </svg>
+                  </div>
+
                   <div @click="handleCabinet(cab.id)">
                     <svg
                       class="w-5 h-5"
@@ -646,7 +675,6 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- No Data State -->

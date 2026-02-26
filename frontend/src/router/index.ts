@@ -13,6 +13,7 @@ import pm_site_detail_site_data_enter_data from "../views/pm/pm_site_detail_site
 import pm_enter_data from "../views/pm/pm_enter_data.vue";
 import pm_add_cabinet from "../views/pm/pm_add_cabinet.vue";
 import pm_cabinet_page from "../views/pm/pm_cabinet_page.vue";
+import pm_cabinet_detail_page from "../views/pm/pm_cabinet_detail_page.vue";
 
 import pm_title from "../views/pm/title/pm_title.vue";
 import pm_title_add from "../views/pm/title/pm_title_add.vue";
@@ -121,6 +122,14 @@ const routes = [
                 component: pm_cabinet_page,
                 props: route => ({
                     pmId: route.query.pmId,
+                })
+            },
+            {
+                path: "pm_cabinet_detail_page",
+                name: "pm_cabinet_detail_page",
+                component: pm_cabinet_detail_page,
+                props: route => ({
+                    cabinetId: route.query.cabinet_id
                 })
             },
             {

@@ -7,7 +7,7 @@ export const pmCabinetService = {
             const sql = `
             SELECT 
                 p.id,
-                
+
                 COALESCE(
                     (
                         SELECT json_agg(
@@ -138,4 +138,45 @@ export const pmCabinetService = {
             client.release();
         }
     },
+
+
+    async getCabinetDetailByCabinetId(id: number, db: any) {
+        const client = await db.connect();
+        try {
+
+            const sql = `
+                SELECT 
+                    pc.*,
+                    COALESCE(b.batteries, '[]') AS batteries
+                FROM pm_cabinet pc
+
+                LEFT JOIN LATERAL (
+                    SELECT json_agg(
+                    json_build_object(
+                        'id', pb.id,
+                        'battery_number', pb.battery_number,
+                        'battery_type', pb.battery_type
+                    )
+                    ) AS batteries
+                    FROM pm_battery pb
+                    WHERE pb.cabinet_id = pc.id
+                ) b ON true
+
+                WHERE pc.id = $1;
+                `;
+
+            const res = await client.query(sql, [id]);
+
+            return {
+                result: res.rows[0] ?? null,
+                success: true
+            };
+
+        } catch (err) {
+            console.error("getCabinetDetailByCabinetId error:", err);
+            return { success: false };
+        } finally {
+            client.release();
+        }
+    }
 }

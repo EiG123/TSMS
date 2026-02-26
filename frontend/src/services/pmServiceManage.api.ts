@@ -54,6 +54,13 @@ export const pmServiceManage = {
             "http://localhost:3000/api/pmCabinet/getPmCabinetById", { id }
         );
         return res.data;
-    }
+    },
+
+    async getCabinetDetailByCabinetId(id: any) {
+        const res = await axios.post(
+            "http://localhost:3000/api/pmCabinet/getCabinetDetailByCabinetId", { id }
+        );
+        return res.data;
+    },
 };
 

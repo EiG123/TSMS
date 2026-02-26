@@ -60,4 +60,23 @@ pmCabinetRouter.delete("/deleteCabinet", async (c) => {
     }
 });
 
+pmCabinetRouter.post("/getCabinetDetailByCabinetId", async (c) => {
+    const body = await c.req.json();
+    try {
+        const result = await pmCabinetService.getCabinetDetailByCabinetId(body.id, pool);
+        return c.json({
+            success: true,
+            data: result.result,
+        });
+    } catch (error) {
+        return c.json(
+            {
+                success: false,
+                message: "Failed to fetch PM site list",
+            },
+            500
+        );
+    }
+});
+
 export default pmCabinetRouter;
