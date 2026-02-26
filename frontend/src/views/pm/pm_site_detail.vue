@@ -130,12 +130,13 @@ const navigations = [
   {
     name: "Cabinets",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
-    action: () => router.push({
-      name: `pm_cabinet_page`,
-      query: {
-        pmId: pmId.value,
-      }
-    }),
+    action: () =>
+      router.push({
+        name: `pm_cabinet_page`,
+        query: {
+          pmId: pmId.value,
+        },
+      }),
   },
   {
     name: "Problems",
@@ -927,36 +928,50 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
                   <div @click="handleCabinet(cab.id)">
                     <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-edit"
                     >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"
                       />
+                      <path
+                        d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415"
+                      />
+                      <path d="M16 5l3 3" />
                     </svg>
-                    Edit
                   </div>
 
                   <div @click="handleCabinetDelete(cab.id)">
                     <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-trash"
                     >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M4 7l16 0" />
+                      <path d="M10 11l0 6" />
+                      <path d="M14 11l0 6" />
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
                       />
+                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                     </svg>
-                    Delete
                   </div>
 
                   <svg
