@@ -130,7 +130,12 @@ const navigations = [
   {
     name: "Cabinets",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
-    action: () => alert("Go to CabinetsPage"),
+    action: () => router.push({
+      name: `pm_cabinet_page`,
+      query: {
+        pmId: pmId.value,
+      }
+    }),
   },
   {
     name: "Problems",
@@ -1020,12 +1025,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         cab.batteries?.length || 0
                       }}</span>
                     </div>
-                    <p class="text-xs text-slate-400 font-medium">Batteries</p>
                     <p
-                      v-if="cab.batteries?.battery_type"
-                      class="text-xs text-slate-500 mt-1 truncate"
+                      v-if="cab.batteries[0]?.battery_type"
+                      class="text-xs text-slate-400 font-medium"
                     >
-                      {{ cab.batteries.battery_type }}
+                      {{ cab.batteries[0].battery_type }}
                     </p>
                   </div>
 

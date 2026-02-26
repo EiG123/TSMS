@@ -7,7 +7,7 @@ export const pmCabinetService = {
             const sql = `
             SELECT 
                 p.id,
-
+                
                 COALESCE(
                     (
                         SELECT json_agg(
