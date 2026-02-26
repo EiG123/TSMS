@@ -8,7 +8,6 @@ const pmGetPmData = new Hono();
 
 pmGetPmData.delete("/deletePmById", async (c) => {
     const body = await c.req.json();
-    console.log(body);
     try {
         const result = await pmServiceManage.deletPmById(body.id, pool);
         return c.json({

@@ -49,7 +49,6 @@ export const pmCabinetService = {
             WHERE p.id = $1;
             `;
             const res = await client.query(sql, [data.id]);
-            console.log(res.rows[0]);
             return {
                 success: true,
                 result: res.rows[0]
@@ -66,7 +65,6 @@ export const pmCabinetService = {
 
     async AddCabinet(data: any, db: any) {
         const client = await db.connect();
-        console.log(data);
         try {
             await client.query("BEGIN");
             const sql = `
@@ -119,7 +117,6 @@ export const pmCabinetService = {
 
     async deleteCabinet(data: any, db: any) {
         const client = await db.connect();
-        console.log(data);
         try {
             await client.query("BEGIN");
             const delete_sql = `DELETE FROM pm_cabinet WHERE id = $1`;

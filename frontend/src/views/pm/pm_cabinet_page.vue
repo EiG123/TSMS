@@ -85,6 +85,7 @@ const navigations = [
   {
     name: "Summary",
     icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+    action: () => router.push(`/pm_site_detail/${pmId.value}`),
   },
   {
     name: "Site Data",
@@ -122,8 +123,8 @@ const handleCabinetDetail = (cabinets_id: any) => {
     query: {
       cabinet_id: cabinets_id,
     },
-  })
-}
+  });
+};
 
 const handleCabinet = (cabinet_id: any) => {
   alert(cabinet_id);
@@ -438,55 +439,62 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-tabler icons-tabler-outline icon-tabler-device-desktop"
+                      fill="#ffffff"
+                      class="icon icon-tabler icons-tabler-filled icon-tabler-device-desktop"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path
-                        d="M3 5a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10"
+                        d="M7 21a1 1 0 0 1 0 -2h1v-2h-4a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h16a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-4v2h1a1 1 0 0 1 0 2zm7 -4h-4v2h4z"
                       />
-                      <path d="M7 20h10" />
-                      <path d="M9 16v4" />
-                      <path d="M15 16v4" />
                     </svg>
                   </div>
 
                   <div @click="handleCabinet(cab.id)">
                     <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-edit"
                     >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"
                       />
+                      <path
+                        d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415"
+                      />
+                      <path d="M16 5l3 3" />
                     </svg>
-                    Edit
                   </div>
 
                   <div @click="handleCabinetDelete(cab.id)">
                     <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-trash"
                     >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M4 7l16 0" />
+                      <path d="M10 11l0 6" />
+                      <path d="M14 11l0 6" />
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
                       />
+                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                     </svg>
-                    Delete
                   </div>
 
                   <svg
