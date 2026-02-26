@@ -66,6 +66,7 @@ export const pmCabinetService = {
 
     async AddCabinet(data: any, db: any) {
         const client = await db.connect();
+        console.log(data);
         try {
             await client.query("BEGIN");
             const sql = `
@@ -77,7 +78,7 @@ export const pmCabinetService = {
                 data.pm_id,
                 data.cabinet_name,
                 data.cabinet_network,
-                data.rectifier_count,
+                data.rectifier_count || 0,
             ]);
 
             const cabinet_id = cabinetResult.rows[0].id;
@@ -86,18 +87,20 @@ export const pmCabinetService = {
             const params = [];
             let paramIndex = 1;
 
-            for (let i = 0; i < data.battery.count; i++) {
-                values.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++})`);
-                params.push(cabinet_id, i + 1, data.battery.type);
-            }
+            if (data.battery.enabled) {
+                for (let i = 0; i < data.battery.count; i++) {
+                    values.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++})`);
+                    params.push(cabinet_id, i + 1, data.battery.type);
+                }
 
-            await client.query(
-                `
+                await client.query(
+                    `
                 INSERT INTO pm_battery (cabinet_id, battery_number, battery_type)
                 VALUES ${values.join(",")}
                 `,
-                params
-            );
+                    params
+                );
+            }
 
             await client.query("COMMIT");
             return {
