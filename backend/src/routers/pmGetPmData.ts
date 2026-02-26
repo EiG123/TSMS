@@ -59,23 +59,6 @@ pmGetPmData.get("/pmGetPmList", async (c) => {
     }
 });
 
-pmGetPmData.post("/getPmCabinetById", async (c) => {
-    const body = await c.req.json();
-    try {
-        const res = await pmServiceManage.getPmCabinetById(body, pool);
-        return c.json({
-            data: res,
-            success: true
-        })
-
-    } catch (error) {
-        return c.json({
-            success: false
-        })
-    } finally {
-
-    }
-});
 
 // pmRouterManage.post("/valuePmByIdTitleIdTitleChildId", async (c) => {
 //     const body = await c.req.json();

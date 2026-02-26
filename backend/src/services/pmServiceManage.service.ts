@@ -123,67 +123,7 @@ export const pmServiceManage = {
     },
 
 
-    async getPmCabinetById(data: any, db: any) {
-        const client = await db.connect();
-        try {
-            const sql = `
-            SELECT 
-                p.id,
-
-                COALESCE(
-                    (
-                        SELECT json_agg(
-                            json_build_object(
-                                'id', cab.id,
-                                'cabinet_name', cab.cabinet_name,
-                                'cabinet_network', cab.cabinet_network,
-
-                                -- rectifiers
-                                'rectifiers', COALESCE(r.rectifiers, '[]'),
-
-                                -- batteries
-                                'batteries', COALESCE(b.batteries, '[]')
-                            )
-                        )
-                        FROM pm_cabinet cab
-
-                        -- 🔹 Rectifier aggregate
-                        LEFT JOIN LATERAL (
-                            SELECT json_agg(pmr) AS rectifiers
-                            FROM pm_rectifier pmr
-                            WHERE pmr.cabinet_id = cab.id
-                        ) r ON true
-
-                        -- 🔹 Battery aggregate
-                        LEFT JOIN LATERAL (
-                            SELECT json_agg(pmb) AS batteries
-                            FROM pm_battery pmb
-                            WHERE pmb.cabinet_id = cab.id
-                        ) b ON true
-
-                        WHERE cab.pm_id = p.id
-                    ),
-                    '[]'
-                ) AS cabinets
-
-            FROM pm p
-            WHERE p.id = $1;
-            `;
-            const res = await client.query(sql, [data.id]);
-            console.log(res.rows[0]);
-            return {
-                success: true,
-                result: res.rows[0]
-            }
-        } catch (err) {
-            console.log(err);
-            return {
-                success: false
-            }
-        } finally {
-            client.release();
-        }
-    },
+    
 
     // async valuePmByIdTitleIdTitleChildId(data: any, pool: any) {
     //     const client = await pool.connect();

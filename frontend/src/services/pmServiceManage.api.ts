@@ -40,5 +40,20 @@ export const pmServiceManage = {
         );
         return response.data;
     },
+
+    async deleteCabinet(data: any) {
+        const response = await axios.delete(
+            "http://localhost:3000/api/pmCabinet/deleteCabinet",
+            { data }
+        );
+        return response.data;
+    },
+
+    async getPmCabinetById(id: any) {
+        const res = await axios.post(
+            "http://localhost:3000/api/pmCabinet/getPmCabinetById", { id }
+        );
+        return res.data;
+    }
 };
 

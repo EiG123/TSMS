@@ -13,11 +13,4 @@ export const getPmList = {
     );
     return res.data;
   },
-
-  async getPmCabinetById(id: any) {
-    const res = await axios.post(
-      "http://localhost:3000/api/pmGetPmData/getPmCabinetById", {id}
-    );
-    return res.data;
-  }
 };
