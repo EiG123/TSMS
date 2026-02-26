@@ -3,7 +3,6 @@ import { success } from "zod";
 export const pmCabinetService = {
     async AddCabinet(data: any, db: any) {
         const client = await db.connect();
-        console.log(data);
         try {
             await client.query("BEGIN");
             const sql = `

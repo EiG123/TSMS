@@ -148,9 +148,17 @@ const AddCabinets = () => {
   router.push({
     name: "pm_add_cabinet",
     query: {
-      pmId: pmId.value
+      pmId: pmId.value,
     },
   });
+};
+
+const handleCabinet = (cabinet_id: any) => {
+  alert(cabinet_id);
+};
+
+const handleCabinetDelete = (cabinets_id: any) => {
+  alert("Delete" + cabinets_id);
 };
 </script>
 
@@ -773,13 +781,14 @@ const AddCabinets = () => {
         v-if="isCheckedIn"
         class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
+        <!-- Header -->
         <div
           @click="hide"
           class="flex items-center justify-between px-8 py-6 cursor-pointer hover:bg-slate-800/60 transition-all duration-200 border-b border-slate-700/50"
         >
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center"
+              class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30"
             >
               <svg
                 class="w-5 h-5 text-white"
@@ -795,7 +804,14 @@ const AddCabinets = () => {
                 />
               </svg>
             </div>
-            <h2 class="text-xl font-semibold text-slate-200">Cabinets</h2>
+            <div>
+              <h2 class="text-xl font-semibold text-slate-200">Cabinets</h2>
+              <p class="text-sm text-slate-400">
+                {{ cabinets.length }} cabinet{{
+                  cabinets.length !== 1 ? "s" : ""
+                }}
+              </p>
+            </div>
           </div>
 
           <button
@@ -818,24 +834,126 @@ const AddCabinets = () => {
             </svg>
           </button>
         </div>
-        <div v-if="cabinets.length != 0">hello cabinet</div>
-        <div v-else><div @click="AddCabinets">Add Cabinets</div></div>
 
-        <div v-if="showModules" class="px-8 py-6 space-y-4">
-          <!-- Cabinet Module -->
+        <!-- Content -->
+        <div v-if="showModules" class="p-6">
+          <!-- Add Cabinet Button (Always show at top) -->
+          <div class="mb-4">
+            <button
+              @click="AddCabinets"
+              class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add Cabinet
+            </button>
+          </div>
 
-          <!-- Solar Cell Module -->
-          <div
-            v-if="pMsiteData.solar_cell?.length"
-            class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-5 hover:from-yellow-500/15 hover:to-orange-500/15 transition-all duration-200"
-          >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-4">
-                <div
-                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center shadow-lg shadow-yellow-500/30"
-                >
+          <!-- Cabinets List -->
+          <div v-if="cabinets.length > 0" class="space-y-4">
+            <div
+              v-for="(cab, index) in cabinets"
+              :key="index"
+              class="group bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
+            >
+              <!-- Cabinet Header -->
+              <div
+                class="px-6 py-4 bg-gradient-to-r from-slate-800/60 to-slate-900/60 border-b border-slate-700/50 cursor-pointer hover:from-slate-800/80 hover:to-slate-900/80 transition-all"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30"
+                    >
+                      <span class="text-white font-bold text-lg">{{
+                        index + 1
+                      }}</span>
+                    </div>
+                    <div>
+                      <h3
+                        class="text-lg font-semibold text-slate-200 group-hover:text-blue-300 transition-colors"
+                      >
+                        {{ cab.cabinet_name || `Cabinet ${index + 1}` }}
+                      </h3>
+                      <div class="flex items-center gap-2 mt-1">
+                        <svg
+                          class="w-4 h-4 text-slate-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                          />
+                        </svg>
+                        <span class="text-sm text-slate-400"
+                          >Network:
+                          <span class="text-blue-400 font-medium">{{
+                            cab.cabinet_network || "N/A"
+                          }}</span></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <div @click="handleCabinet(cab.id)">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                      />
+                    </svg>
+                    Edit
+                  </div>
+
+                  <div @click="handleCabinetDelete(cab.id)">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-trash"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M4 7l16 0" />
+                      <path d="M10 11l0 6" />
+                      <path d="M14 11l0 6" />
+                      <path
+                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
+                      />
+                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg
+                    >Delete
+                  </div>
+
                   <svg
-                    class="w-6 h-6 text-white"
+                    class="w-6 h-6 text-slate-400 group-hover:text-blue-400 transition-colors"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -844,48 +962,180 @@ const AddCabinets = () => {
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                      d="M9 5l7 7-7 7"
                     />
                   </svg>
                 </div>
-                <div>
-                  <p class="font-semibold text-slate-200 text-lg">Solar Cell</p>
-                  <p class="text-sm text-slate-400">Solar power system</p>
-                </div>
               </div>
-              <div
-                class="px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg"
-              >
-                <span class="text-yellow-300 font-bold">{{
-                  pMsiteData.solar_cell.length
-                }}</span>
-                <span class="text-yellow-400 text-sm ml-1">items</span>
+
+              <!-- Cabinet Stats Grid -->
+              <div class="p-6">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  <!-- Rectifiers -->
+                  <div
+                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-green-500/40 transition-all"
+                  >
+                    <div class="flex items-center justify-between mb-2">
+                      <svg
+                        class="w-5 h-5 text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
+                      </svg>
+                      <span class="text-2xl font-bold text-green-400">{{
+                        cab.rectifiers?.length || 0
+                      }}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium">Rectifiers</p>
+                  </div>
+
+                  <!-- Batteries -->
+                  <div
+                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-blue-500/40 transition-all"
+                  >
+                    <div class="flex items-center justify-between mb-2">
+                      <svg
+                        class="w-5 h-5 text-blue-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                        />
+                      </svg>
+                      <span class="text-2xl font-bold text-blue-400">{{
+                        cab.batteries?.length || 0
+                      }}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium">Batteries</p>
+                    <p
+                      v-if="cab.batteries?.battery_type"
+                      class="text-xs text-slate-500 mt-1 truncate"
+                    >
+                      {{ cab.batteries.battery_type }}
+                    </p>
+                  </div>
+
+                  <!-- Site Grade -->
+                  <div
+                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-purple-500/40 transition-all"
+                  >
+                    <div class="flex items-center justify-between mb-2">
+                      <svg
+                        class="w-5 h-5 text-purple-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                        />
+                      </svg>
+                      <span class="text-2xl font-bold text-purple-400">{{
+                        cab.site_grad || "N/A"
+                      }}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium">Site Grade</p>
+                  </div>
+
+                  <!-- Problems -->
+                  <div
+                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-yellow-500/40 transition-all cursor-pointer"
+                  >
+                    <div class="flex items-center justify-between mb-2">
+                      <svg
+                        class="w-5 h-5 text-yellow-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                      </svg>
+                      <span class="text-2xl font-bold text-yellow-400">{{
+                        cab.problems?.length || 0
+                      }}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium">Problems</p>
+                  </div>
+
+                  <!-- Audit -->
+                  <div
+                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-orange-500/40 transition-all cursor-pointer"
+                  >
+                    <div class="flex items-center justify-between mb-2">
+                      <svg
+                        class="w-5 h-5 text-orange-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                        />
+                      </svg>
+                      <span class="text-2xl font-bold text-orange-400">•</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium">
+                      Audit (RNSA)
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Empty State for Modules -->
+          <!-- Empty State for Cabinets -->
           <div
-            v-if="!pMsiteData.mowing?.length && !pMsiteData.solar_cell?.length"
-            class="text-center py-8"
+            v-else
+            class="border-2 border-dashed border-slate-700/50 rounded-xl p-12 hover:border-blue-500/40 transition-all"
           >
-            <svg
-              class="w-16 h-16 mx-auto text-slate-600 mb-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-              />
-            </svg>
-            <p class="text-slate-400 font-medium">No modules available</p>
-            <p class="text-slate-500 text-sm mt-1">
-              Modules will appear here when added
-            </p>
+            <div class="text-center">
+              <div
+                class="w-20 h-20 bg-slate-800/50 rounded-xl flex items-center justify-center mx-auto mb-4"
+              >
+                <svg
+                  class="w-10 h-10 text-slate-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-300 mb-2">
+                No Cabinets Yet
+              </h3>
+              <p class="text-slate-400 text-sm mb-4">
+                Get started by adding your first cabinet
+              </p>
+            </div>
           </div>
         </div>
       </div>
