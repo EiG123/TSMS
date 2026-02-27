@@ -10,6 +10,8 @@ import pm_site_detail from "../views/pm/pm_site_detail.vue";
 import pm_site_detail_site_data from "../views/pm/pm_site_detail_site_data.vue";
 import pm_site_detail_site_data_data from "../views/pm/pm_site_detail_site_data_data.vue";
 import pm_site_detail_site_data_enter_data from "../views/pm/pm_site_detail_site_data_enter_data.vue";
+import pm_site_detail_site_info from "../views/pm/pm_site_detail_site_info.vue";
+
 import pm_enter_data from "../views/pm/pm_enter_data.vue";
 import pm_add_cabinet from "../views/pm/pm_add_cabinet.vue";
 import pm_cabinet_page from "../views/pm/pm_cabinet_page.vue";
@@ -76,6 +78,15 @@ const routes = [
                 name: "pm_site_detail_site_data",
                 component: pm_site_detail_site_data,
                 props: true
+            },
+            {
+                path: "pm_site_detail_site_info",
+                name: "pm_site_detail_site_info",
+                component: pm_site_detail_site_info,
+                props: route => ({
+                    id: route.query.id,
+                    type: route.query.type,
+                })
             },
             {
                 path: "pm_site_detail_site_data_data",

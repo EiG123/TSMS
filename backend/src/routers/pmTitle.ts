@@ -72,8 +72,9 @@ pmTitleRouter.post("/EditpmTitle", async (c) => {
     }
 });
 
-pmTitleRouter.get("/getAllPmTitle", async (c) => {
-    const data = await pmTitleService.getAllPmTitle(pool);
+pmTitleRouter.post("/getAllPmTitle", async (c) => {
+    const body = await c.req.json();
+    const data = await pmTitleService.getAllPmTitle(body.data, pool);
     if (data.success) {
         return c.json({
             data: data,
@@ -104,8 +105,7 @@ pmTitleRouter.post("/getPmTitleById", async (c) => {
 
 pmTitleRouter.post("/getAllPmTitleChild", async (c) => {
     const body = await c.req.json();
-    const { id } = body;
-    const data = await pmTitleService.getAllPmTitleChild(pool, id);
+    const data = await pmTitleService.getAllPmTitleChild(pool, body.data.id);
     if (data.success) {
         return c.json({
             data: data,

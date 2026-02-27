@@ -79,11 +79,11 @@ export const pmTitleService = {
   },
 
 
-  async getAllPmTitle(pool: any) {
+  async getAllPmTitle(data: any, pool: any) {
     const client = await pool.connect();
     try {
-      const sql = `SELECT * FROM pm_title`;
-      const res = await client.query(sql);
+      const sql = `SELECT * FROM pm_title WHERE type = $1`;
+      const res = await client.query(sql, [data.type]);
       return {
         result: res.rows,
         success: true
@@ -121,15 +121,13 @@ export const pmTitleService = {
     }
   },
 
-  async getAllPmTitleChild(pool: any, title_id: number) {
+  async getAllPmTitleChild(pool: any, data: number) {
     const client = await pool.connect();
     try {
       const sql = `
           SELECT * FROM pm_title_child WHERE title_id = $1
       `;
-
-
-      const values = [title_id];
+      const values = [data];
       const result = await client.query(sql, values);
 
       console.log(result.rows);

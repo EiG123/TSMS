@@ -152,7 +152,13 @@ const sections = [
     title: "Site Info",
     icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     color: "blue",
-    route: `/pm_site_detail_site_info/${pmId.value}`,
+    route: {
+      name: `pm_site_detail_site_info`,
+      query: {
+        id: pmId.value,
+        type: "site_info",
+      },
+    },
     count: 0,
   },
   {

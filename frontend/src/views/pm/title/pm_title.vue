@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { pmTitleManage } from "../../../services/PmTitle/pmTitleManage.api";
 
@@ -10,17 +10,20 @@ const goTitleChild = (id: string) => router.push(`/pm_title_child/${id}`);
 const loading = ref(false);
 const pmTitles = ref([]);
 
-// ===== lifecycle =====
-onMounted(async () => {
+const pm_type = ref("pm_nodeb");
+
+// ===== แยก logic ออกมาเป็น function =====
+const fetchData = async () => {
   loading.value = true;
   try {
-    const res = await pmTitleManage.getAllPmTitle();
+    const res = await pmTitleManage.getAllPmTitle({
+      type: pm_type.value,
+    });
     pmTitles.value = res.data.result;
-    console.log(pmTitles.value);
     for (let i = 0; i < pmTitles.value.length; i++) {
-      const resTitleChild_count = await pmTitleManage.getAllPmTitleChild(
-        pmTitles.value[i].id
-      );
+      const resTitleChild_count = await pmTitleManage.getAllPmTitleChild({
+        id: pmTitles.value[i].id,
+      });
       pmTitles.value[i].title_child_count =
         resTitleChild_count.data.result.length;
     }
@@ -29,14 +32,20 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
+};
+
+// ===== lifecycle =====
+onMounted(fetchData);
+
+// ===== watch pm_type เมื่อเปลี่ยนค่าให้ดึงข้อมูลใหม่ =====
+watch(pm_type, fetchData);
 
 const handleDelete = async (id: number) => {
   const confirmed = window.confirm("คุณต้องการลบ Tittle นี้หรือไม่?");
 
-  if(!confirmed) return;
+  if (!confirmed) return;
 
-  loading.value =true;
+  loading.value = true;
 
   try {
     await pmTitleManage.deleteTitleById(id);
@@ -46,7 +55,7 @@ const handleDelete = async (id: number) => {
   } finally {
     loading.value = false;
   }
-}
+};
 </script>
 
 <template>
@@ -71,9 +80,15 @@ const handleDelete = async (id: number) => {
       <div class="flex items-center gap-3">
         <label class="text-sm font-medium text-gray-700">PM Menu:</label>
         <select
+          v-model="pm_type"
           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white"
         >
           <option value="pm_nodeb">PM NodeB</option>
+          <option value="pm_small_node">PM Small Exchange</option>
+          <option value="pm_medium_node">PM Medium Exchange</option>
+          <option value="pm_boardband">PM Boardband</option>
+          <option value="pm_mowing">PM Mowing</option>
+          <option value="pm_solar_cell">PM Solar Cell</option>
         </select>
       </div>
     </div>

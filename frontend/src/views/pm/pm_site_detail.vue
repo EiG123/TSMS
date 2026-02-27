@@ -83,6 +83,7 @@ const handleCheckInOut = async () => {
       await pmServiceManage.checkOut(pmId.value, userId);
       checkOutTime.value = new Date().toLocaleString("th-TH");
       alert("Check out สำเร็จ! บันทึกเวลาเรียบร้อยแล้ว");
+      window.location.reload();
     } catch (error) {
       console.error("Check out failed:", error);
       alert("ไม่สามารถ Check out ได้ กรุณาลองใหม่อีกครั้ง");
@@ -166,10 +167,12 @@ const handleCabinet = (cabinet_id: any) => {
 const handleCabinetDelete = async (cabinet_id: any) => {
   loading.value = true;
   try {
-    await pmServiceManage.deleteCabinet({
-      cabinet_id,
-    });
-    router.go();
+    if (confirm("คุณต้องการ ลบ Cabinet ID:" + cabinet_id + "หรือไม่")) {
+      await pmServiceManage.deleteCabinet({
+        cabinet_id,
+      });
+      window.location.reload();
+    }
   } catch (error) {
     console.log("Cabinet Delete Log ERROR: ", error);
   } finally {

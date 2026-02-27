@@ -9,6 +9,7 @@ CREATE TABLE pm (
     id SERIAL PRIMARY KEY,
     site_id INTEGER,
     site_name VARCHAR(50),
+    type VARCHAR(50),
     date VARCHAR(100),
     round VARCHAR(50),
     planwork VARCHAR(255),
@@ -58,8 +59,10 @@ CREATE TABLE pm_rectifier (
 CREATE TABLE pm_battery (
     id BIGSERIAL PRIMARY KEY,
     cabinet_id INTEGER NOT NULL,
+    serial_number VARCHAR(255) NOT NULL,
     battery_number INTEGER NOT NULL,
     battery_type VARCHAR(50),
+    status VARCHAR(50) NOT NULL,
 
     CONSTRAINT fk_pm_battery
         FOREIGN KEY (cabinet_id)
@@ -193,6 +196,11 @@ CREATE TABLE pm_details (
 
     CONSTRAINT unique_pm_detail
     UNIQUE (pm_id, title_id, title_child_id, order_number)
+
+    CONSTRAINT fk_pm_details
+        FOREIGN KEY (title_child_id)
+        REFERENCES pm_title_child(id)
+        ON DELETE CASCADE
 );
 CREATE INDEX idx_pm_details_pm_id
 ON pm_details (pm_id);
@@ -208,6 +216,11 @@ CREATE TABLE pm_title_images (
 
     CONSTRAINT unique_pm_title_images
     UNIQUE (title_id, title_child_id, img_number)
+
+    CONSTRAINT fk_pm_details
+        FOREIGN KEY (title_child_id)
+        REFERENCES pm_title_child(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE pm_images (

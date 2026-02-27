@@ -9,12 +9,12 @@ const pm_name = ref("");
 const pm_description = ref("");
 const pm_key = ref("");
 const pm_mode = ref("PM");
-const pm_type = ref("NodeB");
+const pm_type = ref("pm_nodeb");
 const pm_status = ref("");
 const pm_rank = ref(0);
 
 const handleCancel = () => {
-  router.push("/pm_title");
+  router.back;
 };
 
 const handleSubmit = async () => {
@@ -106,12 +106,18 @@ const handleSubmit = async () => {
           <label class="block text-sm font-medium text-gray-700 mb-2">
             Type
           </label>
-          <input
+          <select
             v-model="pm_type"
-            type="text"
-            disabled
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
-          />
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white"
+          >
+            <option value="">Select...</option>
+            <option value="pm_nodeb">PM NodeB</option>
+            <option value="pm_small_node">PM Small Exchange</option>
+            <option value="pm_medium_node">PM Medium Exchange</option>
+            <option value="pm_boardband">PM Boardband</option>
+            <option value="pm_mowing">PM Mowing</option>
+            <option value="pm_solar_cell">PM Solar Cell</option>
+          </select>
         </div>
       </div>
 

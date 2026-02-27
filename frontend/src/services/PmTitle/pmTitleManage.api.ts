@@ -33,8 +33,8 @@ export const pmTitleManage = {
         return response.data;
     },
 
-    async getAllPmTitle() {
-        const response = await axios.get("http://localhost:3000/api/pmTitle/getAllPmTitle");
+    async getAllPmTitle(data: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getAllPmTitle", { data });
         return response.data;
     },
 
@@ -43,8 +43,8 @@ export const pmTitleManage = {
         return response.data;
     },
 
-    async getAllPmTitleChild(id: string) {
-        const response = await axios.post("http://localhost:3000/api/pmTitle/getAllPmTitleChild", { id });
+    async getAllPmTitleChild(data: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getAllPmTitleChild", { data });
         return response.data;
     },
 
