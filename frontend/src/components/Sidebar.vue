@@ -49,6 +49,11 @@ const logout = () => {
   router.push("/");
   emit("close");
 };
+
+const goAdmin = () => {
+  router.push("/admin");
+  emit("close");
+};
 </script>
 
 <template>
@@ -97,6 +102,14 @@ const logout = () => {
 
     <!-- Navigation Menu -->
     <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+      <!-- Admin -->
+      <button
+        v-if="authStore.hasPermission(`admin`)"
+        @click="goAdmin"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg group"
+      >
+        Admin
+      </button>
       <!-- Dashboard -->
       <button
         @click="goHome"
@@ -192,6 +205,7 @@ const logout = () => {
 
       <!-- PM Title -->
       <button
+        v-if="authStore.hasPermission(`admin`)"
         @click="goPMTitle"
         class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
       >
@@ -219,6 +233,7 @@ const logout = () => {
 
       <!-- PM Dropdown -->
       <button
+        v-if="authStore.hasPermission(`admin`)"
         @click="goPMDropdown"
         class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
       >

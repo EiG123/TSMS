@@ -9,10 +9,25 @@ if (JWT_SECRET === "DEV_SECRET_PLEASE_CHANGE_IN_PRODUCTION") {
   console.warn("⚠️  WARNING: Using default JWT_SECRET. Please set JWT_SECRET in .env file for production!");
 }
 
+async function getUserPermissions(userId: number, db: any): Promise<string[]> {
+  const query = `
+    SELECT DISTINCT p.name
+    FROM user_roles ur
+    JOIN roles r ON r.id = ur.role_id
+    JOIN role_permissions rp ON rp.role_id = r.id
+    JOIN permissions p ON p.id = rp.permission_id
+    WHERE ur.user_id = $1
+  `;
+
+  const result = await db.query(query, [userId]);
+  return result.rows.map((row: any) => row.name);
+}
+
 export const AuthService = {
   /**
    * ตรวจสอบการเข้าสระบบ
    */
+
   async validateLogin(email: string, pass: string, db: any) {
     try {
       // Validate input
@@ -49,12 +64,15 @@ export const AuthService = {
       // ลบข้อมูลที่ไม่ควรส่งออกไป
       const { password, ...userWithoutPassword } = user;
 
+      // 🔥 ดึง permissions จาก DB
+      const permissions = await getUserPermissions(user.id, db);
+
       // สร้าง JWT token
       const token = jwt.sign(
         {
           sub: user.id,
           email: user.email,
-          role: user.role,
+          permissions, // ใส่ permission ลง token
         },
         JWT_SECRET,
         {
@@ -65,7 +83,10 @@ export const AuthService = {
       return {
         success: true,
         token,
-        user: userWithoutPassword,
+        user: {
+          ...userWithoutPassword,
+          permissions, // ส่งให้ frontend ด้วย
+        },
       };
 
     } catch (error) {
@@ -84,6 +105,7 @@ export const AuthService = {
     const saltRounds = 10;
     return await bcrypt.hash(password, saltRounds);
   },
+  
 
   /**
    * ตรวจสอบ JWT token

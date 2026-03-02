@@ -16,6 +16,7 @@ interface User {
   role: string;
   region: string;
   company: string;
+  permissions: string[];
 }
 
 export const useAuthStore = defineStore("auth", {
@@ -30,6 +31,14 @@ export const useAuthStore = defineStore("auth", {
     currentUser: (state) => state.user,
     userRole: (state) => state.user?.role,
     userId: (state) => state.user?.id,
+
+    hasPermission: (state) => {
+      return (permission: string) => {
+        const perms = state.user?.permissions || [];
+
+        return perms.includes('*') || perms.includes(permission);
+      };
+    }
   },
 
   actions: {
@@ -40,9 +49,9 @@ export const useAuthStore = defineStore("auth", {
 
         // เช็คว่า response สำเร็จหรือไม่
         if (!data.success || !data.token) {
-          return { 
-            success: false, 
-            error: data.message || 'เข้าสู่ระบบไม่สำเร็จ' 
+          return {
+            success: false,
+            error: data.message || 'เข้าสู่ระบบไม่สำเร็จ'
           };
         }
 
@@ -58,9 +67,9 @@ export const useAuthStore = defineStore("auth", {
 
       } catch (error: any) {
         console.error('Login error:', error);
-        return { 
-          success: false, 
-          error: error.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ' 
+        return {
+          success: false,
+          error: error.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ'
         };
       }
     },
@@ -137,7 +146,7 @@ export const useAuthStore = defineStore("auth", {
           console.log('Session expired, logging out...');
           this.logout();
           alert('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-          
+
           // redirect to login
           window.location.href = '/';
         }, expiresIn);

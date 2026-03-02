@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import Login from "../views/login.vue";
+import Register from "../views/register.vue";
 import Home from "../views/home.vue";
 import PM from "../views/PM.vue";
 
@@ -42,30 +43,50 @@ const routes = [
         component: Login,
     },
 
+    {
+        path: "/home",
+        name: "home",
+        component: Home,
+        requiresAuth: true,
+    },
+
     // 🧱 Main layout (ต้อง login)
     {
         path: "/",
-        meta: { requiresAuth: true },
+        requiresAuth: true,
+
         children: [
             {
-                path: "home",
-                name: "home",
-                component: Home,
+                path: "register",
+                name: "register",
+                component: Register,
+                meta: {
+                    permissions: ["register_user"]
+                }
             },
             {
                 path: "PM",
                 name: "PM",
                 component: PM,
+                meta: {
+                    permissions: ["view_pm"]
+                }
             },
             {
                 path: "pm_nodeb",
                 name: "pm_nodeb",
                 component: pm_nodeb,
+                meta: {
+                    permissions: ["view_pm_nodeb"]
+                }
             },
             {
                 path: "pm_nodeb_new",
                 name: "pm_nodeb_new",
                 component: pm_nodeb_new,
+                meta: {
+                    permissions: ["create_pm_nodeb"]
+                }
             },
             {
                 path: "pm_site_detail/:id",
@@ -230,23 +251,37 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    // ⭐ ย้าย import เข้ามาใน callback แทน
     const { useAuthStore } = await import("../stores/auth");
     const authStore = useAuthStore();
 
-    const isAuthenticated = authStore.initAuth();
+    console.log(authStore.user)
 
-    // ⭐ ถ้าต้องการ auth แต่ยังไม่ login
+    const isAuthenticated = authStore.isAuthenticated;
+
+    // 1️⃣ ถ้าหน้านั้นต้อง login
     if (to.meta.requiresAuth && !isAuthenticated) {
-        next({ name: "login" });
+        return next({ name: "login" });
     }
-    // ⭐ ถ้า login แล้วแต่พยายามกลับไปหน้า login
-    else if (to.name === "login" && isAuthenticated) {
-        next({ name: "home" });
+
+    // 2️⃣ ถ้า login แล้วพยายามกลับไป login
+    if (to.name === "login" && isAuthenticated) {
+        return next({ name: "home" });
     }
-    else {
-        next();
+
+    // 3️⃣ ถ้ามีการกำหนด permission
+    if (to.meta.permissions) {
+        const required = to.meta.permissions as string[];
+
+        const hasAll = required.every(p =>
+            authStore.hasPermission(p)
+        );
+
+        if (!hasAll) {
+            return next({ name: "forbidden" });
+        }
     }
+
+    next();
 });
 
 export default router;

@@ -4,10 +4,98 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     username TEXT NOT NULL,
     phone TEXT,
-    role TEXT,
     region TEXT,
-    company TEXT
-); 
+    company TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
 
-INSERT INTO users (email, password, username, role) 
-VALUES ('admin@gmail.com', '$2b$12$9tABcHgT5YbNsEiKIPTJiO/pbMPLkcGbvUyP2anaAQ/Jn411pmdqe', 'AdminUser', 'admin');
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE permissions (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE role_permissions (
+    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
+    permission_id INTEGER REFERENCES permissions(id) ON DELETE CASCADE,
+    PRIMARY KEY (role_id, permission_id)
+);
+
+CREATE TABLE user_roles (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
+
+INSERT INTO users (email, password, username) 
+VALUES ('admin@gmail.com', '$2b$12$9tABcHgT5YbNsEiKIPTJiO/pbMPLkcGbvUyP2anaAQ/Jn411pmdqe', 'AdminUser');
+
+-- เพิ่ม role
+INSERT INTO roles (name, description)
+VALUES ('admin', 'Administrator');
+
+-- เพิ่ม permission
+INSERT INTO permissions (name, description)
+VALUES ('*', 'Super Admin - Access All');
+
+-- ผูก role กับ permission
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r, permissions p
+WHERE r.name = 'admin'
+AND p.name = '*';
+
+-- ผูก user กับ role
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u, roles r
+WHERE u.email = 'admin@gmail.com'
+AND r.name = 'admin';
+
+-- user
+INSERT INTO users (email, password, username)
+VALUES (
+    'user@gmail.com',
+    '$2b$10$2jCqovW4f//ovH/7kNH0pO3jfwIFkW51Ik4UDYg7ftlTK.0o62EZu',
+    'NormalUser'
+);
+
+INSERT INTO roles (name, description)
+VALUES ('user', 'Normal User');
+
+INSERT INTO permissions (name, description)
+VALUES 
+('view_dashboard', 'View dashboard page'),
+('view_pm', 'View PM main page'),
+('view_pm_nodeb', 'View PM NodeB page'),
+('create_pm_nodeb', 'Create PM NodeB');
+
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r
+JOIN permissions p ON p.name IN (
+    'view_dashboard',
+    'view_pm',
+    'view_pm_nodeb'
+)
+WHERE r.name = 'user';
+
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u, roles r
+WHERE u.email = 'user@gmail.com'
+AND r.name = 'user';
+
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS role_permissions;
+DROP TABLE IF EXISTS permissions;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS users;
