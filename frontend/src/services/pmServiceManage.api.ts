@@ -25,13 +25,13 @@ export const pmServiceManage = {
         return response.data;
     },
 
-    async valuePmByIdTitleIdTitleChildId(data: any) {
-        const response = await axios.post(
-            "http://localhost:3000/api/pmServiceManage/valuePmByIdTitleIdTitleChildId",
-            { ...data }
-        );
-        return response.data;
-    },
+    // async valuePmByIdTitleIdTitleChildId(data: any) {
+    //     const response = await axios.post(
+    //         "http://localhost:3000/api/pmServiceManage/valuePmByIdTitleIdTitleChildId",
+    //         { ...data }
+    //     );
+    //     return response.data;
+    // },
 
     async AddCabinet(data: any) {
         const response = await axios.post(

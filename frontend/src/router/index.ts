@@ -4,6 +4,7 @@ import Login from "../views/login.vue";
 import Register from "../views/register.vue";
 import Home from "../views/home.vue";
 import PM from "../views/PM.vue";
+import NotFound from "../views/NotFound.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
@@ -47,14 +48,17 @@ const routes = [
         path: "/home",
         name: "home",
         component: Home,
-        requiresAuth: true,
+        meta: {
+            requiresAuth: true
+        }
     },
 
     // 🧱 Main layout (ต้อง login)
     {
         path: "/",
-        requiresAuth: true,
-
+        meta: {
+            requiresAuth: true
+        },
         children: [
             {
                 path: "register",
@@ -242,7 +246,11 @@ const routes = [
         ],
     },
 
-
+    {
+        path: "/:pathMatch(.*)*",
+        name: "NotFound",
+        component: NotFound
+    }
 ];
 
 const router = createRouter({

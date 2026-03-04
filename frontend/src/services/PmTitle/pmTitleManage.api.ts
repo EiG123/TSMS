@@ -80,10 +80,10 @@ export const pmTitleManage = {
         return response.data;
     },
 
-    async getTitleChildValueByTitle(data: any) {
-        const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildValueByTitle", { ...data });
-        return response.data;
-    },
+    // async getTitleChildValueByTitle(data: any) {
+    //     const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildValueByTitle", { ...data });
+    //     return response.data;
+    // },
 
     async getTitleChildById(data: any) {
         const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildById", { data })
