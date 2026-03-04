@@ -70,15 +70,18 @@ export const AdminManageService = {
     async userEdit(data: any, db: any) {
         const client = await db.connect();
         try {
-            const sql = `UPDATE 
-            u.email = $2,
-            u.username = $3,
-            u.phone = $4,
-            u.region = $5,
-            u.company = $6,
-            u.status = $7,
-            FROM users u 
+
+            const sql = `
+            UPDATE users u
+            SET 
+                email = $2,
+                username = $3,
+                phone = $4,
+                region = $5,
+                company = $6,
+                status = $7
             WHERE u.id = $1
+            RETURNING *;
             `;
 
             const res = await client.query(sql, [
@@ -92,16 +95,16 @@ export const AdminManageService = {
             ]);
 
             return {
-                success: true
-            }
+                success: true,
+                result: res.rows[0] ?? null
+            };
+
         } catch (err) {
-            console.log(err);
-            return {
-                success: false
-            }
+            console.error("userEdit error:", err);
+            return { success: false };
         } finally {
             client.release();
         }
-    },
+    }
 
 }

@@ -23,6 +23,7 @@ const username = ref("");
 const phone = ref("");
 const region = ref("");
 const company = ref("");
+const status = ref("");
 
 const error = ref("");
 const loading = ref(false);
@@ -39,6 +40,7 @@ onMounted(async () => {
     phone.value = resUser.data.result[0].phone;
     region.value = resUser.data.result[0].region;
     company.value = resUser.data.result[0].company;
+    status.value = resUser.data.result[0].status;
   } catch (error) {
     alert("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
   } finally {
@@ -55,11 +57,6 @@ const handleRegister = async () => {
     return;
   }
 
-  if (password.value.length < 6) {
-    error.value = "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร";
-    return;
-  }
-
   loading.value = true;
 
   // Call register API
@@ -70,6 +67,7 @@ const handleRegister = async () => {
     phone: phone.value,
     region: region.value,
     company: company.value,
+    status: status.value,
   });
 
   loading.value = false;
@@ -83,7 +81,7 @@ const handleRegister = async () => {
 
   // For demo - remove this and uncomment above
   setTimeout(() => {
-    router.push("/");
+    // router.push("/");
   }, 1000);
 };
 
@@ -277,7 +275,6 @@ const goLogin = () => {
                   v-model="password"
                   :type="showPassword ? 'text' : 'password'"
                   placeholder="••••••••"
-                  required
                   :disabled="loading"
                   class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
@@ -356,7 +353,6 @@ const goLogin = () => {
                   v-model="confirmed_password"
                   :type="showConfirmedPassword ? 'text' : 'password'"
                   placeholder="••••••••"
-                  required
                   :disabled="loading"
                   class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
@@ -435,7 +431,6 @@ const goLogin = () => {
                   v-model="phone"
                   type="tel"
                   placeholder="08XXXXXXXX"
-                  required
                   :disabled="loading"
                   class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
@@ -477,7 +472,6 @@ const goLogin = () => {
                 <select
                   id="region"
                   v-model="region"
-                  required
                   :disabled="loading"
                   class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
                 >
@@ -540,7 +534,6 @@ const goLogin = () => {
                 <select
                   id="company"
                   v-model="company"
-                  required
                   :disabled="loading"
                   class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
                 >
@@ -548,6 +541,64 @@ const goLogin = () => {
                   <option value="true">TRUE</option>
                   <option value="bbtec">BBTEC</option>
                   <option value="ww">WW</option>
+                </select>
+                <div
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Select -->
+            <div class="space-y-2">
+              <label
+                for="status"
+                class="block text-sm font-medium text-slate-400"
+              >
+                สถานะ <span class="text-red-400">*</span>
+              </label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
+                  </svg>
+                </div>
+                <select
+                  id="status"
+                  v-model="status"
+                  required
+                  :disabled="loading"
+                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                >
+                  <option value="">สถานะ...</option>
+                  <option value="active">Active</option>
+                  <option value="Pending">Pending</option>
+                  <option value="reject">Reject</option>
                 </select>
                 <div
                   class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none"
