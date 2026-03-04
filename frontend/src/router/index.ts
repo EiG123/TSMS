@@ -6,6 +6,8 @@ import Home from "../views/home.vue";
 import PM from "../views/PM.vue";
 import NotFound from "../views/NotFound.vue";
 
+import AdminManage from "../views/AdminManage.vue";
+
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
 import pm_site_detail from "../views/pm/pm_site_detail.vue";
@@ -45,11 +47,33 @@ const routes = [
     },
 
     {
+        path: "/login",
+        name: "login",
+        component: Login,
+    },
+
+    {
         path: "/home",
         name: "home",
         component: Home,
         meta: {
             requiresAuth: true
+        }
+    },
+
+    {
+        path: "/register",
+        name: "register",
+        component: Register,
+    },
+
+    {
+        path: "/admin",
+        name: "admin",
+        component: AdminManage,
+        meta: {
+            requiresAuth: true,
+            permission: ["admin"]
         }
     },
 
@@ -60,14 +84,6 @@ const routes = [
             requiresAuth: true
         },
         children: [
-            {
-                path: "register",
-                name: "register",
-                component: Register,
-                meta: {
-                    permissions: ["register_user"]
-                }
-            },
             {
                 path: "PM",
                 name: "PM",

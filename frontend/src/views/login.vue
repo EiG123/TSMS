@@ -31,6 +31,10 @@ const handleLogin = async () => {
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
+
+const goRegister = () => {
+  router.push('/register');
+}
 </script>
 
 <template>
@@ -176,7 +180,7 @@ const togglePasswordVisibility = () => {
         <div class="px-8 py-5 bg-slate-900/40 border-t border-slate-700/50 text-center">
           <p class="text-sm text-slate-400">
             ยังไม่มีบัญชี? 
-            <a href="#" class="font-medium text-blue-400 hover:text-blue-300 transition-colors ml-1">
+            <a @click="goRegister" class="font-medium text-blue-400 hover:text-blue-300 transition-colors ml-1">
               สมัครสมาชิก
             </a>
           </p>
