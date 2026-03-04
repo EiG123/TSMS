@@ -70,7 +70,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
     await pmServiceManage.deleteCabinet({
       cabinet_id,
     });
-    router.go();
+    router.go;
   } catch (error) {
     console.log("Cabinet Delete Log ERROR: ", error);
   } finally {

@@ -309,15 +309,15 @@ const handlePmNodeB = async () => {
     // 1. บันทึกข้อมูลหลัก PM
     const pmResult = await PMApiService.pm_nodeb(
       site_id.value,
-      node_type.value,
-      round.value,
-      cabinet_total.value,
-      region.value,
-      datetime.value,
-      status.value,
-      planwork.value,
-      created_by.value,
-      remark.value
+      // node_type.value,
+      // round.value,
+      // cabinet_total.value,
+      // region.value,
+      // datetime.value,
+      // status.value,
+      // planwork.value,
+      // created_by.value,
+      // remark.value
     );
 
     if (!pmResult.success) {

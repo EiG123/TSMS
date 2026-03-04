@@ -6,7 +6,8 @@ CREATE TABLE users (
     phone TEXT,
     region TEXT,
     company TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    status VARCHAR(20) DEFAULT 'pending'
 );
 
 CREATE TABLE roles (
@@ -35,8 +36,8 @@ CREATE TABLE user_roles (
     PRIMARY KEY (user_id, role_id)
 );
 
-INSERT INTO users (email, password, username) 
-VALUES ('admin@gmail.com', '$2b$12$9tABcHgT5YbNsEiKIPTJiO/pbMPLkcGbvUyP2anaAQ/Jn411pmdqe', 'AdminUser');
+INSERT INTO users (email, password, username, status) 
+VALUES ('admin@gmail.com', '$2b$12$9tABcHgT5YbNsEiKIPTJiO/pbMPLkcGbvUyP2anaAQ/Jn411pmdqe', 'AdminUser', 'active');
 
 -- เพิ่ม role
 INSERT INTO roles (name, description)

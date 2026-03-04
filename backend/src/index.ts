@@ -7,7 +7,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono';
 import { cors } from 'hono/cors'
 import { serveStatic } from '@hono/node-server/serve-static'
-import { AuthService } from './services/auth.service.js';
+import { AuthService } from './services/auth/auth.service.js';
 import { Pool } from 'pg';
 import pmConfigRouter from "./routers/pmConfig.js";
 import pmInsertRouter from "./routers/pmInsert.js";
@@ -16,7 +16,7 @@ import pmTitleRouter from "./routers/pmTitle.js";
 import txt_to_excelRouter from "./routers/txt_to_excel.js";
 import pmDropdownRouter from "./routers/pmDropdown.js";
 import pmGetPmData from "./routers/pmGetPmData.js";
-
+import AdminManageRouter from "./routers/admin/AdminManageRouter.js";
 
 import pmCheckInOutManage from "./routers/pmCheckInOutManage.js";
 import pmCabinetRouter from "./routers/pmCabinetRouter.js";
@@ -34,6 +34,8 @@ app.use('/api/*', cors({
 // images
 app.use('/uploads/pm/*', serveStatic({ root: './' }));
 
+// admin
+app.route("api/AdminManage", AdminManageRouter);
 
 app.route("/api/config/pm", pmConfigRouter);
 // PM NodeB endpoint
@@ -71,9 +73,9 @@ app.post("/api/login", async (c) => {
 
     // Validation
     if (!email || !password) {
-      return c.json({ 
-        success: false, 
-        message: "กรุณากรอกอีเมลและรหัสผ่าน" 
+      return c.json({
+        success: false,
+        message: "กรุณากรอกอีเมลและรหัสผ่าน"
       }, 400);
     }
 
@@ -86,9 +88,37 @@ app.post("/api/login", async (c) => {
 
   } catch (error) {
     console.error('Login error:', error);
-    return c.json({ 
-      success: false, 
-      message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" 
+    return c.json({
+      success: false,
+      message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ"
+    }, 500);
+  }
+});
+
+app.post("/api/register", async (c) => {
+  try {
+    const body = await c.req.json();
+
+    // Validation
+    if (!body.email || !body.password) {
+      return c.json({
+        success: false,
+        message: "กรุณากรอกอีเมลและรหัสผ่าน"
+      }, 400);
+    }
+
+    const result = await AuthService.validateRegister(body, db);
+    console.log(result.message);
+    if (result.success) {
+      return c.json(result);
+    }
+    return c.json(result, 401);
+
+  } catch (error) {
+    console.error('Login error:', error);
+    return c.json({
+      success: false,
+      message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ"
     }, 500);
   }
 });
@@ -98,33 +128,33 @@ app.post("/api/login", async (c) => {
 app.get('/api/health', async (c) => {
   try {
     await db.query('SELECT 1');
-    return c.json({ 
-      status: 'ok', 
+    return c.json({
+      status: 'ok',
       database: 'connected',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    return c.json({ 
-      status: 'error', 
-      database: 'disconnected' 
+    return c.json({
+      status: 'error',
+      database: 'disconnected'
     }, 503);
   }
 });
 
 // 404 handler
 app.notFound((c) => {
-  return c.json({ 
-    success: false, 
-    message: 'ไม่พบ API endpoint นี้' 
+  return c.json({
+    success: false,
+    message: 'ไม่พบ API endpoint นี้'
   }, 404);
 });
 
 // Error handler
 app.onError((err, c) => {
   console.error('Server error:', err);
-  return c.json({ 
-    success: false, 
-    message: 'เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์' 
+  return c.json({
+    success: false,
+    message: 'เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์'
   }, 500);
 });
 

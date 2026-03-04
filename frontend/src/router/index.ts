@@ -6,7 +6,9 @@ import Home from "../views/home.vue";
 import PM from "../views/PM.vue";
 import NotFound from "../views/NotFound.vue";
 
-import AdminManage from "../views/AdminManage.vue";
+import AdminManage from "../views/admin/AdminManage.vue";
+import userManage from "../views/admin/UserManage.vue";
+import userEdit from "../views/admin/userEdit.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
@@ -47,12 +49,6 @@ const routes = [
     },
 
     {
-        path: "/login",
-        name: "login",
-        component: Login,
-    },
-
-    {
         path: "/home",
         name: "home",
         component: Home,
@@ -69,12 +65,30 @@ const routes = [
 
     {
         path: "/admin",
-        name: "admin",
-        component: AdminManage,
         meta: {
             requiresAuth: true,
             permission: ["admin"]
-        }
+        },
+        children: [
+            {
+                path: "adminDashboard",
+                name: "adminDashboard",
+                component: AdminManage,
+            },
+            {
+                path: "userManage",
+                name: "userManage",
+                component: userManage,
+            },
+            {
+                path: "/user/edit",
+                name: "userEdit",
+                component: userEdit,
+                props: route => ({
+                    id: route.query.id,
+                })
+            }
+        ]
     },
 
     // 🧱 Main layout (ต้อง login)
@@ -277,8 +291,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const { useAuthStore } = await import("../stores/auth");
     const authStore = useAuthStore();
-
-    console.log(authStore.user)
 
     const isAuthenticated = authStore.isAuthenticated;
 

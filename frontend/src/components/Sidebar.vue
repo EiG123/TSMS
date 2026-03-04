@@ -51,7 +51,7 @@ const logout = () => {
 };
 
 const goAdmin = () => {
-  router.push("/admin");
+  router.push("/admin/adminDashboard");
   emit("close");
 };
 </script>

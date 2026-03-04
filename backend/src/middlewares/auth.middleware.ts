@@ -1,5 +1,5 @@
 import { Context, Next } from 'hono';
-import { AuthService } from '../services/auth.service.js';
+import { AuthService } from '../services/auth/auth.service.js';
 interface JwtPayload {
   sub: number;
   email: string;

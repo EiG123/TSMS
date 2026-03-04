@@ -35,7 +35,7 @@ api.interceptors.response.use(
       // Redirect to login (ถ้าใช้ Vue Router)
       window.location.href = '/';
     }
-    
+
     return Promise.reject(error);
   }
 );
@@ -43,17 +43,17 @@ api.interceptors.response.use(
 export const AuthApiService = {
   async login(email: string, pass: string) {
     try {
-      const response = await api.post('/login', { 
-        email, 
-        password: pass 
+      const response = await api.post('/login', {
+        email,
+        password: pass
       });
-      
+
       // เก็บ token และ user data
       if (response.data.success && response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
-      
+
       return response.data;
     } catch (error: any) {
       // จัดการ error ให้ดีขึ้น
@@ -72,6 +72,18 @@ export const AuthApiService = {
           success: false,
           message: 'เกิดข้อผิดพลาด'
         };
+      }
+    }
+  },
+
+  async register(data: any) {
+    try {
+      const response = await api.post('/register', data);
+      return response.data;
+    } catch (err) {
+      return {
+        success: false,
+        message: 'ไม่สามารถ register ได้'
       }
     }
   },

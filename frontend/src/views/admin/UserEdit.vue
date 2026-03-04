@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "../stores/auth";
-import { AuthApiService } from "../services/auth.api";
+import { useAuthStore } from "../../stores/auth";
+import { AuthApiService } from "../../services/auth.api";
+import { AdminManage } from "../../services/admin/AdminManage.api";
+
 
 const authStore = useAuthStore();
 const router = useRouter();
+
+const props = defineProps<{
+  id?: any;
+}>();
+
+const userId = computed(() => props.id);
 
 const email = ref("");
 const password = ref("");
@@ -20,6 +28,23 @@ const error = ref("");
 const loading = ref(false);
 const showPassword = ref(false);
 const showConfirmedPassword = ref(false);
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    const resUser = await AdminManage.getUserById(userId.value);
+    console.log(resUser.data.result);
+    email.value = resUser.data.result[0].email;
+    username.value = resUser.data.result[0].username;
+    phone.value = resUser.data.result[0].phone;
+    region.value = resUser.data.result[0].region;
+    company.value = resUser.data.result[0].company;
+  } catch (error) {
+    alert("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
+  } finally {
+    loading.value = false;
+  }
+});
 
 const handleRegister = async () => {
   error.value = "";
@@ -38,10 +63,9 @@ const handleRegister = async () => {
   loading.value = true;
 
   // Call register API
-  const result = await AuthApiService.register({
+  const result = await AdminManage.userEdit({
+    id: userId.value,
     email: email.value,
-    password: password.value,
-    confirmPassword: confirmed_password.value,
     username: username.value,
     phone: phone.value,
     region: region.value,
@@ -59,7 +83,7 @@ const handleRegister = async () => {
 
   // For demo - remove this and uncomment above
   setTimeout(() => {
-    // router.push("/");
+    router.push("/");
   }, 1000);
 };
 
@@ -148,7 +172,10 @@ const goLogin = () => {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Email Input -->
             <div class="space-y-2">
-              <label for="email" class="block text-sm font-medium text-slate-400">
+              <label
+                for="email"
+                class="block text-sm font-medium text-slate-400"
+              >
                 อีเมล <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -183,7 +210,10 @@ const goLogin = () => {
 
             <!-- Username Input -->
             <div class="space-y-2">
-              <label for="username" class="block text-sm font-medium text-slate-400">
+              <label
+                for="username"
+                class="block text-sm font-medium text-slate-400"
+              >
                 ชื่อผู้ใช้ <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -218,7 +248,10 @@ const goLogin = () => {
 
             <!-- Password Input -->
             <div class="space-y-2">
-              <label for="password" class="block text-sm font-medium text-slate-400">
+              <label
+                for="password"
+                class="block text-sm font-medium text-slate-400"
+              >
                 รหัสผ่าน <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -294,7 +327,10 @@ const goLogin = () => {
 
             <!-- Confirmed Password Input -->
             <div class="space-y-2">
-              <label for="confirmed_password" class="block text-sm font-medium text-slate-400">
+              <label
+                for="confirmed_password"
+                class="block text-sm font-medium text-slate-400"
+              >
                 ยืนยันรหัสผ่าน <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -370,7 +406,10 @@ const goLogin = () => {
 
             <!-- Phone Input -->
             <div class="space-y-2">
-              <label for="phone" class="block text-sm font-medium text-slate-400">
+              <label
+                for="phone"
+                class="block text-sm font-medium text-slate-400"
+              >
                 เบอร์โทรศัพท์ <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -405,7 +444,10 @@ const goLogin = () => {
 
             <!-- Region Select -->
             <div class="space-y-2">
-              <label for="region" class="block text-sm font-medium text-slate-400">
+              <label
+                for="region"
+                class="block text-sm font-medium text-slate-400"
+              >
                 ภูมิภาค <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -449,9 +491,21 @@ const goLogin = () => {
                   <option value="R7">R7</option>
                   <option value="R8">R8</option>
                 </select>
-                <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <div
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>
@@ -459,7 +513,10 @@ const goLogin = () => {
 
             <!-- Company Select -->
             <div class="space-y-2">
-              <label for="company" class="block text-sm font-medium text-slate-400">
+              <label
+                for="company"
+                class="block text-sm font-medium text-slate-400"
+              >
                 บริษัท <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -492,9 +549,21 @@ const goLogin = () => {
                   <option value="bbtec">BBTEC</option>
                   <option value="ww">WW</option>
                 </select>
-                <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <div
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>

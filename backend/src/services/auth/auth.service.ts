@@ -27,7 +27,6 @@ export const AuthService = {
   /**
    * ตรวจสอบการเข้าสระบบ
    */
-
   async validateLogin(email: string, pass: string, db: any) {
     try {
       // Validate input
@@ -58,6 +57,12 @@ export const AuthService = {
         return {
           success: false,
           message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+        };
+      }
+      if (user.status !== 'active') {
+        return {
+          success: false,
+          message: "บัญชีของคุณยังไม่ได้รับการอนุมัติจากผู้ดูแลระบบ"
         };
       }
 
@@ -98,6 +103,110 @@ export const AuthService = {
     }
   },
 
+  async validateRegister(data: any, db: any) {
+    const client = await db.connect();
+
+    try {
+      const {
+        email,
+        password,
+        confirmPassword,
+        username,
+        phone,
+        region,
+        company
+      } = data;
+
+      // 1️⃣ Validate input
+      if (!email || !password || !confirmPassword || !username) {
+        return {
+          success: false,
+          message: "ข้อมูลไม่ครบถ้วน"
+        };
+      }
+
+      if (password !== confirmPassword) {
+        return {
+          success: false,
+          message: "รหัสผ่านไม่ตรงกัน"
+        };
+      }
+
+      // 2️⃣ Check email duplicate
+      const existing = await client.query(
+        "SELECT id FROM users WHERE email = $1",
+        [email]
+      );
+
+      if (existing.rowCount > 0) {
+        return {
+          success: false,
+          message: "อีเมลนี้ถูกใช้งานแล้ว"
+        };
+      }
+
+      await client.query("BEGIN");
+
+      // 3️⃣ Hash password
+      const hashedPassword = await this.hashPassword(password);
+
+      // 4️⃣ Insert user (status = pending)
+      const insertUserSql = `
+      INSERT INTO users (
+        email,
+        password,
+        username,
+        phone,
+        region,
+        company,
+        status
+      )
+      VALUES ($1,$2,$3,$4,$5,$6,'pending')
+      RETURNING id
+    `;
+
+      const userRes = await client.query(insertUserSql, [
+        email,
+        hashedPassword,
+        username,
+        phone,
+        region,
+        company
+      ]);
+
+      const userId = userRes.rows[0].id;
+
+      // 5️⃣ Assign role (optional: assign now or wait approve)
+      await client.query(
+        `
+      INSERT INTO user_roles (user_id, role_id)
+      SELECT $1, id
+      FROM roles
+      WHERE name = 'user'
+      `,
+        [userId]
+      );
+
+      await client.query("COMMIT");
+
+      return {
+        success: true,
+        message: "สมัครสมาชิกสำเร็จ กรุณารอผู้ดูแลระบบอนุมัติ"
+      };
+
+    } catch (error) {
+      await client.query("ROLLBACK");
+      console.error("Register error:", error);
+
+      return {
+        success: false,
+        message: "เกิดข้อผิดพลาดในการสมัครสมาชิก"
+      };
+    } finally {
+      client.release();
+    }
+  },
+
   /**
    * สร้าง hash password สำหรับ user ใหม่
    */
@@ -105,7 +214,7 @@ export const AuthService = {
     const saltRounds = 10;
     return await bcrypt.hash(password, saltRounds);
   },
-  
+
 
   /**
    * ตรวจสอบ JWT token
