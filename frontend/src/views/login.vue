@@ -34,7 +34,9 @@ const togglePasswordVisibility = () => {
 
 const goRegister = () => {
   router.push('/register');
-}
+};
+
+
 </script>
 
 <template>

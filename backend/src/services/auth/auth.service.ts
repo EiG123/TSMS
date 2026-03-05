@@ -28,6 +28,7 @@ export const AuthService = {
    * ตรวจสอบการเข้าสระบบ
    */
   async validateLogin(email: string, pass: string, db: any) {
+    // console.log(await bcrypt.hash('devdevdev123', 10));
     try {
       // Validate input
       if (!email || !pass) {

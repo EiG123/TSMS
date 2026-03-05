@@ -33,12 +33,14 @@ export const useAuthStore = defineStore("auth", {
     userId: (state) => state.user?.id,
 
     hasPermission: (state) => {
+      // console.log(state.user?.permissions);
       return (permission: string) => {
         const perms = state.user?.permissions || [];
 
         return perms.includes('*') || perms.includes(permission);
       };
     }
+    
   },
 
   actions: {

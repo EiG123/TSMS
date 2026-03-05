@@ -10,15 +10,6 @@ const go = (path: string) => {
 // Card data with icons
 const adminCards = [
   {
-    title: "User Management",
-    subtitle: "",
-    description: "",
-    path: "/admin/userManage",
-    gradient: "from-blue-500 to-cyan-500",
-    icon: "M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
-    stats: "",
-  },
-  {
     title: "Permission Management",
     subtitle: "",
     description: "",
@@ -26,7 +17,7 @@ const adminCards = [
     gradient: "from-blue-500 to-cyan-500",
     icon: "M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
     stats: "",
-  }
+  },
 ];
 </script>
 
@@ -40,7 +31,7 @@ const adminCards = [
         <h1
           class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-3"
         >
-          Admin Dashboard
+          Dev Dashboard
         </h1>
         <p class="text-slate-400 text-lg">
           Preventive Maintenance Management System

@@ -36,48 +36,36 @@ CREATE TABLE user_roles (
     PRIMARY KEY (user_id, role_id)
 );
 
-INSERT INTO users (email, password, username, status) 
-VALUES ('admin@gmail.com', '$2b$12$9tABcHgT5YbNsEiKIPTJiO/pbMPLkcGbvUyP2anaAQ/Jn411pmdqe', 'AdminUser', 'active');
-
--- เพิ่ม role
-INSERT INTO roles (name, description)
-VALUES ('admin', 'Administrator');
-
--- เพิ่ม permission
-INSERT INTO permissions (name, description)
-VALUES ('*', 'Super Admin - Access All');
-
--- ผูก role กับ permission
-INSERT INTO role_permissions (role_id, permission_id)
-SELECT r.id, p.id
-FROM roles r, permissions p
-WHERE r.name = 'admin'
-AND p.name = '*';
-
--- ผูก user กับ role
-INSERT INTO user_roles (user_id, role_id)
-SELECT u.id, r.id
-FROM users u, roles r
-WHERE u.email = 'admin@gmail.com'
-AND r.name = 'admin';
-
--- user
-INSERT INTO users (email, password, username)
-VALUES (
-    'user@gmail.com',
-    '$2b$10$2jCqovW4f//ovH/7kNH0pO3jfwIFkW51Ik4UDYg7ftlTK.0o62EZu',
-    'NormalUser'
-);
-
-INSERT INTO roles (name, description)
-VALUES ('user', 'Normal User');
-
 INSERT INTO permissions (name, description)
 VALUES 
+('*', 'Super Admin Access'),
 ('view_dashboard', 'View dashboard page'),
 ('view_pm', 'View PM main page'),
 ('view_pm_nodeb', 'View PM NodeB page'),
 ('create_pm_nodeb', 'Create PM NodeB');
+
+INSERT INTO roles (name, description)
+VALUES 
+('dev', 'Developer'),
+('admin', 'Administrator'),
+('user', 'Normal User');
+
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r, permissions p
+WHERE r.name = 'dev'
+AND p.name = '*';
+
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r
+JOIN permissions p ON p.name IN (
+    'view_dashboard',
+    'view_pm',
+    'view_pm_nodeb',
+    'create_pm_nodeb'
+)
+WHERE r.name = 'admin';
 
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
@@ -88,6 +76,27 @@ JOIN permissions p ON p.name IN (
     'view_pm_nodeb'
 )
 WHERE r.name = 'user';
+
+
+INSERT INTO users (email, password, username, status)
+VALUES 
+('dev@gmail.com', '$2b$10$8fQaY0bbMKD3wpjV7/xHR.7pi.I054rBGuU5nf738p8ykVCS3af26', 'Developer', 'active'),
+('admin@gmail.com', '$2b$12$9tABcHgT5YbNsEiKIPTJiO/pbMPLkcGbvUyP2anaAQ/Jn411pmdqe', 'AdminUser', 'active'),
+('user@gmail.com', '$2b$10$2jCqovW4f//ovH/7kNH0pO3jfwIFkW51Ik4UDYg7ftlTK.0o62EZu', 'NormalUser', 'active');
+
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u, roles r
+WHERE u.email = 'dev@gmail.com'
+AND r.name = 'dev';
+
+
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u, roles r
+WHERE u.email = 'admin@gmail.com'
+AND r.name = 'admin';
+
 
 INSERT INTO user_roles (user_id, role_id)
 SELECT u.id, r.id

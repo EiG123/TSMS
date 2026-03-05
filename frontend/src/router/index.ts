@@ -6,9 +6,13 @@ import Home from "../views/home.vue";
 import PM from "../views/PM.vue";
 import NotFound from "../views/NotFound.vue";
 
+import devDashboard from "../views/dev/DevManage.vue";
+
 import AdminManage from "../views/admin/AdminManage.vue";
 import userManage from "../views/admin/UserManage.vue";
 import userEdit from "../views/admin/userEdit.vue";
+import permissionManage from "../views/dev/permissionManage.vue";
+import userPermissionEdit from "../views/dev/userPermissionEdit.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
@@ -38,6 +42,7 @@ import pm_dropdown_member_add from "../views/pm/title/pm_dropdown_member_add.vue
 import cableslack from "../views/cableslack/cableslack.vue";
 
 import txt_to_excel from "../views/txt_to_excel/home.vue";
+import path from "path";
 
 
 const routes = [
@@ -61,6 +66,34 @@ const routes = [
         path: "/register",
         name: "register",
         component: Register,
+    },
+
+    {
+        path: "/dev",
+        meta: {
+            requiresAuth: true,
+            permission: ["dev"]
+        },
+        children: [
+            {
+                path: "devDashboard",
+                name: "devDashboard",
+                component: devDashboard,
+            },
+            {
+                path: "permissionManage",
+                name: "permissionManage",
+                component: permissionManage,
+            },
+            {
+                path: "/user/permissionedit",
+                name: "userPermissionEdit",
+                component: userPermissionEdit,
+                props: route => ({
+                    id: route.query.id,
+                })
+            },
+        ]
     },
 
     {
