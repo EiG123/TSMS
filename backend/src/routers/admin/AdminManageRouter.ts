@@ -59,4 +59,22 @@ AdminManageRouter.post("/userEdit", async (c) => {
     }
 });
 
+
+AdminManageRouter.get("/getAllRole", async (c) => {
+    try {
+        const res = await AdminManageService.getAllRole(pool);
+        return c.json({
+            data: res,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
 export default AdminManageRouter;

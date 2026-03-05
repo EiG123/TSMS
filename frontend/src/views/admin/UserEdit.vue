@@ -5,7 +5,6 @@ import { useAuthStore } from "../../stores/auth";
 import { AuthApiService } from "../../services/auth.api";
 import { AdminManage } from "../../services/admin/AdminManage.api";
 
-
 const authStore = useAuthStore();
 const router = useRouter();
 
@@ -30,17 +29,25 @@ const loading = ref(false);
 const showPassword = ref(false);
 const showConfirmedPassword = ref(false);
 
+const role = ref("");
+const roleId = ref<number | null>(null)
+const allRole = ref([]);
+
 onMounted(async () => {
   loading.value = true;
   try {
     const resUser = await AdminManage.getUserById(userId.value);
+    const allRoleAPI = await AdminManage.getAllRole();
+    allRole.value = allRoleAPI.data.result;
     console.log(resUser.data.result);
+    console.log(allRole.value);
     email.value = resUser.data.result[0].email;
     username.value = resUser.data.result[0].username;
     phone.value = resUser.data.result[0].phone;
     region.value = resUser.data.result[0].region;
     company.value = resUser.data.result[0].company;
     status.value = resUser.data.result[0].status;
+    role.value = resUser.data.result[0].role;
   } catch (error) {
     alert("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
   } finally {
@@ -48,7 +55,7 @@ onMounted(async () => {
   }
 });
 
-const handleRegister = async () => {
+const handleEditUser = async () => {
   error.value = "";
 
   // Validation
@@ -59,6 +66,7 @@ const handleRegister = async () => {
 
   loading.value = true;
 
+  console.log(role.value);
   // Call register API
   const result = await AdminManage.userEdit({
     id: userId.value,
@@ -68,21 +76,22 @@ const handleRegister = async () => {
     region: region.value,
     company: company.value,
     status: status.value,
+    roleId: roleId.value,
   });
 
   loading.value = false;
 
   // Simulate success for now
-  // if (result.success) {
-  //   router.push("/login");
-  // } else {
-  //   error.value = result.error || "สมัครสมาชิกไม่สำเร็จ";
-  // }
+  if (result.success) {
+    router.back();
+  } else {
+    error.value = result.error || "แก้ไข User ไม่สำเร็จ";
+  }
 
   // For demo - remove this and uncomment above
-  setTimeout(() => {
-    // router.push("/");
-  }, 1000);
+  // setTimeout(() => {
+  //   router.back();
+  // }, 1000);
 };
 
 const togglePasswordVisibility = () => {
@@ -95,6 +104,10 @@ const toggleConfirmedPasswordVisibility = () => {
 
 const goLogin = () => {
   router.push("/");
+};
+
+const goBack = () => {
+  router.back();
 };
 </script>
 
@@ -137,14 +150,14 @@ const goLogin = () => {
             <h2
               class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2"
             >
-              สมัครสมาชิก
+              แก้ไข User
             </h2>
-            <p class="text-slate-400">กรอกข้อมูลเพื่อสร้างบัญชีใหม่</p>
+            <p class="text-slate-400">กรอกข้อมูลเพื่อแก้ไข User</p>
           </div>
         </div>
 
         <!-- Form Section -->
-        <form @submit.prevent="handleRegister" class="px-8 py-8 space-y-5">
+        <form @submit.prevent="handleEditUser" class="px-8 py-8 space-y-5">
           <!-- Error Message -->
           <div
             v-if="error"
@@ -619,6 +632,65 @@ const goLogin = () => {
                 </div>
               </div>
             </div>
+
+            <!-- Role Select -->
+            <div class="space-y-2">
+              <label
+                for="status"
+                class="block text-sm font-medium text-slate-400"
+              >
+                Role <span class="text-red-400">*</span>
+              </label>
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
+                  </svg>
+                </div>
+                <select
+                  id="roleId"
+                  v-model="roleId"
+                  required
+                  :disabled="loading"
+                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                >
+                  <option value="">Select role...</option>
+
+                  <option v-for="r in allRole" :value="r.id" :key="r.id">
+                    {{ r.name }}
+                  </option>
+                </select>
+                <div
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Register Button -->
@@ -656,13 +728,12 @@ const goLogin = () => {
           class="px-8 py-5 bg-slate-900/40 border-t border-slate-700/50 text-center"
         >
           <p class="text-sm text-slate-400">
-            มีบัญชีอยู่แล้ว?
             <button
-              @click="goLogin"
+              @click="goBack"
               type="button"
               class="font-medium text-blue-400 hover:text-blue-300 transition-colors ml-1"
             >
-              เข้าสู่ระบบ
+              Back
             </button>
           </p>
         </div>

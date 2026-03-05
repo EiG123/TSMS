@@ -21,5 +21,12 @@ export const AdminManage = {
         );
         return response.data;
     },
+    
+    async getAllRole(){
+        const response = await axios.get(
+            "http://localhost:3000/api/AdminManage/getAllRole"
+        );
+        return response.data;
+    },
 };
 

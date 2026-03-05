@@ -44,6 +44,7 @@ export const AdminManageService = {
             u.region,
             u.company,
             u.status,
+            r.id as role_id,
             r.name as role
             FROM users u 
             LEFT JOIN user_roles ur ON ur.user_id = u.id
@@ -70,7 +71,7 @@ export const AdminManageService = {
     async userEdit(data: any, db: any) {
         const client = await db.connect();
         try {
-
+            console.log(data);
             const sql = `
             UPDATE users u
             SET 
@@ -81,7 +82,7 @@ export const AdminManageService = {
                 company = $6,
                 status = $7
             WHERE u.id = $1
-            RETURNING *;
+            RETURNING u.id;
             `;
 
             const res = await client.query(sql, [
@@ -94,6 +95,18 @@ export const AdminManageService = {
                 data.status
             ]);
 
+            const userId = res.rows[0].id;
+            console.log(userId);
+
+            const sql_role = `UPDATE user_roles
+            SET
+                role_id = $2
+            WHERE user_id = $1`;
+
+            await client.query(sql_role, [
+                userId,
+                data.roleId
+            ])
             return {
                 success: true,
                 result: res.rows[0] ?? null
@@ -105,6 +118,40 @@ export const AdminManageService = {
         } finally {
             client.release();
         }
-    }
+    },
+
+
+    async getAllRole(db: any) {
+        const client = await db.connect();
+        try {
+            const sql = `SELECT 
+            r.id,
+            r.name,
+            r.description,
+            COALESCE(
+                ARRAY_AGG(p.name)
+                FILTER (WHERE p.name IS NOT NULL),
+                '{}'
+            ) AS permissions
+            FROM roles r
+            LEFT JOIN role_permissions rp ON rp.role_id = r.id
+            LEFT JOIN permissions p ON p.id = rp.permission_id
+            GROUP BY r.id
+            ORDER BY r.id
+            `;
+            const res = await client.query(sql);
+
+            return {
+                success: true,
+                result: res.rows
+            }
+        } catch (err) {
+            return {
+                success: false
+            }
+        } finally {
+            client.release();
+        }
+    },
 
 }
