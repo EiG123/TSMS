@@ -21,10 +21,17 @@ export const AdminManage = {
         );
         return response.data;
     },
-    
+
     async getAllRole(){
         const response = await axios.get(
             "http://localhost:3000/api/AdminManage/getAllRole"
+        );
+        return response.data;
+    },
+
+    async deleteUserById(data: any){
+        const response = await axios.post(
+            "http://localhost:3000/api/AdminManage/deleteUserById", data
         );
         return response.data;
     },

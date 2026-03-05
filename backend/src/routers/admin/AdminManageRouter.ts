@@ -77,4 +77,23 @@ AdminManageRouter.get("/getAllRole", async (c) => {
     }
 });
 
+
+AdminManageRouter.post("/deleteUserById", async (c) => {
+    const body = await c.req.json();
+    try {
+        const res = await AdminManageService.deleteUserById(body, pool);
+        return c.json({
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
+
 export default AdminManageRouter;

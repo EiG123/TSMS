@@ -51,15 +51,15 @@ const handleRegister = async () => {
   loading.value = false;
 
   // Simulate success for now
-  // if (result.success) {
-  //   router.push("/login");
-  // } else {
-  //   error.value = result.error || "สมัครสมาชิกไม่สำเร็จ";
-  // }
+  if (result.success) {
+    router.push("/");
+  } else {
+    error.value = result.error || "สมัครสมาชิกไม่สำเร็จ";
+  }
 
   // For demo - remove this and uncomment above
   setTimeout(() => {
-    // router.push("/");
+    router.push("/");
   }, 1000);
 };
 

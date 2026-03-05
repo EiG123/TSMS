@@ -61,10 +61,9 @@ const handleDelete = async (userId: number, username: string) => {
     confirm(`คุณต้องการลบผู้ใช้ "${username}" หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้`)
   ) {
     try {
-      // await AdminManage.deleteUser(userId);
+      await AdminManage.deleteUserById(userId);
       // Reload data after delete
-      const resUser = await AdminManage.getAllUser();
-      UserList.value = resUser.data.result;
+      router.go(0);
       alert("ลบผู้ใช้สำเร็จ");
     } catch (error) {
       alert("ลบผู้ใช้ไม่สำเร็จ");

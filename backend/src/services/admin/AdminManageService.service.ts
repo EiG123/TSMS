@@ -71,7 +71,6 @@ export const AdminManageService = {
     async userEdit(data: any, db: any) {
         const client = await db.connect();
         try {
-            console.log(data);
             const sql = `
             UPDATE users u
             SET 
@@ -154,4 +153,21 @@ export const AdminManageService = {
         }
     },
 
+    
+    async deleteUserById(data:any, db: any) {
+        const client = await db.connect();
+        try {
+            const sql = `DELETE FROM users WHERE id = $1`;
+            const res = await client.query(sql, [data]);
+            return {
+                success: true,
+            }
+        } catch (err) {
+            return {
+                success: false
+            }
+        } finally {
+            client.release();
+        }
+    },
 }
