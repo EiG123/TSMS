@@ -66,15 +66,19 @@ const handleCabinet = (cabinet_id: any) => {
 
 const handleCabinetDelete = async (cabinet_id: any) => {
   loading.value = true;
-  try {
-    await pmServiceManage.deleteCabinet({
-      cabinet_id,
-    });
-    router.go;
-  } catch (error) {
-    console.log("Cabinet Delete Log ERROR: ", error);
-  } finally {
-    loading.value = false;
+  if (confirm("ลบ cabinet นี้หรือไม่")) {
+    try {
+      await pmServiceManage.deleteCabinet({
+        cabinet_id,
+      });
+      router.back();
+    } catch (error) {
+      console.log("Cabinet Delete Log ERROR: ", error);
+    } finally {
+      loading.value = false;
+    }
+  }else{
+    return;
   }
 };
 </script>

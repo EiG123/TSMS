@@ -68,7 +68,7 @@ export const pmCabinetService = {
         try {
             await client.query("BEGIN");
             const sql = `
-                INSERT INTO pm_cabinet (pm_id, cabinet_name, cabinet_network, rectifier) VALUES ($1, $2, $3, $4)
+                INSERT INTO pm_cabinet (pm_id ,cabinet_name, cabinet_network, rectifier) VALUES ($1, $2, $3, $4)
                 RETURNING id;
             `;
 
@@ -87,13 +87,13 @@ export const pmCabinetService = {
 
             if (data.battery.enabled) {
                 for (let i = 0; i < data.battery.count; i++) {
-                    values.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++})`);
-                    params.push(cabinet_id, i + 1, data.battery.type);
+                    values.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++},$${paramIndex++}, $${paramIndex++})`);
+                    params.push(cabinet_id, i + 1, data.battery.serial_number, data.battery.type, data.battery.status);
                 }
 
                 await client.query(
                     `
-                INSERT INTO pm_battery (cabinet_id, battery_number, battery_type)
+                INSERT INTO pm_battery (cabinet_id, battery_number, serial_number, battery_type, status)
                 VALUES ${values.join(",")}
                 `,
                     params

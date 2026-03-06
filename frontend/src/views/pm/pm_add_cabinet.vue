@@ -74,8 +74,10 @@ const handleSubmit = async () => {
       },
       battery: {
         enabled: BatteryEnabled.value,
+        serial_number: 999,
         type: BatteryType.value,
         count: BatteryCount.value,
+        status: "pass",
       },
       online_equipment: OnlineEquipmentEnabled.value,
     });
