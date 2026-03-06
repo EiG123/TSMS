@@ -1,3 +1,4 @@
+import { success } from "zod";
 
 export const DevManageService = {
     async getAllRole(db: any) {
@@ -35,25 +36,25 @@ export const DevManageService = {
 
     async getAllPermission(db: any) {
         const client = await db.connect();
-        try{
+        try {
             const sql = `SELECT * FROM permissions`;
             const res = await client.query(sql);
             return {
                 result: res.rows,
                 success: true
             }
-        }catch(err){
+        } catch (err) {
             return {
                 success: false
             }
-        }finally{
+        } finally {
             client.release();
         }
     },
 
     async getAllRoleWithPermission(db: any) {
         const client = await db.connect();
-        try{
+        try {
             const sql = `SELECT
                 r.id,
                 r.name,
@@ -80,13 +81,50 @@ export const DevManageService = {
                 result: res.rows,
                 success: true
             }
-        }catch(err){
+        } catch (err) {
             return {
                 success: false
             }
-        }finally{
+        } finally {
             client.release();
         }
     },
+
+    async savePermissions(data: any, db: any) {
+        const client = await db.connect();
+        if (data.roleId === 1) {
+            return { success: false, message: "dev role locked" }
+        }
+
+        try {
+            await client.query("BEGIN");
+
+            const sql_delete = `DELETE FROM role_permissions WHERE role_id = $1`;
+            await client.query(sql_delete, [data.roleId]);
+
+            if (data.permissions && data.permissions.length > 0) {
+                const sql = `
+                INSERT INTO role_permissions (role_id, permission_id)
+                SELECT $1, p.id
+                FROM permissions p
+                WHERE p.name = ANY($2::text[])
+                `;
+                await client.query(sql, [data.roleId, data.permissions]);
+            }
+
+            await client.query("COMMIT");
+            return {
+                success: true
+            }
+        } catch (err) {
+            await client.query("ROLLBACK");
+            console.error(err);
+            return {
+                success: false
+            }
+        } finally {
+            client.release();
+        }
+    }
 
 }

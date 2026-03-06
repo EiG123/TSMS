@@ -48,13 +48,17 @@ async function savePermissions() {
   //     roleId: selectedRole.value.id,
   //     permissions: selectedPermissions.value
   //   });
+  await devManage.savePermissions({
+    roleId: selectedRole.value.id,
+    permissions: selectedPermissions.value,
+  });
 
   alert("บันทึกสำเร็จ");
 }
 
 const goBack = () => {
-    router.back();
-}
+  router.back();
+};
 </script>
 
 <template>

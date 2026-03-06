@@ -59,4 +59,23 @@ DevManageRouter.get("/getAllRoleWithPermission", async (c) => {
     }
 });
 
+
+DevManageRouter.post("/savePermissions", async (c) => {
+    const body = await c.req.json();
+    try {
+        const res = await DevManageService.savePermissions(body,pool);
+        return c.json({
+            data: res,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
 export default DevManageRouter;

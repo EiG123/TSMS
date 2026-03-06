@@ -21,5 +21,12 @@ export const devManage = {
         );
         return response.data;
     },
+
+    async savePermissions(data: any){
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/savePermissions", data
+        );
+        return response.data;
+    },
 };
 
