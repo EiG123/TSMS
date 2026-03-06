@@ -59,6 +59,12 @@ async function savePermissions() {
 const goBack = () => {
   router.back();
 };
+
+const goAddPermission = () => {
+  router.push({
+    name: "AddPermission"
+  })
+}
 </script>
 
 <template>
@@ -68,6 +74,12 @@ const goBack = () => {
       class="px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded hover:bg-yellow-600 transition-colors"
     >
       Back
+    </button>
+    <button
+      @click="goAddPermission()"
+      class="px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded hover:bg-yellow-600 transition-colors"
+    >
+      Add Permission
     </button>
     <div class="grid grid-cols-2 gap-6">
       <!-- Role list -->

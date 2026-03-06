@@ -13,6 +13,7 @@ import userManage from "../views/admin/UserManage.vue";
 import userEdit from "../views/admin/userEdit.vue";
 import permissionManage from "../views/dev/permissionManage.vue";
 import userPermissionEdit from "../views/dev/userPermissionEdit.vue";
+import AddPermission from "../views/dev/AddPermission.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
@@ -92,6 +93,11 @@ const routes = [
                 props: route => ({
                     id: route.query.id,
                 })
+            },
+            {
+                path: "/AddPermission",
+                name: "AddPermission",
+                component: AddPermission,
             },
         ]
     },
