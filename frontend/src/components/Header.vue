@@ -2,6 +2,12 @@
 import { useRouter } from "vue-router";
 import { computed } from "vue";
 import { useAuthStore } from "../stores/auth";
+import { useThemeStore } from "../stores/theme";
+import { defineStore } from "pinia";
+
+const themeStore = useThemeStore();
+
+console.log(themeStore.isDark);
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -21,11 +27,11 @@ const goProfile = () => {
 
 <template>
   <header
-    class="fixed top-0 right-0 h-16 bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700/50 shadow-lg z-30 flex items-center px-4 md:px-6 transition-all duration-300"
+    class="fixed top-0 right-0 h-16 bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-800 border-b border-slate-700/50 shadow-lg z-30 flex items-center px-4 md:px-6 transition-all duration-300"
     :class="[
       // บน mobile: เต็มหน้าจอ
       // บนหน้าจอใหญ่: เว้นที่สำหรับ sidebar
-      'left-0 md:left-64'
+      'left-0 md:left-64',
     ]"
   >
     <!-- LEFT - Menu Button (Mobile Only) + Title -->
@@ -59,6 +65,13 @@ const goProfile = () => {
 
     <!-- RIGHT - Actions -->
     <div class="flex items-center gap-2 md:gap-3">
+      <button
+        @click="themeStore.toggleTheme()"
+        class="p-2 rounded-lg hover:bg-slate-700/50 transition"
+      >
+        <span v-if="themeStore.isDark">☀️</span>
+        <span v-else>🌙</span>
+      </button>
       <!-- Notifications -->
       <div class="relative">
         <button
@@ -100,13 +113,13 @@ const goProfile = () => {
             {{ username.charAt(0).toUpperCase() }}
           </span>
         </div>
-        
+
         <!-- Username & Dropdown (Hidden on mobile) -->
         <div class="hidden lg:block text-left">
           <p class="text-sm font-medium text-white">{{ username }}</p>
           <p class="text-xs text-slate-400">View Profile</p>
         </div>
-        
+
         <!-- Dropdown Icon (Hidden on mobile) -->
         <svg
           class="hidden lg:block w-4 h-4 text-slate-400 group-hover:text-white transition-colors"

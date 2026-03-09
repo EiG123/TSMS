@@ -1,12 +1,17 @@
 // tailwind.config.js
 module.exports = {
-  purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"], // ✅ เปลี่ยน purge → content
+  darkMode: "class",
   theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
+    extend: {
+      colors: {
+        primaryBg: {
+          light: "#ffffff",
+          dark: "#0f172a",
+        },
+      },
+    },
   },
   plugins: [],
 };
+
