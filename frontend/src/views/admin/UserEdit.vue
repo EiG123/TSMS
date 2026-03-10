@@ -30,7 +30,7 @@ const showPassword = ref(false);
 const showConfirmedPassword = ref(false);
 
 const role = ref("");
-const roleId = ref<number | null>(null)
+const roleId = ref<number | null>(null);
 const allRole = ref([]);
 
 onMounted(async () => {
@@ -113,17 +113,17 @@ const goBack = () => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4"
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors duration-300"
   >
     <div class="w-full max-w-2xl animate-fade-in">
       <!-- Register Card -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl"
+        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-2xl"
       >
         <!-- Header Section -->
         <div class="relative overflow-hidden">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"
+            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20"
           ></div>
           <div class="absolute inset-0 backdrop-blur-sm"></div>
 
@@ -148,11 +148,13 @@ const goBack = () => {
             </div>
 
             <h2
-              class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2"
+              class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-2"
             >
               แก้ไข User
             </h2>
-            <p class="text-slate-400">กรอกข้อมูลเพื่อแก้ไข User</p>
+            <p class="text-gray-600 dark:text-slate-400">
+              กรอกข้อมูลเพื่อแก้ไข User
+            </p>
           </div>
         </div>
 
@@ -161,11 +163,11 @@ const goBack = () => {
           <!-- Error Message -->
           <div
             v-if="error"
-            class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 animate-shake"
+            class="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl p-4 animate-shake"
           >
             <div class="flex items-center gap-2">
               <svg
-                class="w-5 h-5 text-red-400 flex-shrink-0"
+                class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -175,7 +177,9 @@ const goBack = () => {
                   clip-rule="evenodd"
                 />
               </svg>
-              <p class="text-sm text-red-300 font-medium">{{ error }}</p>
+              <p class="text-sm text-red-700 dark:text-red-300 font-medium">
+                {{ error }}
+              </p>
             </div>
           </div>
 
@@ -185,7 +189,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="email"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 อีเมล <span class="text-red-400">*</span>
               </label>
@@ -214,7 +218,7 @@ const goBack = () => {
                   placeholder="example@email.com"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -223,7 +227,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="username"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 ชื่อผู้ใช้ <span class="text-red-400">*</span>
               </label>
@@ -252,7 +256,7 @@ const goBack = () => {
                   placeholder="username"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -261,7 +265,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="password"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 รหัสผ่าน <span class="text-red-400">*</span>
               </label>
@@ -289,7 +293,7 @@ const goBack = () => {
                   :type="showPassword ? 'text' : 'password'"
                   placeholder="••••••••"
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
@@ -339,7 +343,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="confirmed_password"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 ยืนยันรหัสผ่าน <span class="text-red-400">*</span>
               </label>
@@ -367,12 +371,12 @@ const goBack = () => {
                   :type="showConfirmedPassword ? 'text' : 'password'"
                   placeholder="••••••••"
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
                   @click="toggleConfirmedPasswordVisibility"
-                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
                   :disabled="loading"
                 >
                   <svg
@@ -417,7 +421,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="phone"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 เบอร์โทรศัพท์ <span class="text-red-400">*</span>
               </label>
@@ -445,7 +449,7 @@ const goBack = () => {
                   type="tel"
                   placeholder="08XXXXXXXX"
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -454,7 +458,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="region"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 ภูมิภาค <span class="text-red-400">*</span>
               </label>
@@ -486,7 +490,7 @@ const goBack = () => {
                   id="region"
                   v-model="region"
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
                 >
                   <option value="">เลือกภูมิภาค...</option>
                   <option value="R1">R1</option>
@@ -522,7 +526,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="company"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 บริษัท <span class="text-red-400">*</span>
               </label>
@@ -531,7 +535,7 @@ const goBack = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -548,7 +552,7 @@ const goBack = () => {
                   id="company"
                   v-model="company"
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
                 >
                   <option value="">เลือกบริษัท...</option>
                   <option value="true">TRUE</option>
@@ -579,7 +583,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="status"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 สถานะ <span class="text-red-400">*</span>
               </label>
@@ -606,7 +610,7 @@ const goBack = () => {
                   v-model="status"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
                 >
                   <option value="">สถานะ...</option>
                   <option value="active">Active</option>
@@ -637,7 +641,7 @@ const goBack = () => {
             <div class="space-y-2">
               <label
                 for="status"
-                class="block text-sm font-medium text-slate-400"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
               >
                 Role <span class="text-red-400">*</span>
               </label>
@@ -664,7 +668,7 @@ const goBack = () => {
                   v-model="roleId"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
                 >
                   <option value="">Select role...</option>
 
@@ -725,7 +729,7 @@ const goBack = () => {
 
         <!-- Footer -->
         <div
-          class="px-8 py-5 bg-slate-900/40 border-t border-slate-700/50 text-center"
+          class="px-8 py-5 bg-white-900/40 dark:bg-gradient-to-r border-t border-slate-700/50 text-center "
         >
           <p class="text-sm text-slate-400">
             <button
