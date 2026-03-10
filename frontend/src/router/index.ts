@@ -7,6 +7,8 @@ import PM from "../views/PM.vue";
 import NotFound from "../views/NotFound.vue";
 
 import devDashboard from "../views/dev/DevManage.vue";
+import DevUserManage from "../views/dev/UserManage.vue";
+import DevUserEdit from "../views/dev/userEdit.vue";
 
 import AdminManage from "../views/admin/AdminManage.vue";
 import userManage from "../views/admin/UserManage.vue";
@@ -98,6 +100,17 @@ const routes = [
                 path: "/AddPermission",
                 name: "AddPermission",
                 component: AddPermission,
+            },
+            {
+                path: "/dev/userManage",
+                component: DevUserManage,
+            },
+            {
+                path: "/dev/userEdit",
+                component: DevUserEdit,
+                props: route => ({
+                    id: route.query.id,
+                })
             },
         ]
     },

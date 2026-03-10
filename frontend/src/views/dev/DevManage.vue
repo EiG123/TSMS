@@ -21,6 +21,15 @@ const adminCards = [
     icon: "M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
     stats: "",
   },
+  {
+    title: "User Management For Developer",
+    subtitle: "",
+    description: "",
+    path: "/dev/userManage",
+    gradient: "from-blue-500 to-cyan-500",
+    icon: "M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
+    stats: "",
+  }
 ];
 </script>
 
@@ -73,7 +82,7 @@ const adminCards = [
         </div> -->
       </div>
 
-      <!-- PM Cards Grid -->
+      <!-- Dev Cards Grid -->
       <div
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-up"
       >
@@ -81,26 +90,32 @@ const adminCards = [
           v-for="(card, index) in adminCards"
           :key="index"
           @click="go(card.path)"
-          class="group relative bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 hover:border-blue-500/40 cursor-pointer"
+          class="group relative bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 hover:border-blue-400 dark:hover:border-blue-500/40 cursor-pointer"
         >
           <!-- Gradient Overlay -->
           <div
-            class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
+            class="absolute inset-0 opacity-0 group-hover:opacity-5 dark:group-hover:opacity-10 transition-opacity duration-300"
             :class="`bg-gradient-to-br ${card.gradient}`"
           ></div>
 
           <!-- Card Header -->
-          <div class="relative border-b border-slate-700/50 p-6">
+          <div
+            class="relative border-b border-gray-200 dark:border-slate-700/50 p-6"
+          >
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h2
-                  class="text-xl font-bold text-slate-200 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r transition-all"
+                  class="text-xl font-bold text-gray-800 dark:text-slate-200 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r transition-all"
                   :class="`group-hover:${card.gradient}`"
                 >
                   {{ card.title }}
                 </h2>
-                <p class="text-sm text-slate-400 mb-3">{{ card.subtitle }}</p>
-                <p class="text-slate-300 text-sm">{{ card.description }}</p>
+                <p class="text-sm text-gray-500 dark:text-slate-400 mb-3">
+                  {{ card.subtitle }}
+                </p>
+                <p class="text-gray-700 dark:text-slate-300 text-sm">
+                  {{ card.description }}
+                </p>
               </div>
 
               <!-- Icon -->

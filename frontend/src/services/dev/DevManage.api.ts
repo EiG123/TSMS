@@ -1,9 +1,23 @@
 import axios from "axios";
 
-export const devManage = {
+export const DevManage = {
+    async deleteUserById(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/deleteUserById", data
+        );
+        return response.data;
+    },
+
+    async getAllUser() {
+        const response = await axios.get(
+            "http://localhost:3000/api/DevManage/getAllUser"
+        );
+        return response.data;
+    },
+
     async getAllRole() {
         const response = await axios.get(
-            "http://localhost:3000/api/AdminManage/getAllRole"
+            "http://localhost:3000/api/DevManage/getAllRole"
         );
         return response.data;
     },
@@ -14,7 +28,7 @@ export const devManage = {
         );
         return response.data;
     },
-    
+
     async getAllRoleWithPermission() {
         const response = await axios.get(
             "http://localhost:3000/api/DevManage/getAllRoleWithPermission"
@@ -22,16 +36,31 @@ export const devManage = {
         return response.data;
     },
 
-    async savePermissions(data: any){
+    async savePermissions(data: any) {
         const response = await axios.post(
             "http://localhost:3000/api/DevManage/savePermissions", data
         );
         return response.data;
     },
 
-    async deleteRole(data: any){
+    async deleteRole(data: any) {
         const response = await axios.post(
             "http://localhost:3000/api/DevManage/deleteRole", data
+        );
+        return response.data;
+    },
+
+    
+    async getUserById(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/getUserById", data
+        );
+        return response.data;
+    },
+
+    async userEdit(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/userEdit", data
         );
         return response.data;
     },

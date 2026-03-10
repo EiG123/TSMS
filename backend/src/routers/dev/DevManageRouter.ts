@@ -78,4 +78,78 @@ DevManageRouter.post("/savePermissions", async (c) => {
     }
 });
 
+
+DevManageRouter.get("/getAllUser", async (c) => {
+    try {
+        const res = await DevManageService.getAllUser(pool);
+        return c.json({
+            data: res,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
+
+DevManageRouter.post("/deleteUserById", async (c) => {
+    const body = await c.req.json();
+    try {
+        const res = await DevManageService.deleteUserById(body,pool);
+        return c.json({
+            data: res,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
+DevManageRouter.post("/getUserById", async (c) => {
+    const body = await c.req.json();
+    try {
+        const res = await DevManageService.getUserById(body, pool);
+        return c.json({
+            data: res,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
+
+DevManageRouter.post("/userEdit", async (c) => {
+    const body = await c.req.json();
+    try {
+        const res = await DevManageService.userEdit(body, pool);
+        return c.json({
+            data: res,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
 export default DevManageRouter;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { devManage } from "../../services/dev/DevManage.api";
+import { DevManage } from "../../services/dev/DevManage.api";
 
 const router = useRouter();
 const loading = ref(false);
@@ -21,7 +21,7 @@ onMounted(async () => {
 const loadPermissions = async () => {
   loading.value = true;
   try {
-    const allPermission = await devManage.getAllPermission();
+    const allPermission = await DevManage.getAllPermission();
     console.log(allPermission.data.result);
     allP.value = allPermission.data.result;
   } catch (error) {

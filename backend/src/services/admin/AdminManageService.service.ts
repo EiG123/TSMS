@@ -141,10 +141,11 @@ export const AdminManageService = {
             FROM roles r
             LEFT JOIN role_permissions rp ON rp.role_id = r.id
             LEFT JOIN permissions p ON p.id = rp.permission_id
+            WHERE r.name != $1
             GROUP BY r.id
             ORDER BY r.id
             `;
-            const res = await client.query(sql);
+            const res = await client.query(sql, ['dev']);
 
             return {
                 success: true,

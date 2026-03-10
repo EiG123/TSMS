@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { devManage } from "../../services/dev/DevManage.api";
+import { DevManage } from "../../services/dev/DevManage.api";
 
 const router = useRouter();
 
@@ -13,8 +13,8 @@ const selectedPermissions = ref<string[]>([]);
 const loading = ref(false);
 
 const loadData = async () => {
-  let allRoleWithPermission = await devManage.getAllRoleWithPermission();
-  let allPermission = await devManage.getAllPermission();
+  let allRoleWithPermission = await DevManage.getAllRoleWithPermission();
+  let allPermission = await DevManage.getAllPermission();
 
   roles.value = allRoleWithPermission.data.result;
   allPermissions.value = allPermission.data.result;
@@ -54,7 +54,7 @@ async function savePermissions() {
   }
 
   try {
-    await devManage.savePermissions({
+    await DevManage.savePermissions({
       roleId: selectedRole.value.id,
       permissions: selectedPermissions.value,
     });

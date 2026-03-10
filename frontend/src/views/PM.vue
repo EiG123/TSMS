@@ -204,7 +204,7 @@ const pmCards = [
       </div>
 
       <!-- Quick Actions -->
-      <div
+      <!-- <div
         class="mt-8 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 animate-fade-in"
       >
         <h3 class="text-lg font-semibold text-slate-200 mb-4">Quick Actions</h3>
@@ -291,7 +291,7 @@ const pmCards = [
             <span class="text-sm font-medium">Settings</span>
           </button>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
