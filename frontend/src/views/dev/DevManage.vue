@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { useThemeStore } from "../../stores/theme";
+
+useThemeStore();
 
 const router = useRouter();
 
@@ -23,7 +26,7 @@ const adminCards = [
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-gray-200 dark:bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
   >
     <div class="max-w-7xl mx-auto">
       <!-- Header Section -->
@@ -38,7 +41,7 @@ const adminCards = [
         </p>
 
         <!-- Stats Overview -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        <!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           <div
             class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4"
           >
@@ -67,7 +70,7 @@ const adminCards = [
             <p class="text-slate-400 text-sm mb-1">Completed</p>
             <p class="text-3xl font-bold text-purple-400">5</p>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- PM Cards Grid -->
@@ -134,7 +137,7 @@ const adminCards = [
             </div>
 
             <div
-              class="flex items-center gap-2 text-blue-400 group-hover:text-blue-300 transition-colors"
+              class="flex items-center gap-2 dark:text-blue-400 group-hover:text-blue-300 transition-colors"
             >
               <span class="text-sm font-medium">View Details</span>
               <svg
