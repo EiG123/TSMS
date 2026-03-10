@@ -6,16 +6,16 @@ import { devManage } from "../../services/dev/DevManage.api";
 const router = useRouter();
 
 const loading = ref(false);
-const UserList = ref([]);
+const RoleList = ref([]);
 const company = ref("");
 const searchQuery = ref("");
 
 onMounted(async () => {
   loading.value = true;
   try {
-    const resUser = await devManage.getAllRole();
-    UserList.value = resUser.data.result;
-    console.log(resUser.data.result);
+    const resRole = await devManage.getAllRole();
+    RoleList.value = resRole.data.result;
+    console.log(resRole.data.result);
   } catch (error) {
     alert("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
   } finally {
@@ -25,7 +25,7 @@ onMounted(async () => {
 
 // Filter users by company and search query
 const filteredUsers = computed(() => {
-  let filtered = UserList.value;
+  let filtered = RoleList.value;
 
   // Filter by company
   if (company.value) {
@@ -54,17 +54,17 @@ const handleEdit = () => {
   });
 };
 
-const handleDelete = async (userId: number, username: string) => {
+const handleDelete = async (roleId: number, roleName: string) => {
   if (
-    confirm(`คุณต้องการลบ "${username}" หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้`)
+    confirm(`คุณต้องการลบ "${roleName}" หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้`)
   ) {
     try {
-      // await devManage.deleteRole(userId);
-      console.log("Delete:", userId);
+      await devManage.deleteRole(roleId);
+      console.log("Delete:", roleId);
       alert("ลบสำเร็จ");
       // Reload data
       const resUser = await devManage.getAllRole();
-      UserList.value = resUser.data.result;
+      RoleList.value = resUser.data.result;
     } catch (error) {
       alert("ลบไม่สำเร็จ");
     }
@@ -262,7 +262,7 @@ const handleDelete = async (userId: number, username: string) => {
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <div class="flex gap-2">
                   <button
-                    @click="handleDelete(item.id, item.name)"
+                    @click="handleDelete(item.id, item.description)"
                     class="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 transition-colors"
                   >
                     Delete

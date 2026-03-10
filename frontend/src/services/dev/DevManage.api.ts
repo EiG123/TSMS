@@ -28,5 +28,12 @@ export const devManage = {
         );
         return response.data;
     },
+
+    async deleteRole(data: any){
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/deleteRole", data
+        );
+        return response.data;
+    },
 };
 
