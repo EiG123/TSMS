@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { useThemeStore } from "../stores/theme";
+
+const themeStore = useThemeStore();
 
 const router = useRouter();
 
@@ -67,7 +70,7 @@ const pmCards = [
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8">
+  <div class="min-h-screen bg-gray-200 dark:bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8 transition-colors duration-300">
     <div class="max-w-7xl mx-auto">
       
       <!-- Header Section -->
@@ -80,7 +83,7 @@ const pmCards = [
         </p>
         
         <!-- Stats Overview -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        <!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           <div class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4">
             <p class="text-slate-400 text-sm mb-1">Total Sites</p>
             <p class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">404</p>
@@ -97,7 +100,7 @@ const pmCards = [
             <p class="text-slate-400 text-sm mb-1">Completed</p>
             <p class="text-3xl font-bold text-purple-400">5</p>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- PM Cards Grid -->
@@ -122,8 +125,8 @@ const pmCards = [
                     :class="`group-hover:${card.gradient}`">
                   {{ card.title }}
                 </h2>
-                <p class="text-sm text-slate-400 mb-3">{{ card.subtitle }}</p>
-                <p class="text-slate-300 text-sm">{{ card.description }}</p>
+                <p class="text-black-to-br text-sm dark:text-slate-400 mb-3">{{ card.subtitle }}</p>
+                <p class="text-black dark:text-slate-300 text-sm">{{ card.description }}</p>
               </div>
               
               <!-- Icon -->
@@ -145,7 +148,7 @@ const pmCards = [
               <span class="text-slate-400 text-sm font-medium">{{ card.stats }}</span>
             </div>
             
-            <div class="flex items-center gap-2 text-blue-400 group-hover:text-blue-300 transition-colors">
+            <div class="flex items-center gap-2 dark:text-blue-400 group-hover:text-blue-300 transition-colors">
               <span class="text-sm font-medium">View Details</span>
               <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
