@@ -16,9 +16,10 @@ export const AdminManageService = {
             FROM users u
             LEFT JOIN user_roles ur ON ur.user_id = u.id
             LEFT JOIN roles r ON r.id = ur.role_id
+            WHERE u.email != $1
             `;
 
-            const res = await client.query(sql);
+            const res = await client.query(sql, ['dev@gmail.com']);
             return {
                 success: true,
                 result: res.rows
@@ -71,6 +72,11 @@ export const AdminManageService = {
     async userEdit(data: any, db: any) {
         const client = await db.connect();
         try {
+            if(data.email === `dev@gmail.com`){
+                return {
+                    success: false
+                }
+            }
             const sql = `
             UPDATE users u
             SET 
@@ -95,7 +101,7 @@ export const AdminManageService = {
             ]);
 
             const userId = res.rows[0].id;
-            console.log(userId);
+            // console.log(userId);
 
             const sql_role = `UPDATE user_roles
             SET

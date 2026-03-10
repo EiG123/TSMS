@@ -57,8 +57,8 @@ const handleRegister = async () => {
     router.push("/");
   } else {
     error.value = result.error || "สมัครสมาชิกไม่สำเร็จ";
+    // router.go(0);
   }
-
   // For demo - remove this and uncomment above
   setTimeout(() => {
     router.push("/");

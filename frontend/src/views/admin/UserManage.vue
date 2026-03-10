@@ -269,6 +269,7 @@ const handleDelete = async (userId: number, username: string) => {
               v-for="item in filteredUsers"
               :key="item.id"
               class="hover:bg-gray-50 dark:hover:bg-slate-700/30 transition-colors"
+              v-if-else="item.email !== `dev@gmail.com`"
             >
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-300 font-mono"
