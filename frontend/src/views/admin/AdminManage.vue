@@ -32,49 +32,49 @@ const adminCards = [
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
   >
     <div class="max-w-7xl mx-auto">
       <!-- Header Section -->
       <div class="mb-8 animate-fade-in">
         <h1
-          class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-3"
+          class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-3"
         >
           Admin Dashboard
         </h1>
-        <p class="text-slate-400 text-lg">
+        <p class="text-gray-600 dark:text-slate-400 text-lg">
           Preventive Maintenance Management System
         </p>
 
         <!-- Stats Overview -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           <div
-            class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4"
+            class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-700/50 p-4 shadow-lg hover:shadow-xl transition-shadow"
           >
-            <p class="text-slate-400 text-sm mb-1">Total Sites</p>
+            <p class="text-gray-500 dark:text-slate-400 text-sm mb-1">Total Sites</p>
             <p
-              class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400"
+              class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-400 dark:to-cyan-400"
             >
               404
             </p>
           </div>
           <div
-            class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4"
+            class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-700/50 p-4 shadow-lg hover:shadow-xl transition-shadow"
           >
-            <p class="text-slate-400 text-sm mb-1">Active</p>
-            <p class="text-3xl font-bold text-green-400">387</p>
+            <p class="text-gray-500 dark:text-slate-400 text-sm mb-1">Active</p>
+            <p class="text-3xl font-bold text-green-500 dark:text-green-400">387</p>
           </div>
           <div
-            class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4"
+            class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-700/50 p-4 shadow-lg hover:shadow-xl transition-shadow"
           >
-            <p class="text-slate-400 text-sm mb-1">Scheduled</p>
-            <p class="text-3xl font-bold text-yellow-400">12</p>
+            <p class="text-gray-500 dark:text-slate-400 text-sm mb-1">Scheduled</p>
+            <p class="text-3xl font-bold text-yellow-500 dark:text-yellow-400">12</p>
           </div>
           <div
-            class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4"
+            class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-slate-700/50 p-4 shadow-lg hover:shadow-xl transition-shadow"
           >
-            <p class="text-slate-400 text-sm mb-1">Completed</p>
-            <p class="text-3xl font-bold text-purple-400">5</p>
+            <p class="text-gray-500 dark:text-slate-400 text-sm mb-1">Completed</p>
+            <p class="text-3xl font-bold text-purple-500 dark:text-purple-400">5</p>
           </div>
         </div>
       </div>
@@ -87,26 +87,30 @@ const adminCards = [
           v-for="(card, index) in adminCards"
           :key="index"
           @click="go(card.path)"
-          class="group relative bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 hover:border-blue-500/40 cursor-pointer"
+          class="group relative bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 hover:border-blue-400 dark:hover:border-blue-500/40 cursor-pointer"
         >
           <!-- Gradient Overlay -->
           <div
-            class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
+            class="absolute inset-0 opacity-0 group-hover:opacity-5 dark:group-hover:opacity-10 transition-opacity duration-300"
             :class="`bg-gradient-to-br ${card.gradient}`"
           ></div>
 
           <!-- Card Header -->
-          <div class="relative border-b border-slate-700/50 p-6">
+          <div class="relative border-b border-gray-200 dark:border-slate-700/50 p-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h2
-                  class="text-xl font-bold text-slate-200 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r transition-all"
+                  class="text-xl font-bold text-gray-800 dark:text-slate-200 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r transition-all"
                   :class="`group-hover:${card.gradient}`"
                 >
                   {{ card.title }}
                 </h2>
-                <p class="text-sm text-slate-400 mb-3">{{ card.subtitle }}</p>
-                <p class="text-slate-300 text-sm">{{ card.description }}</p>
+                <p class="text-sm text-gray-500 dark:text-slate-400 mb-3">
+                  {{ card.subtitle }}
+                </p>
+                <p class="text-gray-700 dark:text-slate-300 text-sm">
+                  {{ card.description }}
+                </p>
               </div>
 
               <!-- Icon -->
@@ -137,13 +141,13 @@ const adminCards = [
               <div
                 class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50"
               ></div>
-              <span class="text-slate-400 text-sm font-medium">{{
-                card.stats
-              }}</span>
+              <span class="text-gray-600 dark:text-slate-400 text-sm font-medium">
+                {{ card.stats }}
+              </span>
             </div>
 
             <div
-              class="flex items-center gap-2 text-blue-400 group-hover:text-blue-300 transition-colors"
+              class="flex items-center gap-2 text-blue-500 dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors"
             >
               <span class="text-sm font-medium">View Details</span>
               <svg
@@ -164,10 +168,7 @@ const adminCards = [
 
           <!-- Hover Effect Border -->
           <div
-            class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-            :class="`ring-1 ring-inset ${card.gradient
-              .replace('from-', 'ring-')
-              .replace(' to-', '/30 ring-')}`"
+            class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ring-1 ring-inset ring-blue-400/30 dark:ring-blue-500/30"
           ></div>
         </div>
       </div>
@@ -179,9 +180,11 @@ const adminCards = [
 @keyframes fade-in {
   from {
     opacity: 0;
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 

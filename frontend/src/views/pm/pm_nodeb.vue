@@ -90,12 +90,12 @@ const handleSearch = () => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
   >
     <!-- Header -->
     <div class="mb-8 animate-fade-in">
       <h1
-        class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2"
+        class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-3"
       >
         PM NodeB List
       </h1>
@@ -109,7 +109,7 @@ const handleSearch = () => {
         <!-- Year Select -->
         <select
           v-model="selectedYear"
-          class="bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
+          class="bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl px-4 py-3 text-gray-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
         >
           <option>2025/2026</option>
           <option>2026/2027</option>
@@ -119,7 +119,7 @@ const handleSearch = () => {
         <!-- Search Input -->
         <div class="relative flex-1 min-w-[250px]">
           <svg
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none"
             width="20"
             height="20"
             viewBox="0 0 20 20"
@@ -138,7 +138,7 @@ const handleSearch = () => {
             @input="handleSearch"
             type="text"
             placeholder="Search Site ID or Region..."
-            class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-10 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
+            class="w-full bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-10 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
           />
         </div>
       </div>
@@ -168,7 +168,7 @@ const handleSearch = () => {
       <div
         class="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"
       ></div>
-      <p class="text-slate-400 text-lg">Loading site data...</p>
+      <p class="text-gray-600 dark:text-slate-400 text-lg">Loading site data...</p>
     </div>
 
     <!-- Card Grid -->
@@ -176,7 +176,7 @@ const handleSearch = () => {
       <!-- Empty State -->
       <div
         v-if="paginatedList.length === 0"
-        class="flex flex-col items-center justify-center py-16 text-slate-500 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50"
+        class="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-slate-500 bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 shadow-lg"
       >
         <svg
           width="64"
@@ -199,10 +199,12 @@ const handleSearch = () => {
             stroke-linecap="round"
           />
         </svg>
-        <p class="text-lg font-semibold text-slate-400 mb-1">No sites found</p>
-        <span class="text-sm text-slate-500"
-          >Try adjusting your search or filters</span
-        >
+        <p class="text-lg font-semibold text-gray-600 dark:text-slate-400 mb-1">
+          No sites found
+        </p>
+        <span class="text-sm text-gray-500 dark:text-slate-500">
+          Try adjusting your search or filters
+        </span>
       </div>
 
       <!-- Cards Grid -->
@@ -210,11 +212,11 @@ const handleSearch = () => {
         <div
           v-for="(row, index) in paginatedList"
           :key="row.id"
-          class="group bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40"
+          class="group bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400 dark:hover:border-blue-500/40"
         >
           <!-- Card Header -->
           <div
-            class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-slate-700/50 px-6 py-4"
+            class="bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 border-b border-gray-200 dark:border-slate-700/50 px-6 py-4"
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -224,10 +226,12 @@ const handleSearch = () => {
                   {{ (currentPage - 1) * pageSize + index + 1 }}
                 </div>
                 <div>
-                  <h3 class="text-slate-300 font-semibold text-lg">
+                  <h3 class="text-gray-800 dark:text-slate-300 font-semibold text-lg">
                     {{ row.site_name || "N/A" }}
                   </h3>
-                  <p class="text-slate-500 text-xs font-mono">Site ID</p>
+                  <p class="text-gray-500 dark:text-slate-500 text-xs font-mono">
+                    Site ID
+                  </p>
                 </div>
               </div>
               <!-- Status Indicator -->
@@ -236,7 +240,8 @@ const handleSearch = () => {
                 :class="{
                   'bg-green-500 shadow-green-500/50':
                     row.service_status === 'onService',
-                  'bg-red-500 shadow-red-500/50': row.service_status === 'cancel',
+                  'bg-red-500 shadow-red-500/50':
+                    row.service_status === 'cancel',
                   'bg-gray-500 shadow-gray-500/50': row.service_status === '',
                 }"
               ></div>
@@ -248,14 +253,14 @@ const handleSearch = () => {
             <!-- Region -->
             <div class="flex items-center gap-3">
               <div
-                class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0"
+                class="w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0"
               >
                 <svg
                   width="16"
                   height="16"
                   viewBox="0 0 16 16"
                   fill="none"
-                  class="text-blue-400"
+                  class="text-blue-500 dark:text-blue-400"
                 >
                   <path
                     d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
@@ -274,10 +279,10 @@ const handleSearch = () => {
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-xs text-slate-500 uppercase tracking-wide">
+                <p class="text-xs text-gray-500 dark:text-slate-500 uppercase tracking-wide">
                   Region
                 </p>
-                <p class="text-slate-300 font-medium truncate">
+                <p class="text-gray-800 dark:text-slate-300 font-medium truncate">
                   {{ row.region || "N/A" }}
                 </p>
               </div>
@@ -286,14 +291,14 @@ const handleSearch = () => {
             <!-- PM Date -->
             <div class="flex items-center gap-3">
               <div
-                class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0"
+                class="w-8 h-8 rounded-lg bg-purple-500/10 dark:bg-purple-500/10 flex items-center justify-center flex-shrink-0"
               >
                 <svg
                   width="16"
                   height="16"
                   viewBox="0 0 16 16"
                   fill="none"
-                  class="text-purple-400"
+                  class="text-purple-500 dark:text-purple-400"
                 >
                   <rect
                     x="2"
@@ -313,11 +318,11 @@ const handleSearch = () => {
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-xs text-slate-500 uppercase tracking-wide">
+                <p class="text-xs text-gray-500 dark:text-slate-500 uppercase tracking-wide">
                   PM Date
                 </p>
                 <p
-                  class="text-slate-300 font-medium font-mono text-sm truncate"
+                  class="text-gray-800 dark:text-slate-300 font-medium font-mono text-sm truncate"
                 >
                   {{ row.date || "Not scheduled" }}
                 </p>
@@ -327,11 +332,11 @@ const handleSearch = () => {
 
           <!-- Card Footer -->
           <div
-            class="px-6 py-4 bg-slate-900/40 border-t border-slate-700/50 flex gap-2"
+            class="px-6 py-4 bg-gray-50 dark:bg-slate-900/40 border-t border-gray-200 dark:border-slate-700/50 flex gap-2"
           >
             <button
               @click="goView(row.id)"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
@@ -353,7 +358,7 @@ const handleSearch = () => {
             </button>
             <button
               @click="goEdit(row.id)"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-purple-500/10 dark:bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/20 dark:hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-600 dark:text-purple-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
@@ -368,11 +373,11 @@ const handleSearch = () => {
             </button>
             <button
               @click="handleDelete(row.id)"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/15 border border-red-500/30 hover:bg-red-500/25 hover:border-red-500/50 text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path
-                  d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z"
+                  d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"
                   stroke="currentColor"
                   stroke-width="1.5"
                   stroke-linecap="round"
@@ -394,7 +399,7 @@ const handleSearch = () => {
       <button
         @click="prevPage"
         :disabled="currentPage === 1"
-        class="flex items-center gap-2 bg-slate-800/60 border border-slate-700/50 hover:bg-slate-800 hover:border-blue-500/40 disabled:opacity-30 disabled:cursor-not-allowed text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 backdrop-blur-sm disabled:hover:bg-slate-800/60 disabled:hover:border-slate-700/50"
+        class="flex items-center gap-2 bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500/40 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 backdrop-blur-sm disabled:hover:bg-white dark:disabled:hover:bg-slate-800/60 disabled:hover:border-gray-300 dark:disabled:hover:border-slate-700/50"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path
@@ -409,15 +414,15 @@ const handleSearch = () => {
       </button>
 
       <div class="flex items-center gap-2 font-mono font-medium">
-        <span class="text-blue-400 text-xl">{{ currentPage }}</span>
-        <span class="text-slate-600">/</span>
-        <span class="text-slate-400">{{ totalPages }}</span>
+        <span class="text-blue-500 dark:text-blue-400 text-xl">{{ currentPage }}</span>
+        <span class="text-gray-400 dark:text-slate-600">/</span>
+        <span class="text-gray-600 dark:text-slate-400">{{ totalPages }}</span>
       </div>
 
       <button
         @click="nextPage"
         :disabled="currentPage === totalPages"
-        class="flex items-center gap-2 bg-slate-800/60 border border-slate-700/50 hover:bg-slate-800 hover:border-blue-500/40 disabled:opacity-30 disabled:cursor-not-allowed text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 backdrop-blur-sm disabled:hover:bg-slate-800/60 disabled:hover:border-slate-700/50"
+        class="flex items-center gap-2 bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500/40 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 backdrop-blur-sm disabled:hover:bg-white dark:disabled:hover:bg-slate-800/60 disabled:hover:border-gray-300 dark:disabled:hover:border-slate-700/50"
       >
         Next
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

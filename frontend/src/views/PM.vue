@@ -19,7 +19,7 @@ const pmCards = [
     path: "/pm_nodeb",
     gradient: "from-blue-500 to-cyan-500",
     icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z",
-    stats: ""
+    stats: "",
   },
   {
     title: "PM Small Exchange",
@@ -28,7 +28,7 @@ const pmCards = [
     path: "/small",
     gradient: "from-purple-500 to-pink-500",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
-    stats: ""
+    stats: "",
   },
   {
     title: "PM Medium Exchange",
@@ -37,7 +37,7 @@ const pmCards = [
     path: "/medium",
     gradient: "from-green-500 to-emerald-500",
     icon: "M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01",
-    stats: ""
+    stats: "",
   },
   {
     title: "PM Broadband",
@@ -46,7 +46,7 @@ const pmCards = [
     path: "/broadband",
     gradient: "from-orange-500 to-red-500",
     icon: "M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0",
-    stats: ""
+    stats: "",
   },
   {
     title: "Mowing",
@@ -55,7 +55,7 @@ const pmCards = [
     path: "/mowing",
     gradient: "from-lime-500 to-green-500",
     icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z",
-    stats: ""
+    stats: "",
   },
   {
     title: "PM Solar Cell",
@@ -64,24 +64,27 @@ const pmCards = [
     path: "/solar",
     gradient: "from-yellow-500 to-orange-500",
     icon: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z",
-    stats: ""
-  }
+    stats: "",
+  },
 ];
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-200 dark:bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8 transition-colors duration-300">
+  <div
+    class="min-h-screen bg-gray-200 dark:bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8 transition-colors duration-300"
+  >
     <div class="max-w-7xl mx-auto">
-      
       <!-- Header Section -->
       <div class="mb-8 animate-fade-in">
-        <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-3">
+        <h1
+          class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-3"
+        >
           PM Dashboard
         </h1>
         <p class="text-slate-400 text-lg">
           Preventive Maintenance Management System
         </p>
-        
+
         <!-- Stats Overview -->
         <!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           <div class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-4">
@@ -104,38 +107,56 @@ const pmCards = [
       </div>
 
       <!-- PM Cards Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-up">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           v-for="(card, index) in pmCards"
           :key="index"
           @click="go(card.path)"
-          class="group relative bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 hover:border-blue-500/40 cursor-pointer"
+          class="group bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400 dark:hover:border-blue-500/40"
         >
           <!-- Gradient Overlay -->
-          <div 
+          <div
             class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
             :class="`bg-gradient-to-br ${card.gradient}`"
           ></div>
-          
+
           <!-- Card Header -->
-          <div class="relative border-b border-slate-700/50 p-6">
-            <div class="flex items-start justify-between">
+          <div
+            class="bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 border-b border-gray-200 dark:border-slate-700/50 px-6 py-4"
+          >
+            <div class="flex items-center justify-between">
               <div class="flex-1">
-                <h2 class="text-xl font-bold text-slate-200 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r transition-all"
-                    :class="`group-hover:${card.gradient}`">
+                <h2
+                  class="text-gray-800 dark:text-slate-300 font-semibold text-lg"
+                  :class="`group-hover:${card.gradient}`"
+                >
                   {{ card.title }}
                 </h2>
-                <p class="text-black-to-br text-sm dark:text-slate-400 mb-3">{{ card.subtitle }}</p>
-                <p class="text-black dark:text-slate-300 text-sm">{{ card.description }}</p>
+                <p class="text-gray-500 dark:text-slate-500 text-xs font-mono">
+                  {{ card.subtitle }}
+                </p>
+                <p class="text-gray-400 dark:text-slate-400 text-xs font-mono">
+                  {{ card.description }}
+                </p>
               </div>
-              
+
               <!-- Icon -->
-              <div 
+              <div
                 class="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
                 :class="`bg-gradient-to-br ${card.gradient}`"
               >
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="card.icon" />
+                <svg
+                  class="w-7 h-7 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    :d="card.icon"
+                  />
                 </svg>
               </div>
             </div>
@@ -144,55 +165,128 @@ const pmCards = [
           <!-- Card Footer -->
           <div class="relative p-6 flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50"></div>
-              <span class="text-slate-400 text-sm font-medium">{{ card.stats }}</span>
+              <div
+                class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50"
+              ></div>
+              <span class="text-slate-400 text-sm font-medium">{{
+                card.stats
+              }}</span>
             </div>
-            
-            <div class="flex items-center gap-2 dark:text-blue-400 group-hover:text-blue-300 transition-colors">
+
+            <div
+              class="flex items-center gap-2 dark:text-blue-400 group-hover:text-blue-300 transition-colors"
+            >
               <span class="text-sm font-medium">View Details</span>
-              <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              <svg
+                class="w-5 h-5 transform group-hover:translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </div>
           </div>
 
           <!-- Hover Effect Border -->
-          <div 
+          <div
             class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-            :class="`ring-1 ring-inset ${card.gradient.replace('from-', 'ring-').replace(' to-', '/30 ring-')}`"
+            :class="`ring-1 ring-inset ${card.gradient
+              .replace('from-', 'ring-')
+              .replace(' to-', '/30 ring-')}`"
           ></div>
         </div>
       </div>
 
       <!-- Quick Actions -->
-      <div class="mt-8 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 animate-fade-in">
+      <div
+        class="mt-8 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 animate-fade-in"
+      >
         <h3 class="text-lg font-semibold text-slate-200 mb-4">Quick Actions</h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          <button
+            class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
             </svg>
             <span class="text-sm font-medium">New PM</span>
           </button>
-          
-          <button class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+
+          <button
+            class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
             </svg>
             <span class="text-sm font-medium">Reports</span>
           </button>
-          
-          <button class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+
+          <button
+            class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             <span class="text-sm font-medium">Schedule</span>
           </button>
-          
-          <button class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+
+          <button
+            class="flex items-center justify-center gap-2 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/50 rounded-xl px-4 py-3 text-slate-300 hover:text-white transition-all duration-200"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
             <span class="text-sm font-medium">Settings</span>
           </button>
