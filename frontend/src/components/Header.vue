@@ -56,7 +56,7 @@ const goProfile = () => {
       </button>
 
       <!-- Title -->
-      <h1 class="text-lg md:text-xl font-bold text-white truncate">
+      <h1 class="text-black-to-br dark:text-white truncate md:text-xl font-bold">
         TSM Platform
       </h1>
     </div>
@@ -107,14 +107,15 @@ const goProfile = () => {
         <div
           class="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center ring-2 ring-slate-700 group-hover:ring-slate-600 transition-all"
         >
-          <span class="text-white font-semibold text-sm">
+
+          <span class="text-black-to-br dark:text-white font-semibold text-sm">
             {{ username.charAt(0).toUpperCase() }}
           </span>
         </div>
 
         <!-- Username & Dropdown (Hidden on mobile) -->
         <div class="hidden lg:block text-left">
-          <p class="text-sm font-medium text-white">{{ username }}</p>
+          <p class="text-black text-sm font-medium dark:text-white">{{ username }}</p>
           <p class="text-xs text-slate-400">View Profile</p>
         </div>
 

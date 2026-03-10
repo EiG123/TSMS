@@ -54,7 +54,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
           class="md:hidden p-1 rounded-lg
                  text-slate-400 hover:text-slate-600 dark:hover:text-white
                  hover:bg-slate-100 dark:hover:bg-slate-700/50
-                 transition-colors"
+                 transition-colors duration-300"
           aria-label="Close menu"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,14 +66,13 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
 
     <!-- ===== NAVIGATION ===== -->
     <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-
       <!-- Dev -->
       <button
         v-if="authStore.hasPermission('dev')"
         @click="goDev"
         class="w-full flex items-center gap-3 px-4 py-3 rounded-lg
                text-white bg-purple-600 hover:bg-purple-700
-               transition-all duration-200 shadow-md hover:shadow-lg"
+               transition-all duration-300 shadow-md hover:shadow-lg"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z"/>
@@ -87,7 +86,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
         @click="goAdmin"
         class="w-full flex items-center gap-3 px-4 py-3 rounded-lg
                text-white bg-red-600 hover:bg-red-700
-               transition-all duration-200 shadow-md hover:shadow-lg"
+               transition-all duration-300 shadow-md hover:shadow-lg"
       >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z"/>
@@ -100,7 +99,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
         @click="goHome"
         class="w-full flex items-center gap-3 px-4 py-3 rounded-lg
                text-white bg-blue-600 hover:bg-blue-700
-               transition-all duration-200 shadow-md hover:shadow-lg"
+               transition-all duration-300 shadow-md hover:shadow-lg"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -115,7 +114,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
                text-slate-600 dark:text-slate-300
                hover:text-slate-900 dark:hover:text-white
                hover:bg-slate-100 dark:hover:bg-slate-700/50
-               transition-all duration-200 group"
+               transition-all duration-300 group"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -130,7 +129,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
                text-slate-600 dark:text-slate-300
                hover:text-slate-900 dark:hover:text-white
                hover:bg-slate-100 dark:hover:bg-slate-700/50
-               transition-all duration-200 group"
+               transition-all duration-300 group"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
@@ -148,7 +147,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
                text-slate-600 dark:text-slate-300
                hover:text-slate-900 dark:hover:text-white
                hover:bg-slate-100 dark:hover:bg-slate-700/50
-               transition-all duration-200 group"
+               transition-all duration-300 group"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -165,7 +164,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
                text-slate-600 dark:text-slate-300
                hover:text-slate-900 dark:hover:text-white
                hover:bg-slate-100 dark:hover:bg-slate-700/50
-               transition-all duration-200 group"
+               transition-all duration-300 group"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -182,7 +181,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
                text-slate-600 dark:text-slate-300
                hover:text-slate-900 dark:hover:text-white
                hover:bg-slate-100 dark:hover:bg-slate-700/50
-               transition-all duration-200 group"
+               transition-all duration-300 group"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -216,7 +215,7 @@ const goAdmin = () => { router.push("/admin/adminDashboard"); emit("close"); };
                hover:bg-red-500 dark:hover:bg-red-600/20
                border border-red-300 dark:border-red-600/30
                hover:border-red-500 dark:hover:border-red-600/50
-               transition-all duration-200"
+               transition-all duration-300"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
