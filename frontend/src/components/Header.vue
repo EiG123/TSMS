@@ -7,8 +7,6 @@ import { defineStore } from "pinia";
 
 const themeStore = useThemeStore();
 
-console.log(themeStore.isDark);
-
 const router = useRouter();
 const authStore = useAuthStore();
 

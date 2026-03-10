@@ -2,8 +2,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
+import { useThemeStore } from "../stores/theme";
 import { AuthApiService } from "../services/auth.api";
 
+const themeStore = useThemeStore();
 const authStore = useAuthStore();
 const router = useRouter();
 
@@ -78,17 +80,27 @@ const goLogin = () => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4"
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors duration-300"
   >
     <div class="w-full max-w-2xl animate-fade-in">
+      <!-- Theme Toggle Button - Top Right -->
+      <div class="flex justify-end mb-4">
+        <button
+          @click="themeStore.toggleTheme()"
+          class="p-3 rounded-xl bg-white dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+        >
+          <span v-if="themeStore.isDark" class="text-2xl">☀️</span>
+          <span v-else class="text-2xl">🌙</span>
+        </button>
+      </div>
       <!-- Register Card -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl"
+        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-2xl"
       >
         <!-- Header Section -->
         <div class="relative overflow-hidden">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"
+            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20"
           ></div>
           <div class="absolute inset-0 backdrop-blur-sm"></div>
 
@@ -113,11 +125,13 @@ const goLogin = () => {
             </div>
 
             <h2
-              class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-2"
+              class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mb-2"
             >
               สมัครสมาชิก
             </h2>
-            <p class="text-slate-400">กรอกข้อมูลเพื่อสร้างบัญชีใหม่</p>
+            <p class="text-gray-600 dark:text-slate-400">
+              กรอกข้อมูลเพื่อสร้างบัญชีใหม่
+            </p>
           </div>
         </div>
 
@@ -126,11 +140,11 @@ const goLogin = () => {
           <!-- Error Message -->
           <div
             v-if="error"
-            class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 animate-shake"
+            class="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl p-4 animate-shake"
           >
             <div class="flex items-center gap-2">
               <svg
-                class="w-5 h-5 text-red-400 flex-shrink-0"
+                class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -140,7 +154,9 @@ const goLogin = () => {
                   clip-rule="evenodd"
                 />
               </svg>
-              <p class="text-sm text-red-300 font-medium">{{ error }}</p>
+              <p class="text-sm text-red-700 dark:text-red-300 font-medium">
+                {{ error }}
+              </p>
             </div>
           </div>
 
@@ -148,7 +164,10 @@ const goLogin = () => {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <!-- Email Input -->
             <div class="space-y-2">
-              <label for="email" class="block text-sm font-medium text-slate-400">
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
+              >
                 อีเมล <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -156,7 +175,7 @@ const goLogin = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -176,14 +195,17 @@ const goLogin = () => {
                   placeholder="example@email.com"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
 
             <!-- Username Input -->
             <div class="space-y-2">
-              <label for="username" class="block text-sm font-medium text-slate-400">
+              <label
+                for="username"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
+              >
                 ชื่อผู้ใช้ <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -191,7 +213,7 @@ const goLogin = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -211,14 +233,17 @@ const goLogin = () => {
                   placeholder="username"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
 
             <!-- Password Input -->
             <div class="space-y-2">
-              <label for="password" class="block text-sm font-medium text-slate-400">
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
+              >
                 รหัสผ่าน <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -226,7 +251,7 @@ const goLogin = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -246,12 +271,12 @@ const goLogin = () => {
                   placeholder="••••••••"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
                   @click="togglePasswordVisibility"
-                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
                   :disabled="loading"
                 >
                   <svg
@@ -294,7 +319,10 @@ const goLogin = () => {
 
             <!-- Confirmed Password Input -->
             <div class="space-y-2">
-              <label for="confirmed_password" class="block text-sm font-medium text-slate-400">
+              <label
+                for="confirmed_password"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
+              >
                 ยืนยันรหัสผ่าน <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -302,7 +330,7 @@ const goLogin = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -322,12 +350,12 @@ const goLogin = () => {
                   placeholder="••••••••"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
                   @click="toggleConfirmedPasswordVisibility"
-                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
                   :disabled="loading"
                 >
                   <svg
@@ -370,7 +398,10 @@ const goLogin = () => {
 
             <!-- Phone Input -->
             <div class="space-y-2">
-              <label for="phone" class="block text-sm font-medium text-slate-400">
+              <label
+                for="phone"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
+              >
                 เบอร์โทรศัพท์ <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -378,7 +409,7 @@ const goLogin = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -398,14 +429,17 @@ const goLogin = () => {
                   placeholder="08XXXXXXXX"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
 
             <!-- Region Select -->
             <div class="space-y-2">
-              <label for="region" class="block text-sm font-medium text-slate-400">
+              <label
+                for="region"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
+              >
                 ภูมิภาค <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -413,7 +447,7 @@ const goLogin = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -437,7 +471,7 @@ const goLogin = () => {
                   v-model="region"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-12 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="">เลือกภูมิภาค...</option>
                   <option value="R1">R1</option>
@@ -449,9 +483,21 @@ const goLogin = () => {
                   <option value="R7">R7</option>
                   <option value="R8">R8</option>
                 </select>
-                <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <div
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>
@@ -459,7 +505,10 @@ const goLogin = () => {
 
             <!-- Company Select -->
             <div class="space-y-2">
-              <label for="company" class="block text-sm font-medium text-slate-400">
+              <label
+                for="company"
+                class="block text-sm font-medium text-gray-700 dark:text-slate-400"
+              >
                 บริษัท <span class="text-red-400">*</span>
               </label>
               <div class="relative">
@@ -467,7 +516,7 @@ const goLogin = () => {
                   class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10"
                 >
                   <svg
-                    class="h-5 w-5 text-slate-500"
+                    class="h-5 w-5 text-gray-400 dark:text-slate-500"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -485,16 +534,28 @@ const goLogin = () => {
                   v-model="company"
                   required
                   :disabled="loading"
-                  class="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                  class="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-11 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="">เลือกบริษัท...</option>
                   <option value="true">TRUE</option>
                   <option value="bbtec">BBTEC</option>
                   <option value="ww">WW</option>
                 </select>
-                <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
-                  <svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <div
+                  class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="h-5 w-5 text-slate-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>
@@ -505,7 +566,7 @@ const goLogin = () => {
           <button
             type="submit"
             :disabled="loading"
-            class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-blue-500/20 flex items-center justify-center gap-2 mt-2"
+            class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-blue-500/20 flex items-center justify-center gap-2"
           >
             <svg
               v-if="loading"
@@ -533,14 +594,14 @@ const goLogin = () => {
 
         <!-- Footer -->
         <div
-          class="px-8 py-5 bg-slate-900/40 border-t border-slate-700/50 text-center"
+          class="px-8 py-5 bg-gray-50 dark:bg-slate-900/40 border-t border-gray-200 dark:border-slate-700/50 text-center"
         >
-          <p class="text-sm text-slate-400">
+          <p class="text-sm text-gray-600 dark:text-slate-400">
             มีบัญชีอยู่แล้ว?
             <button
               @click="goLogin"
               type="button"
-              class="font-medium text-blue-400 hover:text-blue-300 transition-colors ml-1"
+              class="font-medium text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors ml-1"
             >
               เข้าสู่ระบบ
             </button>
