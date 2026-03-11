@@ -28,20 +28,19 @@ const filteredUsers = computed(() => {
   let filtered = RoleList.value;
 
   // Filter by company
-  if (company.value) {
-    filtered = filtered.filter(
-      (user) => user.company?.toLowerCase() === company.value.toLowerCase()
-    );
-  }
+  // if (company.value) {
+  //   filtered = filtered.filter(
+  //     (user) => user.company?.toLowerCase() === company.value.toLowerCase()
+  //   );
+  // }
 
   // Filter by search query
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
     filtered = filtered.filter(
-      (user) =>
-        user.username?.toLowerCase().includes(query) ||
-        user.email?.toLowerCase().includes(query) ||
-        user.phone?.toLowerCase().includes(query)
+      (RoleList) =>
+        RoleList.name?.toLowerCase().includes(query) ||
+        RoleList.description?.toLowerCase().includes(query)
     );
   }
 
@@ -62,8 +61,6 @@ const handleDelete = async (roleId: number, roleName: string) => {
   ) {
     try {
       const resMessage = await DevManage.deleteRole({ roleId, roleName });
-      console.log(resMessage);
-      console.log(resMessage.message);
       if (!resMessage.success) {
         alert(resMessage.message);
       } else {
@@ -114,7 +111,7 @@ const handleDelete = async (roleId: number, roleName: string) => {
       <!-- Filter Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Company Filter -->
-        <div class="flex items-center gap-3">
+        <!-- <div class="flex items-center gap-3">
           <label
             class="text-sm font-medium text-gray-700 dark:text-slate-300 min-w-[80px]"
           >
@@ -129,7 +126,7 @@ const handleDelete = async (roleId: number, roleName: string) => {
             <option value="bbtec">BBTEC</option>
             <option value="ww">WW</option>
           </select>
-        </div>
+        </div> -->
 
         <!-- Search -->
         <div class="relative">
