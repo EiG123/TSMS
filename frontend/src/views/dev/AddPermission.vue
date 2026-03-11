@@ -22,7 +22,6 @@ const loadPermissions = async () => {
   loading.value = true;
   try {
     const allPermission = await DevManage.getAllPermission();
-    console.log(allPermission.data.result);
     allP.value = allPermission.data.result;
   } catch (error) {
     alert("ไม่สามารถโหลดข้อมูลได้");

@@ -183,7 +183,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
   >
     <!-- Loading State -->
     <div
@@ -224,11 +224,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
       <!-- Header Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            class="absolute inset-0 dark:bg-gradient-to-r from-blue-500/10 to-purple-500/10"
           ></div>
 
           <div class="relative px-8 py-6">
@@ -264,7 +264,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
               <div class="flex gap-3">
                 <button
                   @click="goEdit"
-                  class="flex items-center gap-2 bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-300 px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-blue-500/10"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -283,7 +283,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                 </button>
                 <button
                   @click="handleDelete"
-                  class="flex items-center gap-2 bg-red-500/15 border border-red-500/30 hover:bg-red-500/25 hover:border-red-500/50 text-red-300 px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-red-500/10"
+              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -308,14 +308,14 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
       <!-- Navigation Tabs -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-x-auto"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-x-auto"
       >
         <div class="flex gap-2 p-4">
           <button
             v-for="nav in navigations"
             :key="nav.name"
             @click="nav.action"
-            class="flex items-center gap-2 px-5 py-3 bg-slate-700/30 hover:bg-slate-700/50 border border-slate-600/30 hover:border-blue-500/40 text-slate-300 hover:text-blue-300 rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
+            class="flex items-center gap-2 px-5 py-3 dark:bg-slate-700/30 hover:bg-slate-700/50 border dark:border-slate-600/30 hover:border-blue-500/40 dark:text-slate-300 hover:text-blue-300 rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
           >
             <svg
               class="w-5 h-5"
@@ -337,7 +337,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
       <!-- Check In/Out Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div class="p-6">
           <div
@@ -399,7 +399,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
               </div>
 
               <div>
-                <h3 class="text-xl font-semibold text-slate-200 mb-2">
+                <h3 class="text-xl font-semibold dark:text-slate-200 mb-2">
                   {{
                     !isCheckedIn
                       ? "Ready to Start"
@@ -408,7 +408,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                       : "In Progress"
                   }}
                 </h3>
-                <p class="text-slate-400 text-sm mb-3">
+                <p class="dark:text-slate-400 text-sm mb-3">
                   {{
                     !isCheckedIn
                       ? "Click check in to start recording PM results"
@@ -564,7 +564,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Info Box -->
         <div
-          class="lg:col-span-2 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6"
+          class="lg:col-span-2 dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg p-6"
         >
           <h2
             class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6"
@@ -577,13 +577,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
             <div class="space-y-5">
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >Site ID</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium">
+                  <p class="dark:text-slate-200 font-medium">
                     {{ pMsiteData.site_name }}
                   </p>
                 </div>
@@ -591,13 +591,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >Region</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium">
+                  <p class="dark:text-slate-200 font-medium">
                     {{ pMsiteData.region }}
                   </p>
                 </div>
@@ -605,13 +605,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >Company</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium">
+                  <p class="dark:text-slate-200 font-medium">
                     {{ pMsiteData.company }}
                   </p>
                 </div>
@@ -619,13 +619,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >Created by</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium">
+                  <p class="dark:text-slate-200 font-medium">
                     {{ pMsiteData.created_by }}
                   </p>
                 </div>
@@ -636,13 +636,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
             <div class="space-y-5">
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >Plan Date</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium font-mono">
+                  <p class="dark:text-slate-200 font-medium font-mono">
                     {{ pMsiteData.date }}
                   </p>
                 </div>
@@ -650,13 +650,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >PM Date</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium font-mono">
+                  <p class="dark:text-slate-200 font-medium font-mono">
                     {{ pMsiteData.pm_date }}
                   </p>
                 </div>
@@ -664,13 +664,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >Date Created</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium font-mono">
+                  <p class="dark:text-slate-200 font-medium font-mono">
                     {{ pMsiteData.date }}
                   </p>
                 </div>
@@ -678,13 +678,13 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <div class="group">
                 <label
-                  class="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2"
+                  class="block text-xs font-medium dark:text-slate-500 uppercase tracking-wide mb-2"
                   >PlanWork</label
                 >
                 <div
-                  class="bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
+                  class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
-                  <p class="text-slate-200 font-medium">
+                  <p class="dark:text-slate-200 font-medium">
                     {{ pMsiteData.planwork || "N/A" }}
                   </p>
                 </div>
@@ -697,11 +697,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
         <div class="space-y-4">
           <!-- AC Power Card -->
           <div
-            class="group bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-500/40 transition-all duration-300 hover:-translate-y-1"
+            class="group dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg p-6 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-500/40 transition-all duration-300 hover:-translate-y-1"
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-slate-400 mb-1">AC Power</p>
+                <p class="text-sm font-medium dark:text-slate-400 mb-1">AC Power</p>
                 <p
                   class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600"
                 >
@@ -730,11 +730,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
           <!-- Generator Card -->
           <div
-            class="group bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6 hover:shadow-2xl hover:shadow-green-500/10 hover:border-green-500/40 transition-all duration-300 hover:-translate-y-1"
+            class="group dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg p-6 hover:shadow-2xl hover:shadow-green-500/10 hover:border-green-500/40 transition-all duration-300 hover:-translate-y-1"
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-slate-400 mb-1">Generator</p>
+                <p class="text-sm font-medium dark:text-slate-400 mb-1">Generator</p>
                 <p
                   class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600"
                 >
@@ -763,11 +763,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
           <!-- Broadband Card -->
           <div
-            class="group bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6 hover:shadow-2xl hover:shadow-purple-500/10 hover:border-purple-500/40 transition-all duration-300 hover:-translate-y-1"
+            class="group dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg p-6 hover:shadow-2xl hover:shadow-purple-500/10 hover:border-purple-500/40 transition-all duration-300 hover:-translate-y-1"
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-slate-400 mb-1">Broadband</p>
+                <p class="text-sm font-medium dark:text-slate-400 mb-1">Broadband</p>
                 <p
                   class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600"
                 >
@@ -798,12 +798,12 @@ const handleCabinetDelete = async (cabinet_id: any) => {
       <!-- Cabinets Section -->
       <div
         v-if="isCheckedIn"
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg overflow-hidden"
       >
         <!-- Header -->
         <div
           @click="hide"
-          class="flex items-center justify-between px-8 py-6 cursor-pointer hover:bg-slate-800/60 transition-all duration-200 border-b border-slate-700/50"
+          class="flex items-center justify-between px-8 py-6 cursor-pointer dark:hover:bg-slate-800/60 transition-all duration-200 border-b dark:border-slate-700/50"
         >
           <div class="flex items-center gap-3">
             <div
@@ -824,8 +824,8 @@ const handleCabinetDelete = async (cabinet_id: any) => {
               </svg>
             </div>
             <div>
-              <h2 class="text-xl font-semibold text-slate-200">Cabinets</h2>
-              <p class="text-sm text-slate-400">
+              <h2 class="text-xl font-semibold dark:text-slate-200">Cabinets</h2>
+              <p class="text-sm dark:text-slate-400">
                 {{ cabinets.length }} cabinet{{
                   cabinets.length !== 1 ? "s" : ""
                 }}
@@ -834,7 +834,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           </div>
 
           <button
-            class="flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors"
+            class="flex items-center gap-2 dark:text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors"
           >
             {{ showModules ? "Hide" : "Show" }}
             <svg
@@ -884,30 +884,30 @@ const handleCabinetDelete = async (cabinet_id: any) => {
             <div
               v-for="(cab, index) in cabinets"
               :key="index"
-              class="group bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
+              class="group dark:bg-slate-800/40bg-slate-900/40 border dark:border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
             >
               <!-- Cabinet Header -->
               <div
-                class="px-6 py-4 bg-gradient-to-r from-slate-800/60 to-slate-900/60 border-b border-slate-700/50 cursor-pointer hover:from-slate-800/80 hover:to-slate-900/80 transition-all"
+                class="px-6 py-4 dark:bg-gradient-to-r from-slate-800/60 to-slate-900/60 border-b dark:border-slate-700/50 cursor-pointer hover:from-slate-800/80 hover:to-slate-900/80 transition-all"
               >
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-4">
                     <div
                       class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30"
                     >
-                      <span class="text-white font-bold text-lg">{{
+                      <span class="dark:text-white font-bold text-lg">{{
                         index + 1
                       }}</span>
                     </div>
                     <div>
                       <h3
-                        class="text-lg font-semibold text-slate-200 group-hover:text-blue-300 transition-colors"
+                        class="text-lg font-semibold darktext-slate-200 group-hover:text-blue-300 transition-colors"
                       >
                         {{ cab.cabinet_name || `Cabinet ${index + 1}` }}
                       </h3>
                       <div class="flex items-center gap-2 mt-1">
                         <svg
-                          class="w-4 h-4 text-slate-500"
+                          class="w-4 h-4 dark:text-slate-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -919,7 +919,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                             d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
                           />
                         </svg>
-                        <span class="text-sm text-slate-400"
+                        <span class="text-sm dark:text-slate-400"
                           >Network:
                           <span class="text-blue-400 font-medium">{{
                             cab.cabinet_network || "N/A"
@@ -978,7 +978,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   </div>
 
                   <svg
-                    class="w-6 h-6 text-slate-400 group-hover:text-blue-400 transition-colors"
+                    class="w-6 h-6 dark:text-slate-400 group-hover:text-blue-400 transition-colors"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -995,10 +995,10 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <!-- Cabinet Stats Grid -->
               <div class="p-6">
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div class="dark:bg-slate-800/40 grid grid-cols-2 md:grid-cols-5 gap-3">
                   <!-- Rectifiers -->
                   <div
-                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-green-500/40 transition-all"
+                    class="dark:bg-slate-800/40 border dark:border-slate-700/50 rounded-lg p-4 hover:border-green-500/40 transition-all"
                   >
                     <div class="flex items-center justify-between mb-2">
                       <svg
@@ -1018,12 +1018,12 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         cab.rectifier_count
                       }}</span>
                     </div>
-                    <p class="text-xs text-slate-400 font-medium">Rectifiers</p>
+                    <p class="text-xs dark:text-slate-400 font-medium">Rectifiers</p>
                   </div>
 
                   <!-- Batteries -->
                   <div
-                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-blue-500/40 transition-all"
+                    class="dark:bg-slate-800/40 border dark:border-slate-700/50 rounded-lg p-4 hover:border-blue-500/40 transition-all"
                   >
                     <div class="flex items-center justify-between mb-2">
                       <svg
@@ -1045,7 +1045,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                     </div>
                     <p
                       v-if="cab.batteries[0]?.battery_type"
-                      class="text-xs text-slate-400 font-medium"
+                      class="text-xs dark:text-slate-400 font-medium"
                     >
                       {{ cab.batteries[0].battery_type }}
                     </p>
@@ -1053,11 +1053,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
                   <!-- Site Grade -->
                   <div
-                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-purple-500/40 transition-all"
+                    class="dark:bg-slate-800/40 border dark:border-slate-700/50 rounded-lg p-4 hover:border-purple-500/40 transition-all"
                   >
                     <div class="flex items-center justify-between mb-2">
                       <svg
-                        class="w-5 h-5 text-purple-400"
+                        class="w-5 h-5 dark:text-purple-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1073,12 +1073,12 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         cab.site_grad || "N/A"
                       }}</span>
                     </div>
-                    <p class="text-xs text-slate-400 font-medium">Site Grade</p>
+                    <p class="text-xs dark:text-slate-400 font-medium">Site Grade</p>
                   </div>
 
                   <!-- Problems -->
                   <div
-                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-yellow-500/40 transition-all cursor-pointer"
+                    class="dark:bg-slate-800/40 border dark:border-slate-700/50 rounded-lg p-4 hover:border-yellow-500/40 transition-all cursor-pointer"
                   >
                     <div class="flex items-center justify-between mb-2">
                       <svg
@@ -1098,12 +1098,12 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         cab.problems?.length || 0
                       }}</span>
                     </div>
-                    <p class="text-xs text-slate-400 font-medium">Problems</p>
+                    <p class="text-xs dark:text-slate-400 font-medium">Problems</p>
                   </div>
 
                   <!-- Audit -->
                   <div
-                    class="bg-slate-800/40 border border-slate-700/50 rounded-lg p-4 hover:border-orange-500/40 transition-all cursor-pointer"
+                    class="dark:bg-slate-800/40 border dark:border-slate-700/50 rounded-lg p-4 hover:border-orange-500/40 transition-all cursor-pointer"
                   >
                     <div class="flex items-center justify-between mb-2">
                       <svg
@@ -1121,7 +1121,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                       </svg>
                       <span class="text-2xl font-bold text-orange-400">•</span>
                     </div>
-                    <p class="text-xs text-slate-400 font-medium">
+                    <p class="text-xs dark:text-slate-400 font-medium">
                       Audit (RNSA)
                     </p>
                   </div>
@@ -1133,14 +1133,14 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           <!-- Empty State for Cabinets -->
           <div
             v-else
-            class="border-2 border-dashed border-slate-700/50 rounded-xl p-12 hover:border-blue-500/40 transition-all"
+            class="border-2 border-dashed dark:border-slate-700/50 rounded-xl p-12 hover:border-blue-500/40 transition-all"
           >
             <div class="text-center">
               <div
                 class="w-20 h-20 bg-slate-800/50 rounded-xl flex items-center justify-center mx-auto mb-4"
               >
                 <svg
-                  class="w-10 h-10 text-slate-600"
+                  class="w-10 h-10 dark:text-slate-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1153,10 +1153,10 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   />
                 </svg>
               </div>
-              <h3 class="text-lg font-semibold text-slate-300 mb-2">
+              <h3 class="text-lg font-semibold dark:text-slate-300 mb-2">
                 No Cabinets Yet
               </h3>
-              <p class="text-slate-400 text-sm mb-4">
+              <p class="dark:text-slate-400 text-sm mb-4">
                 Get started by adding your first cabinet
               </p>
             </div>
@@ -1166,11 +1166,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
       <!-- Modules Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div
           @click="hide"
-          class="flex items-center justify-between px-8 py-6 cursor-pointer hover:bg-slate-800/60 transition-all duration-200 border-b border-slate-700/50"
+          class="flex items-center justify-between px-8 py-6 cursor-pointer dark:hover:bg-slate-800/60 transition-all duration-200 border-b border-slate-700/50"
         >
           <div class="flex items-center gap-3">
             <div
@@ -1190,11 +1190,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                 />
               </svg>
             </div>
-            <h2 class="text-xl font-semibold text-slate-200">Modules</h2>
+            <h2 class="text-xl font-semibold dark:text-slate-200">Modules</h2>
           </div>
 
           <button
-            class="flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors"
+            class="flex items-center gap-2 dark:text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors"
           >
             {{ showModules ? "Hide" : "Show" }}
             <svg
@@ -1218,12 +1218,12 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           <!-- Mowing Module -->
           <div
             v-if="pMsiteData.mowing?.length"
-            class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl p-5 hover:from-green-500/15 hover:to-emerald-500/15 transition-all duration-200"
+            class="dark:bg-gradient-to-r from-green-500/10 to-emerald-500/10 border dark:border-green-500/30 rounded-xl p-5 hover:from-green-500/15 hover:to-emerald-500/15 transition-all duration-200"
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
                 <div
-                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30"
+                  class="w-12 h-12 rounded-lg dark:bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/30"
                 >
                   <svg
                     class="w-6 h-6 text-white"
@@ -1245,7 +1245,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                 </div>
               </div>
               <div
-                class="px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-lg"
+                class="px-4 py-2 dark:bg-green-500/20 border dark:border-green-500/30 rounded-lg"
               >
                 <span class="text-green-300 font-bold">{{
                   pMsiteData.mowing.length
@@ -1258,12 +1258,12 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           <!-- Solar Cell Module -->
           <div
             v-if="pMsiteData.solar_cell?.length"
-            class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-5 hover:from-yellow-500/15 hover:to-orange-500/15 transition-all duration-200"
+            class="dark:bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border dark:border-yellow-500/30 rounded-xl p-5 hover:from-yellow-500/15 hover:to-orange-500/15 transition-all duration-200"
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
                 <div
-                  class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center shadow-lg shadow-yellow-500/30"
+                  class="w-12 h-12 rounded-lg dark:bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center shadow-lg shadow-yellow-500/30"
                 >
                   <svg
                     class="w-6 h-6 text-white"
@@ -1280,17 +1280,17 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   </svg>
                 </div>
                 <div>
-                  <p class="font-semibold text-slate-200 text-lg">Solar Cell</p>
-                  <p class="text-sm text-slate-400">Solar power system</p>
+                  <p class="font-semibold dark:text-slate-200 text-lg">Solar Cell</p>
+                  <p class="text-sm dark:text-slate-400">Solar power system</p>
                 </div>
               </div>
               <div
-                class="px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg"
+                class="px-4 py-2 dark:bg-yellow-500/20 border dark:border-yellow-500/30 rounded-lg"
               >
-                <span class="text-yellow-300 font-bold">{{
+                <span class="dark:text-yellow-300 font-bold">{{
                   pMsiteData.solar_cell.length
                 }}</span>
-                <span class="text-yellow-400 text-sm ml-1">items</span>
+                <span class="dark:text-yellow-400 text-sm ml-1">items</span>
               </div>
             </div>
           </div>
@@ -1301,7 +1301,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
             class="text-center py-8"
           >
             <svg
-              class="w-16 h-16 mx-auto text-slate-600 mb-3"
+              class="w-16 h-16 mx-auto dark:text-slate-600 mb-3"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -1313,8 +1313,8 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
               />
             </svg>
-            <p class="text-slate-400 font-medium">No modules available</p>
-            <p class="text-slate-500 text-sm mt-1">
+            <p class="dark:text-slate-400 font-medium">No modules available</p>
+            <p class="dark:text-slate-500 text-sm mt-1">
               Modules will appear here when added
             </p>
           </div>
@@ -1328,7 +1328,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
       class="flex flex-col items-center justify-center h-96 animate-fade-in"
     >
       <svg
-        class="w-20 h-20 text-slate-600 mb-4"
+        class="w-20 h-20 dark:text-slate-600 mb-4"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -1340,8 +1340,8 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      <p class="text-slate-400 text-lg font-medium">No data available</p>
-      <p class="text-slate-500 text-sm mt-2">Unable to load site information</p>
+      <p class="dark:text-slate-400 text-lg font-medium">No data available</p>
+      <p class="dark:text-slate-500 text-sm mt-2">Unable to load site information</p>
     </div>
   </div>
 </template>
