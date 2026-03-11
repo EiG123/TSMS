@@ -244,10 +244,13 @@ export const DevManageService = {
             const userId = res.rows[0].id;
             // console.log(userId);
 
-            const sql_role = `UPDATE user_roles
-            SET
-                role_id = $2
-            WHERE user_id = $1`;
+            const sql_role = `
+            INSERT INTO user_roles (user_id, role_id)
+            VALUES ($1, $2)
+            ON CONFLICT (user_id)
+            DO UPDATE SET
+                role_id = EXCLUDED.role_id
+            `;
 
             await client.query(sql_role, [
                 userId,

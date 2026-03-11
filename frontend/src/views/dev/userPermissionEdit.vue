@@ -23,7 +23,7 @@ const loadData = async () => {
 onMounted(async () => {
   loading.value = true;
   try {
-    loadData();
+    await loadData();
   } catch (error) {
     alert("ไม่สามารถโหลดข้อมูลได้");
   } finally {

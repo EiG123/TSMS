@@ -20,6 +20,7 @@ async function getUserPermissions(userId: number, db: any): Promise<string[]> {
   `;
 
   const result = await db.query(query, [userId]);
+  console.log(result.rows);
   return result.rows.map((row: any) => row.name);
 }
 

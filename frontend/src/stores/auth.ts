@@ -36,7 +36,6 @@ export const useAuthStore = defineStore("auth", {
       // console.log(state.user?.permissions);
       return (permission: string) => {
         const perms = state.user?.permissions || [];
-
         return perms.includes('*') || perms.includes(permission);
       };
     }
@@ -47,7 +46,9 @@ export const useAuthStore = defineStore("auth", {
     async login(email: string, password: string) {
       try {
         const data = await AuthApiService.login(email, password);
-        console.log("LOGIN RESPONSE:", data);
+        // console.log("LOGIN RESPONSE:", data);
+        console.log(data);
+        // console.log(this.user?.permissions);
 
         // เช็คว่า response สำเร็จหรือไม่
         if (!data.success || !data.token) {
