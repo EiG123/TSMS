@@ -1,3 +1,5 @@
+import { success } from "zod";
+
 export const DevManageService = {
 
     async getUserById(data: any, db: any) {
@@ -265,7 +267,7 @@ export const DevManageService = {
     },
 
     async deleteRole(data: any, db: any) {
-        if (data.roleName === `dev`) {
+        if (data.roleName.toLowerCase() === `dev` || data.roleName.toLowerCase() === 'developer' || data.roleName.toLowerCase() === "developper") {
             return {
                 success: false,
                 message: `ไม่สามารถลบ Role ที่เป็น Dev ได้`
@@ -279,15 +281,41 @@ export const DevManageService = {
                 success: true,
                 message: `ลบ Role : ` + data.roleName + ` สำเร็จ`
             }
-        }catch(err){
+        } catch (err) {
             return {
                 success: false,
                 message: err
             }
-        }finally{
+        } finally {
             client.release();
         }
-        
+
+    },
+
+    async AddRole(data: any, db: any) {
+        if (data.roleName.toLowerCase() === `dev` || data.roleName.toLowerCase() === 'developer' || data.roleName.toLowerCase() === "developper") {
+            return {
+                success: false,
+                message: `ไม่สามารถเพิ่ม Role ที่เป็น Dev ได้`
+            }
+        }
+        const client = await db.connect();
+        try {
+            const sql = `INSERT INTO roles (name, description, created_at) VALUES ($1, $2, NOW())`;
+            await client.query(sql, [data.roleName, data.roleDescription])
+            return {
+                success: true,
+                message: 'เพิ่ม Role สำเร็จ' 
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: error
+            }
+        } finally {
+            client.release();
+        }
+
     }
 
 }

@@ -10,7 +10,24 @@ const RoleList = ref([]);
 const company = ref("");
 const searchQuery = ref("");
 
-onMounted(async () => {
+// Modal state
+const showModal = ref(false);
+const roleName = ref("");
+const roleDescription = ref("");
+
+const openAddModal = () => {
+  roleName.value = "";
+  roleDescription.value = "";
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  roleName.value = "";
+  roleDescription.value = "";
+};
+
+const loadData = async () => {
   loading.value = true;
   try {
     const resRole = await DevManage.getAllRole();
@@ -21,6 +38,10 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
+}
+
+onMounted(async () => {
+  await loadData();
 });
 
 // Filter users by company and search query
@@ -47,11 +68,31 @@ const filteredUsers = computed(() => {
   return filtered;
 });
 
-const handleEdit = () => {
+const handleEditRole = () => {
   router.push({
     name: "userPermissionEdit",
   });
 };
+
+const AddRoleButton = () => {
+  openAddModal();
+};
+
+const handleAddRole = async () => {
+  console.log(roleName.value);
+  console.log(roleDescription.value);
+  try {
+    const AddRes = await DevManage.AddRole({
+      roleName: roleName.value,
+      roleDescription: roleDescription.value
+    });
+    alert(AddRes.message);
+  }catch (error) {
+    alert(error);
+  }
+  closeModal();
+  await loadData();
+}
 
 const handleDelete = async (roleId: number, roleName: string) => {
   if (
@@ -98,14 +139,19 @@ const handleDelete = async (roleId: number, roleName: string) => {
               ({{ filteredUsers.length }} roles)
             </span>
           </p>
+          <button
+            @click="handleEditRole()"
+            class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+          >
+            Edit Permissions
+          </button>
+          <button
+            @click="AddRoleButton()"
+            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+          >
+            Add Role
+          </button>
         </div>
-
-        <button
-          @click="handleEdit()"
-          class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
-        >
-          Edit Permissions
-        </button>
       </div>
 
       <!-- Filter Section -->
@@ -292,6 +338,96 @@ const handleDelete = async (roleId: number, roleName: string) => {
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      @click.self="closeModal"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl max-w-md w-full animate-fade-in"
+      >
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold text-gray-800">
+              Add Role
+            </h2>
+            <button
+              @click="closeModal"
+              class="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleAddRole" class="px-6 py-4">
+          <div class="space-y-4">
+            <div>
+              <label
+                for="roleName"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Role Name <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="roleName"
+                v-model="roleName"
+                type="text"
+                placeholder="Enter Role Name"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                required
+              />
+
+              <label
+                for="roleDescription"
+                class="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Role Description <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="roleDescription"
+                v-model="roleDescription"
+                type="text"
+                placeholder="Enter Role Description"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="flex gap-3 mt-6">
+            <button
+              type="button"
+              @click="closeModal"
+              class="flex-1 px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="flex-1 px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors"
+            >Add</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

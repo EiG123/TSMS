@@ -50,7 +50,7 @@ export const DevManage = {
         return response.data;
     },
 
-    
+
     async getUserById(data: any) {
         const response = await axios.post(
             "http://localhost:3000/api/DevManage/getUserById", data
@@ -64,5 +64,12 @@ export const DevManage = {
         );
         return response.data;
     },
+
+    async AddRole(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/AddRole", data
+        );
+        return response.data;
+    }
 };
 

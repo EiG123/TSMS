@@ -180,4 +180,31 @@ DevManageRouter.post("/deleteRole", async (c) => {
     }
 });
 
+
+DevManageRouter.post("/AddRole", async (c) => {
+    const body = await c.req.json();
+    console.log(body);
+    try {
+        if (body.roleName.toLowerCase() === `dev` || body.roleName.toLowerCase() === 'Dev' || body.roleName.toLowerCase() === "DEV") {
+            return c.json({
+                success: false,
+                message: `ไม่สามารถเพิ่ม Role ที่เป็น dev ได้`,
+            });
+        }
+        const res = await DevManageService.AddRole(body, pool);
+        return c.json({
+            message: res.message,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false,
+            message: error
+        })
+    } finally {
+
+    }
+});
+
 export default DevManageRouter;
