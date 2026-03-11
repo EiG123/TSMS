@@ -56,12 +56,19 @@ const handleEdit = () => {
 
 const handleDelete = async (roleId: number, roleName: string) => {
   if (
-    confirm(`คุณต้องการลบ "${roleName}" หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้`)
+    confirm(
+      `คุณต้องการลบ "${roleName}" หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้`
+    )
   ) {
     try {
-      await DevManage.deleteRole(roleId);
-      console.log("Delete:", roleId);
-      alert("ลบสำเร็จ");
+      const resMessage = await DevManage.deleteRole({ roleId, roleName });
+      console.log(resMessage);
+      console.log(resMessage.message);
+      if (!resMessage.success) {
+        alert(resMessage.message);
+      } else {
+        alert(resMessage.message);
+      }
       // Reload data
       const resUser = await DevManage.getAllRole();
       RoleList.value = resUser.data.result;
@@ -78,7 +85,9 @@ const handleDelete = async (roleId: number, roleName: string) => {
     <div
       class="bg-white dark:bg-slate-800/40 backdrop-blur-xl shadow-md rounded-lg p-6 mb-6 border border-gray-200 dark:border-slate-700/50"
     >
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
+      <div
+        class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4"
+      >
         <div>
           <h1 class="text-2xl font-bold text-gray-800 dark:text-slate-200">
             Role Management
@@ -155,7 +164,9 @@ const handleDelete = async (roleId: number, roleName: string) => {
     >
       <div class="overflow-x-auto">
         <table class="w-full">
-          <thead class="bg-gray-50 dark:bg-slate-900/60 border-b border-gray-200 dark:border-slate-700/50">
+          <thead
+            class="bg-gray-50 dark:bg-slate-900/60 border-b border-gray-200 dark:border-slate-700/50"
+          >
             <tr>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-slate-400 uppercase tracking-wider"
@@ -179,10 +190,15 @@ const handleDelete = async (roleId: number, roleName: string) => {
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white dark:bg-slate-800/20 divide-y divide-gray-200 dark:divide-slate-700/30">
+          <tbody
+            class="bg-white dark:bg-slate-800/20 divide-y divide-gray-200 dark:divide-slate-700/30"
+          >
             <!-- Loading State -->
             <tr v-if="loading">
-              <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">
+              <td
+                colspan="4"
+                class="px-6 py-8 text-center text-gray-500 dark:text-slate-400"
+              >
                 <div class="flex items-center justify-center gap-2">
                   <svg
                     class="animate-spin h-5 w-5 text-blue-500"
@@ -211,7 +227,10 @@ const handleDelete = async (roleId: number, roleName: string) => {
 
             <!-- No Data State -->
             <tr v-else-if="!filteredUsers.length">
-              <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-slate-400">
+              <td
+                colspan="4"
+                class="px-6 py-8 text-center text-gray-500 dark:text-slate-400"
+              >
                 <div class="flex flex-col items-center">
                   <svg
                     class="w-12 h-12 text-gray-400 dark:text-slate-500 mb-2"
@@ -226,7 +245,9 @@ const handleDelete = async (roleId: number, roleName: string) => {
                       d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
                     />
                   </svg>
-                  <p class="font-medium text-gray-700 dark:text-slate-300">No roles found</p>
+                  <p class="font-medium text-gray-700 dark:text-slate-300">
+                    No roles found
+                  </p>
                   <p class="text-sm text-gray-400 dark:text-slate-500 mt-1">
                     Try adjusting your filters
                   </p>
@@ -246,7 +267,9 @@ const handleDelete = async (roleId: number, roleName: string) => {
               >
                 {{ item.id }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-300">
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-300"
+              >
                 <div class="flex items-center gap-2">
                   <div
                     class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-medium text-xs"
@@ -262,7 +285,7 @@ const handleDelete = async (roleId: number, roleName: string) => {
               <td class="px-6 py-4 whitespace-nowrap text-sm">
                 <div class="flex gap-2">
                   <button
-                    @click="handleDelete(item.id, item.description)"
+                    @click="handleDelete(item.id, item.name)"
                     class="px-3 py-1 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 transition-colors"
                   >
                     Delete

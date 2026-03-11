@@ -63,7 +63,7 @@ DevManageRouter.get("/getAllRoleWithPermission", async (c) => {
 DevManageRouter.post("/savePermissions", async (c) => {
     const body = await c.req.json();
     try {
-        const res = await DevManageService.savePermissions(body,pool);
+        const res = await DevManageService.savePermissions(body, pool);
         return c.json({
             data: res,
             success: true
@@ -100,7 +100,7 @@ DevManageRouter.get("/getAllUser", async (c) => {
 DevManageRouter.post("/deleteUserById", async (c) => {
     const body = await c.req.json();
     try {
-        const res = await DevManageService.deleteUserById(body,pool);
+        const res = await DevManageService.deleteUserById(body, pool);
         return c.json({
             data: res,
             success: true
@@ -146,6 +146,34 @@ DevManageRouter.post("/userEdit", async (c) => {
     } catch (error) {
         return c.json({
             success: false
+        })
+    } finally {
+
+    }
+});
+
+
+DevManageRouter.post("/deleteRole", async (c) => {
+    const body = await c.req.json();
+    console.log(body);
+    try {
+        if (body.roleName === `dev`) {
+            return c.json({
+                success: false,
+                message: `ไม่สามารถลบ Role ที่เป็น dev ได้`,
+            });
+        }
+        const res = await DevManageService.deleteRole(body, pool);
+        console.log(res.message);
+        return c.json({
+            message: res.message,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false,
+            message: error
         })
     } finally {
 

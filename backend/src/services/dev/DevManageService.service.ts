@@ -1,5 +1,3 @@
-import { success } from "zod";
-
 export const DevManageService = {
 
     async getUserById(data: any, db: any) {
@@ -35,7 +33,7 @@ export const DevManageService = {
             client.release();
         }
     },
-    
+
     async getAllUser(db: any) {
         const client = await db.connect();
         try {
@@ -193,7 +191,7 @@ export const DevManageService = {
         }
     },
 
-    async deleteUserById(data:any, db: any) {
+    async deleteUserById(data: any, db: any) {
         const client = await db.connect();
         try {
             const sql = `DELETE FROM users WHERE id = $1`;
@@ -213,7 +211,7 @@ export const DevManageService = {
     async userEdit(data: any, db: any) {
         const client = await db.connect();
         try {
-            if(data.email === `dev@gmail.com`){
+            if (data.email === `dev@gmail.com`) {
                 return {
                     success: false
                 }
@@ -265,5 +263,31 @@ export const DevManageService = {
             client.release();
         }
     },
+
+    async deleteRole(data: any, db: any) {
+        if (data.roleName === `dev`) {
+            return {
+                success: false,
+                message: `ไม่สามารถลบ Role ที่เป็น Dev ได้`
+            }
+        }
+        const client = await db.connect();
+        try {
+            const sqlDeleteRole = `DELETE FROM roles WHERE id = $1 AND name = $2`;
+            await client.query(sqlDeleteRole, [data.roleId, data.roleName]);
+            return {
+                success: true,
+                message: `ลบ Role : ` + data.roleName + ` สำเร็จ`
+            }
+        }catch(err){
+            return {
+                success: false,
+                message: err
+            }
+        }finally{
+            client.release();
+        }
+        
+    }
 
 }

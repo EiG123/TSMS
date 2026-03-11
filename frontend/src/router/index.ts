@@ -13,7 +13,7 @@ import DevUserEdit from "../views/dev/userEdit.vue";
 import AdminManage from "../views/admin/AdminManage.vue";
 import userManage from "../views/admin/UserManage.vue";
 import userEdit from "../views/admin/userEdit.vue";
-import permissionManage from "../views/dev/permissionManage.vue";
+import RoleManage from "../views/dev/RoleManage.vue";
 import userPermissionEdit from "../views/dev/userPermissionEdit.vue";
 import AddPermission from "../views/dev/AddPermission.vue";
 
@@ -84,9 +84,9 @@ const routes = [
                 component: devDashboard,
             },
             {
-                path: "permissionManage",
-                name: "permissionManage",
-                component: permissionManage,
+                path: "RoleManage",
+                name: "RoleManage",
+                component: RoleManage,
             },
             {
                 path: "/user/permissionedit",
