@@ -22,8 +22,6 @@ DevManageRouter.get("/getAllRole", async (c) => {
     }
 });
 
-
-
 DevManageRouter.get("/getAllPermission", async (c) => {
     try {
         const res = await DevManageService.getAllPermission(pool);
@@ -192,6 +190,86 @@ DevManageRouter.post("/AddRole", async (c) => {
             });
         }
         const res = await DevManageService.AddRole(body, pool);
+        return c.json({
+            message: res.message,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false,
+            message: error
+        })
+    } finally {
+
+    }
+});
+
+DevManageRouter.post("/addPermission", async (c) => {
+    const body = await c.req.json();
+    console.log(body);
+    try {
+        if (body.permissionName === `*`) {
+            return c.json({
+                success: false,
+                message: `ไม่สามารถเพิ่ม Permission นี้ได้`,
+            });
+        }
+        const res = await DevManageService.addPermission(body, pool);
+        console.log(res.message);
+        return c.json({
+            message: res.message,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false,
+            message: error
+        })
+    } finally {
+
+    }
+});
+
+DevManageRouter.post("/updatePermission", async (c) => {
+    const body = await c.req.json();
+    console.log(body);
+    try {
+        if (body.permissionName === `*` || body.permissionId === 1) {
+            return c.json({
+                success: false,
+                message: `ไม่สามารถแก้ไข Permission นี้ได้`,
+            });
+        }
+        const res = await DevManageService.updatePermission(body, pool);
+        console.log(res.message);
+        return c.json({
+            message: res.message,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false,
+            message: error
+        })
+    } finally {
+
+    }
+});
+
+
+DevManageRouter.post("/deletePermission", async (c) => {
+    const body = await c.req.json();
+    try {
+        if (body === 1) {
+            return c.json({
+                success: false,
+                message: `ไม่สามารถลบ Permission นี้ได้`,
+            });
+        }
+        const res = await DevManageService.deletePermission(body, pool);
         return c.json({
             message: res.message,
             success: true

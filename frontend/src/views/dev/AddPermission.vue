@@ -62,12 +62,19 @@ const handleSubmit = async () => {
   try {
     if (isEditMode.value) {
       // Edit
-      // await devManage.updatePermission(editingId.value, permissionName.value);
+      await DevManage.updatePermission({
+        permissionId: editingId.value, 
+        permissionName: permissionName.value,
+        permissionDescription: permissionDescription.value
+      });
       console.log("Update:", editingId.value, permissionName.value);
       alert("แก้ไขสำเร็จ");
     } else {
       // Add
-      // await devManage.addPermission(permissionName.value);
+      await DevManage.addPermission({
+        permissionName: permissionName.value,
+        permissionDescription: permissionDescription.value,
+      });
       console.log("Add:", permissionName.value);
       alert("เพิ่มสำเร็จ");
     }
@@ -82,9 +89,8 @@ const handleSubmit = async () => {
 const handleDelete = async (id, name) => {
   if (confirm(`คุณต้องการลบ "${name}" หรือไม่?`)) {
     try {
-      // await devManage.deletePermission(id);
-      console.log("Delete:", id);
-      alert("ลบสำเร็จ");
+      const resDelete = await DevManage.deletePermission(id);
+      alert(resDelete.message);
       await loadPermissions();
     } catch (error) {
       alert("เกิดข้อผิดพลาด");
@@ -99,7 +105,7 @@ const handleDelete = async (id, name) => {
     <div class="bg-white shadow-md rounded-lg p-6 mb-6">
       <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">Permission Management</h1>
-        
+
         <button
           @click="openAddModal"
           class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"

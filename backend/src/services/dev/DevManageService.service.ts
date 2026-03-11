@@ -247,9 +247,8 @@ export const DevManageService = {
             const sql_role = `
             INSERT INTO user_roles (user_id, role_id)
             VALUES ($1, $2)
-            ON CONFLICT (user_id)
-            DO UPDATE SET
-                role_id = EXCLUDED.role_id
+            ON CONFLICT (user_id, role_id)
+            DO NOTHING;
             `;
 
             await client.query(sql_role, [
@@ -319,6 +318,90 @@ export const DevManageService = {
             client.release();
         }
 
-    }
+    },
+
+    
+    async addPermission(data: any, db: any) {
+        if (data.permissionName === `*`) {
+            return {
+                success: false,
+                message: `ไม่สามารถเพิ่ม Permission นี้ได้`
+            }
+        }
+        const client = await db.connect();
+        try {
+            const sql = `INSERT INTO permissions (name, description, created_at) VALUES ($1, $2, NOW())`;
+            await client.query(sql, [data.permissionName, data.permissionDescription])
+            return {
+                success: true,
+                message: 'เพิ่ม Permission สำเร็จ' 
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: error
+            }
+        } finally {
+            client.release();
+        }
+
+    },
+
+    
+    async updatePermission(data: any, db: any) {
+        if (data.permissionName === `*`) {
+            return {
+                success: false,
+                message: `ไม่สามารถเพิ่ม Permission นี้ได้`
+            }
+        }
+        const client = await db.connect();
+        try {
+            const sql = `UPDATE permissions 
+            SET name = $2, 
+                description = $3 
+            WHERE id = $1`;
+            await client.query(sql, [data.permissionId ,data.permissionName, data.permissionDescription])
+            return {
+                success: true,
+                message: 'แก้ไข Permission สำเร็จ' 
+            }
+        } catch (error) {
+            return {
+                success: false,
+                message: error
+            }
+        } finally {
+            client.release();
+        }
+
+    },
+
+    async deletePermission(data: any, db: any) {
+        if (data === `*`) {
+            return {
+                success: false,
+                message: `ไม่สามารถลบ Permission นี้ได้`
+            }
+        }
+        const client = await db.connect();
+        try {
+            const sql = `DELETE FROM permissions WHERE id = $1`;
+            await client.query(sql, [data])
+            return {
+                success: true,
+                message: 'ลบ Permission สำเร็จ' 
+            }
+        } catch (error) {
+            console.log(error);
+            return {
+                success: false,
+                message: error
+            }
+        } finally {
+            client.release();
+        }
+
+    },
 
 }

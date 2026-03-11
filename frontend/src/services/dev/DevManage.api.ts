@@ -70,6 +70,27 @@ export const DevManage = {
             "http://localhost:3000/api/DevManage/AddRole", data
         );
         return response.data;
-    }
+    },
+
+    async addPermission(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/addPermission", data
+        );
+        return response.data;
+    },
+
+    async updatePermission(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/updatePermission", data
+        );
+        return response.data;
+    },
+
+    async deletePermission(data: any) {
+        const response = await axios.post(
+            "http://localhost:3000/api/DevManage/deletePermission", data
+        );
+        return response.data;
+    },
 };
 
