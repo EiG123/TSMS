@@ -47,7 +47,7 @@ export const AuthApiService = {
         email,
         password: pass
       });
-
+      console.log(response.data.user);
       // เก็บ token และ user data
       if (response.data.success && response.data.token) {
         localStorage.setItem('token', response.data.token);

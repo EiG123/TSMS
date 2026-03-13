@@ -5,6 +5,7 @@ import Register from "../views/register.vue";
 import Home from "../views/home.vue";
 import PM from "../views/PM.vue";
 import NotFound from "../views/NotFound.vue";
+import profile from "../views/profile.vue";
 
 import devDashboard from "../views/dev/DevManage.vue";
 import DevUserManage from "../views/dev/UserManage.vue";
@@ -69,6 +70,12 @@ const routes = [
         path: "/register",
         name: "register",
         component: Register,
+    },
+
+    {
+        path: "/profile",
+        name: "profile",
+        component: profile,
     },
 
     {

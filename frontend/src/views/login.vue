@@ -41,19 +41,18 @@ const goRegister = () => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors duration-300"
+    class="relative min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors duration-300"
   >
+    <button
+      @click="themeStore.toggleTheme()"
+      class="absolute top-4 right-4 p-3 rounded-xl fixed top-4 right-4 z-50 p-3 rounded-xl bg-white dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+    >
+      <span v-if="themeStore.isDark" class="text-2xl">☀️</span>
+      <span v-else class="text-2xl">🌙</span>
+    </button>
     <div class="w-full max-w-md animate-fade-in">
       <!-- Theme Toggle Button - Top Right -->
-      <div class="flex justify-end mb-4">
-        <button
-          @click="themeStore.toggleTheme()"
-          class="p-3 rounded-xl bg-white dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
-        >
-          <span v-if="themeStore.isDark" class="text-2xl">☀️</span>
-          <span v-else class="text-2xl">🌙</span>
-        </button>
-      </div>
+      <div class="flex justify-end mb-4"></div>
       <!-- Login Card -->
       <div
         class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-2xl"

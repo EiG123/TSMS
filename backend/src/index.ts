@@ -18,6 +18,7 @@ import pmDropdownRouter from "./routers/pmDropdown.js";
 import pmGetPmData from "./routers/pmGetPmData.js";
 import AdminManageRouter from "./routers/admin/AdminManageRouter.js";
 import DevManageRouter from "./routers/dev/DevManageRouter.js";
+import UserManageRouter from "./routers/user/UserManageRouter.js";
 
 import pmCheckInOutManage from "./routers/pmCheckInOutManage.js";
 import pmCabinetRouter from "./routers/pmCabinetRouter.js";
@@ -38,9 +39,11 @@ app.use('/uploads/pm/*', serveStatic({ root: './' }));
 // dev
 app.route("api/DevManage", DevManageRouter);
 
-
 // admin
 app.route("api/AdminManage", AdminManageRouter);
+
+// user
+app.route("api/UserManage", UserManageRouter);
 
 app.route("/api/config/pm", pmConfigRouter);
 // PM NodeB endpoint
