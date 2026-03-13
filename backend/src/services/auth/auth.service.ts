@@ -213,7 +213,7 @@ export const AuthService = {
    * สร้าง hash password สำหรับ user ใหม่
    */
   async hashPassword(password: string): Promise<string> {
-    const saltRounds = 10;
+    const saltRounds = 12;
     return await bcrypt.hash(password, saltRounds);
   },
 

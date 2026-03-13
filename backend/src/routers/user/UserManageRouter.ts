@@ -24,4 +24,23 @@ UserManageRouter.post("/getProfileData", async (c) => {
     }
 });
 
+UserManageRouter.post("/updateProfile", async (c) => {
+    const body = await c.req.json();
+    const hashPassword = await bcrypt.hash(body.password, 12);
+    body.password = hashPassword;
+    try {
+        const res = await UserManageService.updateProfile(body, pool);
+        return c.json({
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
 export default UserManageRouter;

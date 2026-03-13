@@ -29,7 +29,6 @@ const loadData = async () => {
     userRegion.value = userData.region || "R0";
     userPhone.value = userData.phone || "";
     userCompany.value = userData.company || "";
-    console.log(userData);
   } catch (error) {
     console.error("Failed to load profile:", error);
   } finally {
@@ -44,11 +43,11 @@ const handleSave = async () => {
   }
 
   try {
-    // await UserManage.updateProfile({
-    //   userId: userId.value,
-    //   password: userPassword.value,
-    //   region: userRegion.value,
-    // });
+    await UserManage.updateProfile({
+      userId: userId.value,
+      username: username.value,
+      password: userPassword.value,
+    });
     alert("บันทึกข้อมูลสำเร็จ");
     isEditing.value = false;
     userPassword.value = "";
