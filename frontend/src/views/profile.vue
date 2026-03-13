@@ -16,6 +16,7 @@ const userPassword = ref("");
 const userConfirmedPassword = ref("");
 const showPassword = ref(false);
 const showConfirmedPassword = ref(false);
+const NewUsername = ref("");
 
 const loading = ref(false);
 const isEditing = ref(false);
@@ -26,6 +27,7 @@ const loadData = async () => {
     const userData = await UserManage.getProfileData({
       userId: userId.value,
     });
+    NewUsername.value = username.value;
     userRegion.value = userData.region || "R0";
     userPhone.value = userData.phone || "";
     userCompany.value = userData.company || "";
@@ -43,15 +45,17 @@ const handleSave = async () => {
   }
 
   try {
+    console.log(NewUsername.value);
     await UserManage.updateProfile({
       userId: userId.value,
-      username: username.value,
+      username: NewUsername.value,
       password: userPassword.value,
     });
     alert("บันทึกข้อมูลสำเร็จ");
     isEditing.value = false;
     userPassword.value = "";
     userConfirmedPassword.value = "";
+    await loadData();
   } catch (error) {
     alert("บันทึกข้อมูลไม่สำเร็จ");
   }
@@ -156,16 +160,10 @@ onMounted(async () => {
                 <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
                   Username
                 </label>
-                <div v-if="!isEditing"
+                <div
                   class="px-4 py-3 bg-gray-50 dark:bg-slate-900/40 border border-gray-200 dark:border-slate-700/50 rounded-lg text-gray-900 dark:text-slate-300"
                 >
                   {{ username }}
-                </div>
-                <div v-if="isEditing">
-                    <input
-                      v-model="username"
-                      class="w-full px-4 py-3 bg-white dark:bg-slate-900/40 border border-gray-300 dark:border-slate-700/50 rounded-lg text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all pr-12"
-                    />
                 </div>
               </div>
 
@@ -227,6 +225,24 @@ onMounted(async () => {
               v-if="isEditing"
               class="border-t border-gray-200 dark:border-slate-700/50 pt-6 mt-6"
             >
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-slate-200 mb-4">
+                Change Username
+              </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- New Password -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">
+                    New Username
+                  </label>
+                  <div class="relative">
+                    <input
+                      v-model="NewUsername"
+                      placeholder="Enter new Username"
+                      class="w-full px-4 py-3 bg-white dark:bg-slate-900/40 border border-gray-300 dark:border-slate-700/50 rounded-lg text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all pr-12"
+                    />
+                  </div>
+                </div>
+              </div>
               <h3 class="text-lg font-semibold text-gray-800 dark:text-slate-200 mb-4">
                 Change Password
               </h3>

@@ -60,11 +60,11 @@ WHERE r.name = 'user';
 
 INSERT INTO users (email, password, username, status)
 VALUES 
-('dev@gmail.com', '$2b$10$8fQaY0bbMKD3wpjV7/xHR.7pi.I054rBGuU5nf738p8ykVCS3af26', 'Developer', 'active')
+('dev@gmail.com', '$2b$10$8fQaY0bbMKD3wpjV7/xHR.7pi.I054rBGuU5nf738p8ykVCS3af26', 'Developer', 'active');
 
 INSERT INTO roles (name, description)
 VALUES 
-('dev', 'Developer')
+('dev', 'Developer');
 
 INSERT INTO user_roles (user_id, role_id)
 SELECT u.id, r.id

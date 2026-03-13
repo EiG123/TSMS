@@ -21,27 +21,34 @@ export const UserManageService = {
         }
 
     },
-    
+
     async updateProfile(data: any, db: any) {
         const client = await db.connect();
         try {
-            const sql = `UPDATE users SET 
-            username = $2, 
-            password = $3
-            WHERE id = $1`;
+            let sql = "";
+            if(data.password !== null){
+                sql = `UPDATE users SET
+                username = $2,
+                password = $3
+                WHERE id = $1`;
 
-            const res = await client.query(sql, [data.userId, data.username, data.password]);
-            return {
-                success: true
+                await client.query(sql, [data.userId, data.username, data.password]);
+            }else{
+                sql = `UPDATE users SET username = $2 WHERE WHERE id = $1`
+                await client.query(sql, [data.userId, data.username]);
             }
+
+            return {
+                success: false
+            };
+
         } catch (error) {
             return {
                 success: false,
-                message: "ไม่สามารถดึงข้อมูล User จาก DataBase ได้"
-            }
+                message: "ไม่สามารถอัปเดตข้อมูล User ได้"
+            };
         } finally {
             client.release();
         }
-
-    },
+    }
 }
