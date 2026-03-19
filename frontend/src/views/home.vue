@@ -13,6 +13,7 @@ const username = computed(() => authStore.user?.username || "User");
 const goPM = () => router.push("/PM");
 const goCableSlack = () => router.push("/CableSlack");
 const goTxTtoExcel = () => router.push("/txt_to_excel");
+const goNetworkAvailability = () => router.push("/network_availability_dashboard");
 
 const cards = [
   { id: 1, title: "PM", value: "", icon: "📊", color: "from-blue-500 to-blue-600", onclick: goPM },
@@ -20,7 +21,7 @@ const cards = [
   { id: 3, title: "TxT To Excel", value: "", icon: "✅", color: "from-green-500 to-green-600", onclick: goTxTtoExcel },
   { id: 4, title: "", value: "", icon: "👥", color: "from-orange-500 to-orange-600" },
   { id: 5, title: "", value: "", icon: "⏳", color: "from-yellow-500 to-yellow-600" },
-  { id: 6, title: "", value: "", icon: "📈", color: "from-pink-500 to-pink-600" },
+  { id: 6, title: "Network Availability", value: "", icon: "📈", color: "from-pink-500 to-pink-600", onclick: goNetworkAvailability },
 ];
 </script>
 
@@ -30,7 +31,7 @@ const cards = [
     <!-- Welcome Section -->
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">
-        Hello,
+        Welcome,
         <span class="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 bg-clip-text text-transparent">
           {{ username }}
         </span>

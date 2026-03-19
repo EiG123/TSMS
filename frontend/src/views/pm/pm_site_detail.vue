@@ -67,6 +67,7 @@ const handleCheckInOut = async () => {
       checkInTime.value = new Date().toLocaleString("th-TH");
       checkOutTime.value = null;
       alert("Check in สำเร็จ! เริ่มบันทึกผล PM ได้แล้ว");
+      loadData();
     } catch (error) {
       console.error("Check in failed:", error);
       alert("ไม่สามารถ Check in ได้ กรุณาลองใหม่อีกครั้ง");
@@ -93,10 +94,8 @@ const handleCheckInOut = async () => {
   }
 };
 
-onMounted(async () => {
-  loading.value = true;
-  try {
-    const res = await getPmList.getPmById(pmId.value);
+const loadData = async () => {
+  const res = await getPmList.getPmById(pmId.value);
 
     if (res.data.data.status === "checkin") {
       isCheckedIn.value = true;
@@ -109,6 +108,12 @@ onMounted(async () => {
     }
     pMsiteData.value = res.data.data;
     service_status.value = res.data.data.service_status;
+}
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    loadData();
   } catch (error) {
     console.error("Failed to load PM data:", error);
     alert("ไม่เจอ API SiteList");

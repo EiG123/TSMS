@@ -46,7 +46,8 @@ import pm_dropdown_member_add from "../views/pm/title/pm_dropdown_member_add.vue
 import cableslack from "../views/cableslack/cableslack.vue";
 
 import txt_to_excel from "../views/txt_to_excel/home.vue";
-import path from "path";
+
+import network_availability_dashboard from "../views/NetworkAvailability/NetworkAvailabilityDashBoard.html?raw";
 
 
 const routes = [
@@ -148,6 +149,14 @@ const routes = [
                 })
             }
         ]
+    },
+
+    {
+        path: "/network_availability_dashboard",
+        meta: {
+            requiresAuth: true
+        },
+        component: network_availability_dashboard,
     },
 
     // 🧱 Main layout (ต้อง login)

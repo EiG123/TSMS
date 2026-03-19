@@ -82,7 +82,6 @@ const prevPage = () => {
   }
 };
 
-// Reset to page 1 when search changes
 const handleSearch = () => {
   currentPage.value = 1;
 };
@@ -93,7 +92,7 @@ const handleSearch = () => {
     class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
   >
     <!-- Header -->
-    <div class="mb-8 animate-fade-in">
+    <div class="mb-1 animate-fade-in">
       <h1
         class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-3"
       >
@@ -171,7 +170,7 @@ const handleSearch = () => {
       <p class="text-gray-600 dark:text-slate-400 text-lg">Loading site data...</p>
     </div>
 
-    <!-- Card Grid -->
+    <!-- Table -->
     <div v-else class="animate-slide-up">
       <!-- Empty State -->
       <div
@@ -207,186 +206,177 @@ const handleSearch = () => {
         </span>
       </div>
 
-      <!-- Cards Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div
-          v-for="(row, index) in paginatedList"
-          :key="row.id"
-          class="group bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400 dark:hover:border-blue-500/40"
-        >
-          <!-- Card Header -->
-          <div
-            class="bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 border-b border-gray-200 dark:border-slate-700/50 px-6 py-4"
-          >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm"
-                >
-                  {{ (currentPage - 1) * pageSize + index + 1 }}
-                </div>
-                <div>
-                  <h3 class="text-gray-800 dark:text-slate-300 font-semibold text-lg">
-                    {{ row.site_name || "N/A" }}
-                  </h3>
-                  <p class="text-gray-500 dark:text-slate-500 text-xs font-mono">
-                    Site ID
-                  </p>
-                </div>
-              </div>
-              <!-- Status Indicator -->
-              <div
-                class="w-2 h-2 rounded-full shadow-lg"
-                :class="{
-                  'bg-green-500 shadow-green-500/50':
-                    row.service_status === 'onService',
-                  'bg-red-500 shadow-red-500/50':
-                    row.service_status === 'cancel',
-                  'bg-gray-500 shadow-gray-500/50': row.service_status === '',
-                }"
-              ></div>
-            </div>
-          </div>
-
-          <!-- Card Body -->
-          <div class="px-6 py-5 space-y-4">
-            <!-- Region -->
-            <div class="flex items-center gap-3">
-              <div
-                class="w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/10 flex items-center justify-center flex-shrink-0"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  class="text-blue-500 dark:text-blue-400"
-                >
-                  <path
-                    d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M1.333 8h13.334M8 1.333A10.2 10.2 0 0 1 10.667 8 10.2 10.2 0 0 1 8 14.667 10.2 10.2 0 0 1 5.333 8 10.2 10.2 0 0 1 8 1.333z"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-xs text-gray-500 dark:text-slate-500 uppercase tracking-wide">
+      <!-- Table Wrapper -->
+      <div
+        v-else
+        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 shadow-lg overflow-hidden"
+      >
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <!-- Table Head -->
+            <thead>
+              <tr class="bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 border-b border-gray-200 dark:border-slate-700/50">
+                <!-- <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider w-14">
+                  #
+                </th> -->
+                <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                  Site Name
+                </th>
+                <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                   Region
-                </p>
-                <p class="text-gray-800 dark:text-slate-300 font-medium truncate">
-                  {{ row.region || "N/A" }}
-                </p>
-              </div>
-            </div>
-
-            <!-- PM Date -->
-            <div class="flex items-center gap-3">
-              <div
-                class="w-8 h-8 rounded-lg bg-purple-500/10 dark:bg-purple-500/10 flex items-center justify-center flex-shrink-0"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  class="text-purple-500 dark:text-purple-400"
-                >
-                  <rect
-                    x="2"
-                    y="3.333"
-                    width="12"
-                    height="10.667"
-                    rx="2"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                  />
-                  <path
-                    d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-xs text-gray-500 dark:text-slate-500 uppercase tracking-wide">
+                </th>
+                <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                   PM Date
-                </p>
-                <p
-                  class="text-gray-800 dark:text-slate-300 font-medium font-mono text-sm truncate"
-                >
-                  {{ row.date || "Not scheduled" }}
-                </p>
-              </div>
-            </div>
-          </div>
+                </th>
+                <th class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                  Status
+                </th>
+                <th class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
 
-          <!-- Card Footer -->
-          <div
-            class="px-6 py-4 bg-gray-50 dark:bg-slate-900/40 border-t border-gray-200 dark:border-slate-700/50 flex gap-2"
-          >
-            <button
-              @click="goView(row.id)"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <circle
-                  cx="8"
-                  cy="8"
-                  r="2"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                />
-              </svg>
-              View
-            </button>
-            <button
-              @click="goEdit(row.id)"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-purple-500/10 dark:bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/20 dark:hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-600 dark:text-purple-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Edit
-            </button>
-            <button
-              @click="handleDelete(row.id)"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Delete
-            </button>
-          </div>
+            <!-- Table Body -->
+            <tbody class="divide-y divide-gray-100 dark:divide-slate-700/50">
+              <tr
+                v-for="(row, index) in paginatedList"
+                :key="row.id"
+                class="group hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-colors duration-150"
+              >
+                <!-- No. -->
+                <!-- <td class="px-6 py-4">
+                  <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs"
+                  >
+                    {{ (currentPage - 1) * pageSize + index + 1 }}
+                  </div>
+                </td> -->
+
+                <!-- Site Name -->
+                <td class="px-6 py-4">
+                  <span class="font-semibold text-gray-800 dark:text-slate-200">
+                    {{ row.site_name || "N/A" }}
+                  </span>
+                  <p class="text-xs text-gray-400 dark:text-slate-500 font-mono mt-0.5">
+                    {{ row.site_id || "" }}
+                  </p>
+                </td>
+
+                <!-- Region -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-md bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-blue-500 dark:text-blue-400">
+                        <path
+                          d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.333 8h13.334M8 1.333A10.2 10.2 0 0 1 10.667 8 10.2 10.2 0 0 1 8 14.667 10.2 10.2 0 0 1 5.333 8 10.2 10.2 0 0 1 8 1.333z"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="text-gray-700 dark:text-slate-300">{{ row.region || "N/A" }}</span>
+                  </div>
+                </td>
+
+                <!-- PM Date -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-md bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-purple-500 dark:text-purple-400">
+                        <rect x="2" y="3.333" width="12" height="10.667" rx="2" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                      </svg>
+                    </div>
+                    <span class="text-gray-700 dark:text-slate-300 font-mono text-sm">
+                      {{ row.date || "Not scheduled" }}
+                    </span>
+                  </div>
+                </td>
+
+                <!-- Status -->
+                <td class="px-6 py-4 text-center">
+                  <span
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
+                    :class="{
+                      'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400': row.service_status === 'onService',
+                      'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400': row.service_status === 'cancel',
+                      'bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400': row.service_status === '' || !row.service_status,
+                    }"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full"
+                      :class="{
+                        'bg-green-500': row.service_status === 'onService',
+                        'bg-red-500': row.service_status === 'cancel',
+                        'bg-gray-400': row.service_status === '' || !row.service_status,
+                      }"
+                    ></span>
+                    {{
+                      row.service_status === 'onService' ? 'On Service'
+                      : row.service_status === 'cancel' ? 'Cancelled'
+                      : 'Unknown'
+                    }}
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-center gap-2">
+                    <!-- View -->
+                    <button
+                      @click="goView(row.id)"
+                      title="View"
+                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                        <path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5" />
+                      </svg>
+                    </button>
+
+                    <!-- Edit -->
+                    <button
+                      @click="goEdit(row.id)"
+                      title="Edit"
+                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500/10 dark:bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/20 dark:hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-600 dark:text-purple-300 transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                        <path d="M11.333 2A1.886 1.886 0 0 1 14 4.667l-9 9-3.667 1 1-3.667 9-9z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+
+                    <!-- Delete -->
+                    <button
+                      @click="handleDelete(row.id)"
+                      title="Delete"
+                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 011.334-1.334h2.666a1.333 1.333 0 011.334 1.334V4m2 0v9.333a1.333 1.333 0 01-1.334 1.334H4.667a1.333 1.333 0 01-1.334-1.334V4h9.334z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer: row count -->
+        <div class="px-6 py-3 border-t border-gray-100 dark:border-slate-700/50 flex items-center justify-between bg-gray-50/50 dark:bg-slate-900/20">
+          <span class="text-xs text-gray-500 dark:text-slate-500">
+            Showing {{ (currentPage - 1) * pageSize + 1 }}–{{ Math.min(currentPage * pageSize, filteredList.length) }} of {{ filteredList.length }} entries
+          </span>
         </div>
       </div>
     </div>
@@ -402,13 +392,7 @@ const handleSearch = () => {
         class="flex items-center gap-2 bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500/40 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 backdrop-blur-sm disabled:hover:bg-white dark:disabled:hover:bg-slate-800/60 disabled:hover:border-gray-300 dark:disabled:hover:border-slate-700/50"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M12.5 15l-5-5 5-5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <path d="M12.5 15l-5-5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         Previous
       </button>
@@ -426,13 +410,7 @@ const handleSearch = () => {
       >
         Next
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M7.5 15l5-5-5-5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <path d="M7.5 15l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </button>
     </div>
@@ -441,45 +419,21 @@ const handleSearch = () => {
 
 <style scoped>
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
-}
-
-.animate-slide-down {
-  animation: slide-down 0.6s ease-out 0.1s both;
-}
-
-.animate-slide-up {
-  animation: slide-up 0.6s ease-out 0.2s both;
-}
+.animate-fade-in { animation: fade-in 0.6s ease-out; }
+.animate-slide-down { animation: slide-down 0.6s ease-out 0.1s both; }
+.animate-slide-up { animation: slide-up 0.6s ease-out 0.2s both; }
 </style>
