@@ -43,7 +43,8 @@ pmGetPmData.post("/getPmDataById", async (c) => {
 
 pmGetPmData.get("/pmGetPmList", async (c) => {
     try {
-        const res = await pmServiceManage.getData(pool);
+        const res = await pmServiceManage.pmGetPmList(pool);
+        console.log(res.success);
         return c.json({
             data: res.data,
             success: true

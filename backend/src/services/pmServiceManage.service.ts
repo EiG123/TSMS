@@ -1,20 +1,48 @@
 import { success } from "zod";
 
 export const pmServiceManage = {
-    async getData(
+    async pmGetPmList(
         db: any
     ) {
         const client = await db.connect();
 
         try {
-            const sql = `SELECT * FROM pm`
+            const sql = `
+            SELECT
+                p.id, 
+                p.site_id,
+                p.site_name,
+                p.type,
+                p.date,
+                p.planwork,
+                p.service_status,
+                p.vendor,
+
+                COALESCE(c.cabinets, '[]') AS cabinets
+
+            FROM pm p
+
+            LEFT JOIN LATERAL (
+                SELECT json_agg(
+                    json_build_object(
+                        'id', pmc.id,
+                        'cabinet_name', pmc.cabinet_name,
+                        'cabinet_network', pmc.cabinet_network
+                    )
+                ) AS cabinets
+                FROM pm_cabinet pmc
+                WHERE pmc.pm_id = p.id
+            ) c ON true;
+            `;
 
             const res = await client.query(sql);
+            
             return {
                 data: res.rows,
                 success: true
             }
         } catch (err) {
+            console.log(err);
             return {
                 success: false
             }
