@@ -264,7 +264,7 @@ const handleSearch = () => {
             <!-- Table Body -->
             <tbody class="divide-y divide-gray-100 dark:divide-slate-700/50">
               <tr
-                v-for="(row, index) in paginatedList"
+                v-for="(row) in paginatedList"
                 :key="row.id"
                 class="group hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-colors duration-150"
               >
