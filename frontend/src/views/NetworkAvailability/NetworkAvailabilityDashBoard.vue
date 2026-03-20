@@ -107,7 +107,7 @@ function getFiltered() {
 }
 
 // ── Targets ──
-const target = ref(99.80)
+const target = ref(99.90)
 const maxVal = ref(99.90)
 
 // ── Simulation state ──
