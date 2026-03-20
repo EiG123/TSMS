@@ -18,7 +18,11 @@ export const pmServiceManage = {
                 p.service_status,
                 p.vendor,
 
-                COALESCE(c.cabinets, '[]') AS cabinets
+                COALESCE(c.cabinets, '[]') AS cabinets,
+
+                COALESCE(m.mowing, '[]') AS mowing,
+
+                COALESCE(sc.solar_cell, '[]') AS solar_cell
 
             FROM pm p
 
@@ -32,7 +36,29 @@ export const pmServiceManage = {
                 ) AS cabinets
                 FROM pm_cabinet pmc
                 WHERE pmc.pm_id = p.id
-            ) c ON true;
+            ) c ON true
+
+            LEFT JOIN LATERAL (
+                SELECT json_agg(
+                    json_build_object(
+                        'round', pmm.round,
+                        'status', pmm.status
+                    )
+                ) AS mowing
+                FROM pm_mowing pmm
+                WHERE pmm.pm_id = p.id 
+            ) m ON true
+
+            LEFT JOIN LATERAL (
+                SELECT json_agg(
+                    json_build_object(
+                        'solar_cell', pmsc.number,
+                        'status', pmsc.status
+                    )
+                ) AS solar_cell
+                FROM pm_solar_cell pmsc
+                WHERE pmsc.pm_id = p.id 
+            ) sc ON true
             `;
 
             const res = await client.query(sql);

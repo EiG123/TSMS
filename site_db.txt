@@ -90,6 +90,7 @@ CREATE TABLE pm_generator (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
     number INTEGER NOT NULL,
+    status VARCHAR(50),
 
     CONSTRAINT fk_pm_generator
         FOREIGN KEY (pm_id)
@@ -101,6 +102,7 @@ CREATE TABLE pm_transformer (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
     number INTEGER NOT NULL,
+    status VARCHAR(50),
 
     CONSTRAINT fk_pm_transformer
         FOREIGN KEY (pm_id)
@@ -113,6 +115,8 @@ CREATE TABLE pm_kwh_meter (
     pm_id INTEGER NOT NULL,
     number INTEGER NOT NULL,
     phase VARCHAR(50) NOT NULL,
+    status VARCHAR(50),
+
 
     CONSTRAINT fk_pm_kwh_meter
         FOREIGN KEY (pm_id)
@@ -124,6 +128,7 @@ CREATE TABLE pm_solar_cell (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
     number INTEGER NOT NULL,
+    status VARCHAR(50),
 
     CONSTRAINT fk_pm_solar_cell
         FOREIGN KEY (pm_id)
@@ -134,7 +139,9 @@ CREATE TABLE pm_solar_cell (
 CREATE TABLE pm_mowing (
     id SERIAL PRIMARY KEY,
     pm_id INTEGER NOT NULL,
-    number INTEGER NOT NULL,
+    round INTEGER NOT NULL,
+    status VARCHAR(50),
+
 
     CONSTRAINT fk_pm_mowing
         FOREIGN KEY (pm_id)
@@ -195,7 +202,7 @@ CREATE TABLE pm_details (
     value_3 VARCHAR(255),
 
     CONSTRAINT unique_pm_detail
-    UNIQUE (pm_id, title_id, title_child_id, order_number)
+    UNIQUE (pm_id, title_id, title_child_id, order_number),
 
     CONSTRAINT fk_pm_details
         FOREIGN KEY (title_child_id)
@@ -215,7 +222,7 @@ CREATE TABLE pm_title_images (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT unique_pm_title_images
-    UNIQUE (title_id, title_child_id, img_number)
+    UNIQUE (title_id, title_child_id, img_number),
 
     CONSTRAINT fk_pm_details
         FOREIGN KEY (title_child_id)

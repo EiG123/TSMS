@@ -241,7 +241,38 @@ const handleSearch = () => {
                 <th
                   class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
                 >
+                  Mowing
+                </th>
+                <th
+                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Broadband
+                </th>
+                <th
+                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  SolarCell
+                </th>
+                <th
+                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
                   Region
+                </th>
+                <th
+                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Province
+                </th>
+                <th
+                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Vendor
+                </th>
+                
+                <th
+                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Service Status
                 </th>
                 <th
                   class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
@@ -251,7 +282,7 @@ const handleSearch = () => {
                 <th
                   class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
                 >
-                  Status
+                  Verify
                 </th>
                 <th
                   class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
@@ -290,9 +321,30 @@ const handleSearch = () => {
                 </td>
 
                 <!-- Cabinets -->
-                <td class="px-6 py-4">
+                <td class="text-black dark:text-white px-6 py-4">
                   <div v-for="(cab, index) in row.cabinets" :key="index">
                     {{cab.cabinet_name || "NONE"}}
+                  </div>
+                </td>
+
+                <!-- Mowing -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  <div v-for="(mow, index) in row.mowing" :key="index">
+                    {{mow.round || "NONE"}}
+                  </div>
+                </td>
+
+                <!-- Broadband -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  <div v-for="(bb, index) in row.broadband" :key="index">
+                    {{bb.count || "NONE"}}
+                  </div>
+                </td>
+
+                <!-- Solar Cell -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  <div v-for="(solar, index) in row.solarcell" :key="index">
+                    {{solar.status || "NONE"}}
                   </div>
                 </td>
 
@@ -329,6 +381,48 @@ const handleSearch = () => {
                       row.region || "N/A"
                     }}</span>
                   </div>
+                </td>
+
+                <!-- Province -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  
+                </td>
+
+                <!-- Vendor -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  {{row.vendor || "NONE"}}
+                </td>
+
+                <!-- Status -->
+                <td class="px-6 py-4 text-center">
+                  <span
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
+                    :class="{
+                      'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400':
+                        row.service_status === 'onService',
+                      'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400':
+                        row.service_status === 'cancel',
+                      'bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400':
+                        row.service_status === '' || !row.service_status,
+                    }"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full"
+                      :class="{
+                        'bg-green-500': row.service_status === 'onService',
+                        'bg-red-500': row.service_status === 'cancel',
+                        'bg-gray-400':
+                          row.service_status === '' || !row.service_status,
+                      }"
+                    ></span>
+                    {{
+                      row.service_status === "onService"
+                        ? "On Service"
+                        : row.service_status === "cancel"
+                        ? "Cancelled"
+                        : "Unknown"
+                    }}
+                  </span>
                 </td>
 
                 <!-- PM Date -->
@@ -369,36 +463,9 @@ const handleSearch = () => {
                   </div>
                 </td>
 
-                <!-- Status -->
-                <td class="px-6 py-4 text-center">
-                  <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-                    :class="{
-                      'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400':
-                        row.service_status === 'onService',
-                      'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400':
-                        row.service_status === 'cancel',
-                      'bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400':
-                        row.service_status === '' || !row.service_status,
-                    }"
-                  >
-                    <span
-                      class="w-1.5 h-1.5 rounded-full"
-                      :class="{
-                        'bg-green-500': row.service_status === 'onService',
-                        'bg-red-500': row.service_status === 'cancel',
-                        'bg-gray-400':
-                          row.service_status === '' || !row.service_status,
-                      }"
-                    ></span>
-                    {{
-                      row.service_status === "onService"
-                        ? "On Service"
-                        : row.service_status === "cancel"
-                        ? "Cancelled"
-                        : "Unknown"
-                    }}
-                  </span>
+                <!-- Verify -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  {{row.verify || "NONE"}}
                 </td>
 
                 <!-- Actions -->
