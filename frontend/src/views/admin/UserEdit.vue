@@ -33,21 +33,25 @@ const role = ref("");
 const roleId = ref<number | null>(null);
 const allRole = ref([]);
 
+const loadData = async () => {
+  const resUser = await AdminManage.getUserById(userId.value);
+  const allRoleAPI = await AdminManage.getAllRole();
+  allRole.value = allRoleAPI.data.result;
+  console.log(resUser.data.result);
+  console.log(allRole.value);
+  email.value = resUser.data.result[0].email;
+  username.value = resUser.data.result[0].username;
+  phone.value = resUser.data.result[0].phone;
+  region.value = resUser.data.result[0].region;
+  company.value = resUser.data.result[0].company;
+  status.value = resUser.data.result[0].status;
+  role.value = resUser.data.result[0].role;
+};
+
 onMounted(async () => {
   loading.value = true;
   try {
-    const resUser = await AdminManage.getUserById(userId.value);
-    const allRoleAPI = await AdminManage.getAllRole();
-    allRole.value = allRoleAPI.data.result;
-    console.log(resUser.data.result);
-    console.log(allRole.value);
-    email.value = resUser.data.result[0].email;
-    username.value = resUser.data.result[0].username;
-    phone.value = resUser.data.result[0].phone;
-    region.value = resUser.data.result[0].region;
-    company.value = resUser.data.result[0].company;
-    status.value = resUser.data.result[0].status;
-    role.value = resUser.data.result[0].role;
+    await loadData();
   } catch (error) {
     alert("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
   } finally {
@@ -729,7 +733,7 @@ const goBack = () => {
 
         <!-- Footer -->
         <div
-          class="px-8 py-5 bg-white-900/40 dark:bg-gradient-to-r border-t border-slate-700/50 text-center "
+          class="px-8 py-5 bg-white-900/40 dark:bg-gradient-to-r border-t border-slate-700/50 text-center"
         >
           <p class="text-sm text-slate-400">
             <button

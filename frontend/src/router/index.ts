@@ -48,7 +48,7 @@ import cableslack from "../views/cableslack/cableslack.vue";
 
 import txt_to_excel from "../views/txt_to_excel/home.vue";
 
-import network_availability_dashboard from "../views/NetworkAvailability/NetworkAvailabilityDashBoard.html?raw";
+import network_availability_dashboard from "../views/NetworkAvailability/NetworkAvailabilityDashBoard.vue";
 
 
 const routes = [
