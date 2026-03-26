@@ -35,6 +35,15 @@ const adminCards = [
     gradient: "from-blue-500 to-cyan-500",
     icon: "M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
     stats: "",
+  },
+  {
+    title: "User Location DashBoard",
+    subtitle: "",
+    description: "",
+    path: "/admin/UserlocationDashboard",
+    gradient: "from-blue-500 to-cyan-500",
+    icon: "M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z",
+    stats: "",
   }
 ];
 </script>

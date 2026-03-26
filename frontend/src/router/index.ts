@@ -18,6 +18,7 @@ import RoleManage from "../views/dev/RoleManage.vue";
 import userPermissionEdit from "../views/dev/userPermissionEdit.vue";
 import AddPermission from "../views/dev/AddPermission.vue";
 import TitleManagement from "../views/admin/TitleManagement.vue";
+import UserlocationDashboard from "../views/admin/UserlocationDashboard.vue";
 
 import pm_nodeb from "../views/pm/pm_nodeb.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
@@ -26,6 +27,8 @@ import pm_site_detail_site_data from "../views/pm/pm_site_detail_site_data.vue";
 import pm_site_detail_site_data_data from "../views/pm/pm_site_detail_site_data_data.vue";
 import pm_site_detail_site_data_enter_data from "../views/pm/pm_site_detail_site_data_enter_data.vue";
 import pm_site_detail_site_info from "../views/pm/pm_site_detail_site_info.vue";
+
+import pmDashBoardAI from "../views/pmDashBoard/pmDashBoardAI.vue";
 
 import pm_enter_data from "../views/pm/pm_enter_data.vue";
 import pm_add_cabinet from "../views/pm/pm_add_cabinet.vue";
@@ -153,6 +156,11 @@ const routes = [
                 path: "TitleManagement",
                 name: "TitleManagement",
                 component: TitleManagement,
+            },
+            {
+                path: "UserlocationDashboard",
+                name: "UserlocationDashboard",
+                component: UserlocationDashboard
             }
         ]
     },
@@ -163,6 +171,14 @@ const routes = [
             requiresAuth: true
         },
         component: network_availability_dashboard,
+    },
+
+    {
+        path: "/pmDashBoardAI",
+        meta: {
+            requiresAuth: true
+        },
+        component: pmDashBoardAI,
     },
 
     // 🧱 Main layout (ต้อง login)
