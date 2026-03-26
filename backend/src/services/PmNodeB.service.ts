@@ -63,8 +63,9 @@ export const PmService = {
         date,
         planwork,
         service_status,
+        created_by,
         created_at
-      ) VALUES ($1, $2, $3, $4, NOW())
+      ) VALUES ($1, $2, $3, $4, $5, NOW())
       RETURNING id
     `;
 
@@ -72,7 +73,8 @@ export const PmService = {
         data.site_id,
         data.datetime,
         data.planwork,
-        data.status
+        data.status,
+        data.created_by
       ];
 
       const result = await client.query(query, values);

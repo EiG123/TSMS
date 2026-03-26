@@ -5,6 +5,7 @@ import { useAuthStore } from "../../stores/auth";
 
 const authStore = useAuthStore();
 const username = authStore.currentUser;
+
 // Loading state
 const isSubmitting = ref(false);
 const showPmInfo = ref(true);
@@ -32,7 +33,7 @@ const handlePmNodeB = async () => {
     const solarCellData = solarCellEnabled.value ? solarCellCount.value : 0;
     const mowingData = mowingEnabled.value ? mowingCount.value : 0;
 
-    const pmResult = await PMApiService.pm_nodeb({
+    const pmResult = await PMApiService.pre_pm_nodeb({
       site_id: site_id.value,
       region: region.value,
       datetime: datetime.value,

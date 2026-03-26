@@ -17,6 +17,10 @@ export const pmServiceManage = {
                 p.planwork,
                 p.service_status,
                 p.vendor,
+                p.created_by,
+                p.created_at,
+                p.updated_by,
+                p.updated_at,
 
                 COALESCE(c.cabinets, '[]') AS cabinets,
 

@@ -90,6 +90,15 @@ const prevPage = () => {
 const handleSearch = () => {
   currentPage.value = 1;
 };
+
+const useFormatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("th-TH", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+};
 </script>
 
 <template>
@@ -268,7 +277,26 @@ const handleSearch = () => {
                 >
                   Vendor
                 </th>
-                
+                <th
+                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Created By
+                </th>
+                <th
+                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Created At
+                </th>
+                <th
+                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Updated By
+                </th>
+                <th
+                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Updated At
+                </th>
                 <th
                   class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
                 >
@@ -295,7 +323,7 @@ const handleSearch = () => {
             <!-- Table Body -->
             <tbody class="divide-y divide-gray-100 dark:divide-slate-700/50">
               <tr
-                v-for="(row) in paginatedList"
+                v-for="row in paginatedList"
                 :key="row.id"
                 class="group hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-colors duration-150"
               >
@@ -323,28 +351,28 @@ const handleSearch = () => {
                 <!-- Cabinets -->
                 <td class="text-black dark:text-white px-6 py-4">
                   <div v-for="(cab, index) in row.cabinets" :key="index">
-                    {{cab.cabinet_name || "NONE"}}
+                    {{ cab.cabinet_name || "NONE" }}
                   </div>
                 </td>
 
                 <!-- Mowing -->
                 <td class="text-black dark:text-white px-6 py-4">
                   <div v-for="(mow, index) in row.mowing" :key="index">
-                    {{mow.round || "NONE"}}
+                    {{ mow.round || "NONE" }}
                   </div>
                 </td>
 
                 <!-- Broadband -->
                 <td class="text-black dark:text-white px-6 py-4">
                   <div v-for="(bb, index) in row.broadband" :key="index">
-                    {{bb.count || "NONE"}}
+                    {{ bb.count || "NONE" }}
                   </div>
                 </td>
 
                 <!-- Solar Cell -->
                 <td class="text-black dark:text-white px-6 py-4">
                   <div v-for="(solar, index) in row.solarcell" :key="index">
-                    {{solar.status || "NONE"}}
+                    {{ solar.status || "NONE" }}
                   </div>
                 </td>
 
@@ -384,13 +412,97 @@ const handleSearch = () => {
                 </td>
 
                 <!-- Province -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  
-                </td>
+                <td class="text-black dark:text-white px-6 py-4"></td>
 
                 <!-- Vendor -->
                 <td class="text-black dark:text-white px-6 py-4">
-                  {{row.vendor || "NONE"}}
+                  {{ row.vendor || "NONE" }}
+                </td>
+
+                <!-- Created By -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  {{ row.created_by || "NONE" }}
+                </td>
+
+                <!-- Created At -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-6 h-6 rounded-md bg-purple-500/10 flex items-center justify-center flex-shrink-0"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        class="text-purple-500 dark:text-purple-400"
+                      >
+                        <rect
+                          x="2"
+                          y="3.333"
+                          width="12"
+                          height="10.667"
+                          rx="2"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                        <path
+                          d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span
+                      class="text-gray-700 dark:text-slate-300 font-mono text-sm"
+                    >
+                      {{ useFormatDate(row.created_at) || "NONE" }}
+                    </span>
+                  </div>
+                </td>
+
+                <!-- Updated By -->
+                <td class="text-black dark:text-white px-6 py-4">
+                  {{ row.updated_by || "No Updated" }}
+                </td>
+
+                <!-- Updated At -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-6 h-6 rounded-md bg-purple-500/10 flex items-center justify-center flex-shrink-0"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        class="text-purple-500 dark:text-purple-400"
+                      >
+                        <rect
+                          x="2"
+                          y="3.333"
+                          width="12"
+                          height="10.667"
+                          rx="2"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        />
+                        <path
+                          d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span
+                      class="text-gray-700 dark:text-slate-300 font-mono text-sm"
+                    >
+                      {{ useFormatDate(row.updated_at) || "No Updated" }}
+                    </span>
+                  </div>
                 </td>
 
                 <!-- Status -->
@@ -458,14 +570,14 @@ const handleSearch = () => {
                     <span
                       class="text-gray-700 dark:text-slate-300 font-mono text-sm"
                     >
-                      {{ row.date || "Not scheduled" }}
+                      {{ useFormatDate(row.date) || "Not scheduled" }}
                     </span>
                   </div>
                 </td>
 
                 <!-- Verify -->
                 <td class="text-black dark:text-white px-6 py-4">
-                  {{row.verify || "NONE"}}
+                  {{ row.verify || "NONE" }}
                 </td>
 
                 <!-- Actions -->
