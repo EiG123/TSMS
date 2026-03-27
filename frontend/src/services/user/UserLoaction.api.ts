@@ -6,6 +6,11 @@ export const UserLocation = {
             "http://localhost:3000/api/UserLocation/location", data
         );
         return response.data.data;
+    },
+
+    async getLocation() {
+        const response = await axios.get("http://localhost:3000/api/UserLocation/location");
+        return response.data.data;
     }
 };
 

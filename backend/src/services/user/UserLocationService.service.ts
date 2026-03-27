@@ -12,7 +12,10 @@ export const UserLocationService = {
                 DO UPDATE SET
                 latitude = EXCLUDED.latitude,
                 longitude = EXCLUDED.longitude,
-                updated_at = NOW();
+                updated_at = NOW()
+                WHERE
+                user_locations.latitude IS DISTINCT FROM EXCLUDED.latitude
+                OR user_locations.longitude IS DISTINCT FROM EXCLUDED.longitude;
             `;
             await client.query(sql, [data.userId, data.lat, data.lng])
             return {
@@ -30,4 +33,25 @@ export const UserLocationService = {
         }
 
     },
+
+    async getLocation(db: any) {
+        const client = await db.connect();
+        try {
+            const sql = `SELECT * FROM user_locations`;
+            const result = await client.query(sql);
+
+            return {
+                success: true,
+                result: result.rows
+            };
+        } catch (err) {
+            console.log(err);
+            return {
+                success: false,
+                result: []
+            };
+        } finally {
+            client.release();
+        }
+    }
 }

@@ -25,4 +25,22 @@ UserLocationRouter.post("/location", async (c) => {
     }
 });
 
+UserLocationRouter.get("/location", async (c) => {
+    try {
+        const res = await UserLocationService.getLocation(pool);
+        return c.json({
+            data: res.result,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
+
+
 export default UserLocationRouter;
