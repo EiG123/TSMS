@@ -142,7 +142,6 @@ CREATE TABLE pm_mowing (
     round INTEGER NOT NULL,
     status VARCHAR(50),
 
-
     CONSTRAINT fk_pm_mowing
         FOREIGN KEY (pm_id)
         REFERENCES pm(id)

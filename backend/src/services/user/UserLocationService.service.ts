@@ -4,7 +4,11 @@ import { success } from "zod";
 export const UserLocationService = {
     async location(data: any, db: any) {
         const client = await db.connect();
-        console.log(data);
+        if (data.userId === undefined) {
+            return {
+                success: false
+            }
+        }
         try {
             const sql = `
                 INSERT INTO user_locations (user_id, latitude, longitude, status,updated_at)

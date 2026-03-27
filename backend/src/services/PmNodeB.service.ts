@@ -28,6 +28,7 @@ export const PmService = {
 
 
   async InsertPM(data: any, db: Pool) {
+    console.log(data);
     const bulkInsertNumbered = async (
       client: any,
       table: string,
@@ -47,6 +48,30 @@ export const PmService = {
 
       await client.query(
         `INSERT INTO ${table} (pm_id, number)
+        VALUES ${placeholders.join(",")}`,
+        values
+      );
+    };
+
+    const bulkInsertRound = async (
+      client: any,
+      table: string,
+      pmId: number,
+      count: number
+    ) => {
+      if (!count || count <= 0) return;
+
+      const values: any[] = [];
+      const placeholders: string[] = [];
+
+      for (let i = 0; i < count; i++) {
+        const idx = values.length;
+        values.push(pmId, i + 1);
+        placeholders.push(`($${idx + 1}, $${idx + 2})`);
+      }
+
+      await client.query(
+        `INSERT INTO ${table} (pm_id, round)
         VALUES ${placeholders.join(",")}`,
         values
       );
@@ -115,7 +140,7 @@ export const PmService = {
       // ===========================
       // pm_mowing
       // ===========================
-      await bulkInsertNumbered(client, "pm_mowing", pmId, data.mowing);
+      await bulkInsertRound(client, "pm_mowing", pmId, data.mowing);
 
       // ⭐ ถ้าทุกอย่างผ่าน
       await client.query("COMMIT");

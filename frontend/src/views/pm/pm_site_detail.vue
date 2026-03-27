@@ -58,6 +58,7 @@ const startHeartbeat = async () => {
 };
 
 const watchPosition = () => {
+  console.log(userId);
   watchId = navigator.geolocation.watchPosition(
     (pos) => {
       currentLocation.value = {

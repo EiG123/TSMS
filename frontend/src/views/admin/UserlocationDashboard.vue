@@ -13,6 +13,8 @@ interface UserLocationData {
 
 const map = ref<L.Map | null>(null);
 const markers = ref<Map<number, L.Marker>>(new Map());
+const locations = ref<UserLocationData[]>([]);
+const selectedUserId = ref<number | null>(null);
 let pollingInterval: ReturnType<typeof setInterval> | null = null;
 
 const initMap = () => {
@@ -33,20 +35,39 @@ const normalizeLocations = (res: unknown): UserLocationData[] => {
   console.warn("Unexpected response format:", res);
   return [];
 };
-const useFormatDate = (dateString) => {
-  if (!dateString) return "";
+
+const formatDate = (dateString?: string): string => {
+  if (!dateString) return "-";
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("th-TH", {
-    dateStyle: "full",
+    dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
 };
-const updateMarkers = (locations: UserLocationData[]) => {
+
+// Default icon
+const defaultIcon = L.icon({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+
+// Highlighted icon (สีแดง)
+const highlightIcon = L.icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+
+const updateMarkers = (data: UserLocationData[]) => {
   if (!map.value) return;
 
-  const activeIds = new Set(locations.map((u) => u.user_id));
+  const activeIds = new Set(data.map((u) => u.user_id));
 
-  // ลบ marker ของ user ที่หายไป
   markers.value.forEach((marker, id) => {
     if (!activeIds.has(id)) {
       marker.remove();
@@ -54,30 +75,61 @@ const updateMarkers = (locations: UserLocationData[]) => {
     }
   });
 
-  locations.forEach((user) => {
+  data.forEach((user) => {
     const lat = Number(user.latitude);
     const lng = Number(user.longitude);
     if (isNaN(lat) || isNaN(lng)) return;
 
+    const isSelected = selectedUserId.value === user.user_id;
+    const icon = isSelected ? highlightIcon : defaultIcon;
+
     const existing = markers.value.get(user.user_id);
     if (existing) {
       existing.setLatLng([lat, lng]);
+      existing.setIcon(icon);
     } else {
-      const marker = L.marker([lat, lng]).addTo(map.value!).bindPopup(`
-          <b>User:</b> ${user.user_id}<br/>
-          <b>Updated:</b> ${useFormatDate(user.updated_at) ?? "-"}
+      const marker = L.marker([lat, lng], { icon })
+        .addTo(map.value!)
+        .bindPopup(`
+          <b>User ID:</b> ${user.user_id}<br/>
+          <b>Lat:</b> ${lat}<br/>
+          <b>Lng:</b> ${lng}<br/>
+          <b>Updated:</b> ${formatDate(user.updated_at)}
         `);
       markers.value.set(user.user_id, marker);
     }
   });
 };
 
-// ✅ ใช้ service เดียวกันทั้ง initial load และ polling
+// กด user ใน list
+const selectUser = (user: UserLocationData) => {
+  const lat = Number(user.latitude);
+  const lng = Number(user.longitude);
+  if (!map.value || isNaN(lat) || isNaN(lng)) return;
+
+  // Reset icon ของ user เก่า
+  if (selectedUserId.value !== null) {
+    const prev = markers.value.get(selectedUserId.value);
+    prev?.setIcon(defaultIcon);
+  }
+
+  selectedUserId.value = user.user_id;
+
+  // Highlight marker ใหม่
+  const marker = markers.value.get(user.user_id);
+  if (marker) {
+    marker.setIcon(highlightIcon);
+    map.value.setView([lat, lng], 16, { animate: true });
+    marker.openPopup();
+  }
+};
+
 const fetchAndUpdate = async () => {
   try {
     const res = await UserLocation.getLocation();
-    console.log(res);
-    updateMarkers(normalizeLocations(res));
+    const normalized = normalizeLocations(res);
+    locations.value = normalized;
+    updateMarkers(normalized);
   } catch (err) {
     console.error("Failed to fetch locations:", err);
   }
@@ -108,13 +160,50 @@ onUnmounted(() => {
     </div>
 
     <!-- Content -->
-    <div class="flex-1 grid grid-cols-4 gap-4 p-4 bg-gray-100">
+    <div class="flex-1 grid grid-cols-4 gap-4 p-4 bg-gray-100 overflow-hidden">
       <!-- Sidebar -->
-      <div class="col-span-1 bg-white rounded-2xl shadow p-4 overflow-y-auto">
-        <h2 class="font-medium mb-3">Users</h2>
-        <ul class="space-y-2 text-sm">
-          <li class="p-2 rounded hover:bg-gray-100 cursor-pointer">
-            User list here (optional)
+      <div class="col-span-1 bg-white rounded-2xl shadow p-4 flex flex-col overflow-hidden">
+        <h2 class="font-medium mb-3">
+          Users
+          <span class="ml-1 text-xs text-gray-400 font-normal">({{ locations.length }})</span>
+        </h2>
+
+        <!-- Empty state -->
+        <div v-if="locations.length === 0" class="text-sm text-gray-400 text-center mt-6">
+          ไม่มีข้อมูล
+        </div>
+
+        <!-- List -->
+        <ul class="space-y-2 text-sm overflow-y-auto flex-1">
+          <li
+            v-for="user in locations"
+            :key="user.user_id"
+            @click="selectUser(user)"
+            :class="[
+              'p-3 rounded-xl border cursor-pointer transition-all',
+              selectedUserId === user.user_id
+                ? 'bg-blue-50 border-blue-400'
+                : 'hover:bg-gray-50 border-transparent hover:border-gray-200',
+            ]"
+          >
+            <!-- User ID -->
+            <div class="flex items-center justify-between mb-1">
+              <span class="font-semibold text-gray-800">
+                👤 User {{ user.user_id }}
+              </span>
+              <span
+                v-if="selectedUserId === user.user_id"
+                class="text-xs text-blue-500 font-medium"
+              >
+                selected
+              </span>
+            </div>
+
+            <!-- Lat / Lng -->
+            <div class="text-gray-500 text-xs space-y-0.5">
+              <div>🌐 {{ Number(user.latitude).toFixed(5) }}, {{ Number(user.longitude).toFixed(5) }}</div>
+              <div>🕒 {{ formatDate(user.updated_at) }}</div>
+            </div>
           </li>
         </ul>
       </div>
