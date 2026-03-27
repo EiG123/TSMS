@@ -4,20 +4,22 @@ import { success } from "zod";
 export const UserLocationService = {
     async location(data: any, db: any) {
         const client = await db.connect();
+        console.log(data);
         try {
             const sql = `
-                INSERT INTO user_locations (user_id, latitude, longitude, updated_at)
-                VALUES ($1, $2, $3, NOW())
+                INSERT INTO user_locations (user_id, latitude, longitude, status,updated_at)
+                VALUES ($1, $2, $3, $4,NOW())
                 ON CONFLICT (user_id)
                 DO UPDATE SET
                 latitude = EXCLUDED.latitude,
                 longitude = EXCLUDED.longitude,
+                status = EXCLUDED.status,
                 updated_at = NOW()
                 WHERE
                 user_locations.latitude IS DISTINCT FROM EXCLUDED.latitude
                 OR user_locations.longitude IS DISTINCT FROM EXCLUDED.longitude;
             `;
-            await client.query(sql, [data.userId, data.lat, data.lng])
+            await client.query(sql, [data.userId, data.lat, data.lng, data.status])
             return {
                 success: true,
                 result: "good"
@@ -37,7 +39,7 @@ export const UserLocationService = {
     async getLocation(db: any) {
         const client = await db.connect();
         try {
-            const sql = `SELECT * FROM user_locations`;
+            const sql = `SELECT * FROM user_locations WHERE status = 'active'`;
             const result = await client.query(sql);
 
             return {

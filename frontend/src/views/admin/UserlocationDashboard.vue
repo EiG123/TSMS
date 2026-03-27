@@ -33,7 +33,14 @@ const normalizeLocations = (res: unknown): UserLocationData[] => {
   console.warn("Unexpected response format:", res);
   return [];
 };
-
+const useFormatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("th-TH", {
+    dateStyle: "full",
+    timeStyle: "short",
+  }).format(date);
+};
 const updateMarkers = (locations: UserLocationData[]) => {
   if (!map.value) return;
 
@@ -56,11 +63,9 @@ const updateMarkers = (locations: UserLocationData[]) => {
     if (existing) {
       existing.setLatLng([lat, lng]);
     } else {
-      const marker = L.marker([lat, lng])
-        .addTo(map.value!)
-        .bindPopup(`
+      const marker = L.marker([lat, lng]).addTo(map.value!).bindPopup(`
           <b>User:</b> ${user.user_id}<br/>
-          <b>Updated:</b> ${user.updated_at ?? "-"}
+          <b>Updated:</b> ${useFormatDate(user.updated_at) ?? "-"}
         `);
       markers.value.set(user.user_id, marker);
     }
@@ -71,6 +76,7 @@ const updateMarkers = (locations: UserLocationData[]) => {
 const fetchAndUpdate = async () => {
   try {
     const res = await UserLocation.getLocation();
+    console.log(res);
     updateMarkers(normalizeLocations(res));
   } catch (err) {
     console.error("Failed to fetch locations:", err);

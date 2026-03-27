@@ -95,7 +95,7 @@ const useFormatDate = (dateString) => {
   if (!dateString) return "";
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("th-TH", {
-    dateStyle: "medium",
+    dateStyle: "full",
     timeStyle: "short",
   }).format(date);
 };

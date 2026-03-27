@@ -37,12 +37,17 @@ let intervalId: any;
 
 let currentLocation = ref({});
 
-const stopTracking = () => {
+const stopTracking = async () => {
   isTracking.value = false;
   endTrackingTime.value = new Date().toISOString();
 
   navigator.geolocation.clearWatch(watchId);
   clearInterval(intervalId);
+  currentLocation.value = {
+    userId: userId,
+    status: "inactive",
+  };
+  await UserLocation.sendLocation(currentLocation.value);
 };
 
 const startHeartbeat = async () => {
@@ -59,6 +64,7 @@ const watchPosition = () => {
         userId: userId,
         lat: pos.coords.latitude,
         lng: pos.coords.longitude,
+        status: "active",
       };
     },
     (err) => console.error(err),
