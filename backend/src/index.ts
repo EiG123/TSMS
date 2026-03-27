@@ -22,6 +22,7 @@ import UserManageRouter from "./routers/user/UserManageRouter.js";
 
 import pmCheckInOutManage from "./routers/pmCheckInOutManage.js";
 import pmCabinetRouter from "./routers/pmCabinetRouter.js";
+import UserLocationRouter from "./routers/user/UserLocationRouter.js";
 
 const app = new Hono();
 
@@ -43,6 +44,7 @@ app.route("api/DevManage", DevManageRouter);
 app.route("api/AdminManage", AdminManageRouter);
 
 // user
+app.route("api/UserLocation", UserLocationRouter);
 app.route("api/UserManage", UserManageRouter);
 
 app.route("/api/config/pm", pmConfigRouter);

@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { UserManageService } from "../../services/user/UserManageSerive.service.js";
+import { UserManageService } from "../../services/user/UserManageService.service.js";
 import pool from "../../services/db.js";
 import bcrypt from "bcryptjs";
 

@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
+import { UserLocation } from "../../services/user/UserLoaction.api";
 import { useAuthStore } from "../../stores/auth";
 
 const route = useRoute();
@@ -30,14 +31,57 @@ const isTracking = ref(false);
 const startTrackingTime = ref<string | null>(null);
 const endTrackingTime = ref<string | null>(null);
 
-const userTracking = async () => {
-  alert("tracking");
-  if (isTracking) {
-    isTracking.value = false;
-    endTrackingTime.value = new Date().toLocaleString("th-TH");
+let watchId: number;
+
+let intervalId: any;
+
+let currentLocation = ref({});
+
+const stopTracking = () => {
+  isTracking.value = false;
+  endTrackingTime.value = new Date().toISOString();
+
+  navigator.geolocation.clearWatch(watchId);
+  clearInterval(intervalId);
+};
+
+const startHeartbeat = async () => {
+  intervalId = setInterval(async () => {
+    if (!currentLocation.value) return;
+    await UserLocation.sendLocation(currentLocation.value);
+  }, 10000);
+};
+
+const watchPosition = () => {
+  watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      currentLocation.value = {
+        userId: userId,
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      };
+    },
+    (err) => console.error(err),
+    { enableHighAccuracy: true }
+  );
+};
+
+const startTracking = () => {
+  isTracking.value = true;
+  startTrackingTime.value = new Date().toISOString();
+
+  watchPosition(); // track real-time browser
+  startHeartbeat(); // ยิง API เป็นช่วงๆ
+};
+
+const userTracking = () => {
+  console.log(isTracking.value);
+
+  if (!isTracking.value) {
+    console.log("siu");
+    startTracking();
   } else {
-    isTracking.value = true;
-    startTrackingTime.value = new Date().toLocaleString("th-TH");
+    stopTracking();
   }
 };
 
@@ -454,7 +498,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span class="text-green-400 font-medium">Start Tracking Time:</span>
+                    <span class="text-green-400 font-medium"
+                      >Start Tracking Time:</span
+                    >
                     <span class="text-slate-300">{{ startTrackingTime }}</span>
                   </div>
                   <div
@@ -474,7 +520,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span class="text-purple-400 font-medium">End Tracking Time:</span>
+                    <span class="text-purple-400 font-medium"
+                      >End Tracking Time:</span
+                    >
                     <span class="text-slate-300">{{ endTrackingTime }}</span>
                   </div>
                 </div>
