@@ -26,6 +26,21 @@ const goEdit = () => {
   router.push(`/pm_nodeb_edit/${pmId.value}`);
 };
 
+const isTracking = ref(false);
+const startTrackingTime = ref<string | null>(null);
+const endTrackingTime = ref<string | null>(null);
+
+const userTracking = async () => {
+  alert("tracking");
+  if (isTracking) {
+    isTracking.value = false;
+    endTrackingTime.value = new Date().toLocaleString("th-TH");
+  } else {
+    isTracking.value = true;
+    startTrackingTime.value = new Date().toLocaleString("th-TH");
+  }
+};
+
 const handleDelete = async () => {
   const confirmed = window.confirm("คุณต้องการลบ PM นี้ใช่หรือไม่?");
   if (!confirmed) return;
@@ -96,19 +111,18 @@ const handleCheckInOut = async () => {
 
 const loadData = async () => {
   const res = await getPmList.getPmById(pmId.value);
-
-    if (res.data.data.status === "checkin") {
-      isCheckedIn.value = true;
-      const cabinet = await pmServiceManage.getPmCabinetById(pmId.value);
-      console.log(cabinet);
-      cabinets.value = cabinet.data.result.cabinets;
-      console.log(cabinets.value);
-    } else if (res.data.data.status === "checkout") {
-      isCheckedIn.value = false;
-    }
-    pMsiteData.value = res.data.data;
-    service_status.value = res.data.data.service_status;
-}
+  if (res.data.data.status === "checkin") {
+    isCheckedIn.value = true;
+    const cabinet = await pmServiceManage.getPmCabinetById(pmId.value);
+    console.log(cabinet);
+    cabinets.value = cabinet.data.result.cabinets;
+    console.log(cabinets.value);
+  } else if (res.data.data.status === "checkout") {
+    isCheckedIn.value = false;
+  }
+  pMsiteData.value = res.data.data;
+  service_status.value = res.data.data.service_status;
+};
 
 onMounted(async () => {
   loading.value = true;
@@ -269,7 +283,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
               <div class="flex gap-3">
                 <button
                   @click="goEdit"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -288,7 +302,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                 </button>
                 <button
                   @click="handleDelete"
-              class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -337,6 +351,230 @@ const handleCabinetDelete = async (cabinet_id: any) => {
             </svg>
             {{ nav.name }}
           </button>
+        </div>
+      </div>
+      <!-- Tracking User Section -->
+      <div
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg overflow-hidden"
+      >
+        <div class="p-6">
+          <div
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          >
+            <div class="flex items-start gap-4">
+              <div
+                :class="[
+                  'w-16 h-16 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300',
+                  !isTracking
+                    ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
+                    : endTrackingTime
+                    ? 'bg-gradient-to-br from-purple-500 to-purple-600 shadow-purple-500/30'
+                    : 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/30 animate-pulse',
+                ]"
+              >
+                <svg
+                  v-if="!isTracking"
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                  />
+                </svg>
+                <svg
+                  v-else-if="!endTrackingTime"
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <svg
+                  v-else
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+
+              <div>
+                <h3 class="text-xl font-semibold dark:text-slate-200 mb-2">
+                  {{
+                    !isTracking
+                      ? "Ready to Tracking"
+                      : endTrackingTime
+                      ? "Tracking Completed"
+                      : "In Tracking"
+                  }}
+                </h3>
+                <p class="dark:text-slate-400 text-sm mb-3">
+                  {{
+                    !isTracking
+                      ? "Click check in to start Tracking User"
+                      : endTrackingTime
+                      ? "All times have been recorded successfully"
+                      : "Currently working - ready to check out"
+                  }}
+                </p>
+
+                <div class="space-y-1.5">
+                  <div
+                    v-if="startTrackingTime"
+                    class="flex items-center gap-2 text-sm"
+                  >
+                    <svg
+                      class="w-4 h-4 text-green-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span class="text-green-400 font-medium">Start Tracking Time:</span>
+                    <span class="text-slate-300">{{ startTrackingTime }}</span>
+                  </div>
+                  <div
+                    v-if="endTrackingTime"
+                    class="flex items-center gap-2 text-sm"
+                  >
+                    <svg
+                      class="w-4 h-4 text-purple-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span class="text-purple-400 font-medium">End Tracking Time:</span>
+                    <span class="text-slate-300">{{ endTrackingTime }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              @click="userTracking"
+              :disabled="loading || endTrackingTime !== null"
+              :class="[
+                'flex items-center gap-3 px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg whitespace-nowrap',
+                endTrackingTime
+                  ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300 cursor-not-allowed opacity-75'
+                  : !isTracking
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:-translate-y-0.5 shadow-blue-500/30 hover:shadow-blue-500/50'
+                  : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white hover:-translate-y-0.5 shadow-orange-500/30 hover:shadow-orange-500/50',
+              ]"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  v-if="!isTracking"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                />
+                <path
+                  v-else-if="!endTrackingTime"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+                <path
+                  v-else
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span class="text-lg">
+                {{
+                  !isTracking
+                    ? "Strat Tracking"
+                    : endTrackingTime
+                    ? "Ended Tracking"
+                    : "End Tracking"
+                }}
+              </span>
+            </button>
+          </div>
+
+          <!-- Status Bar -->
+          <div
+            v-if="isTracking && !endTrackingTime"
+            class="mt-6 pt-6 border-t border-slate-700/50"
+          >
+            <div
+              class="flex items-center gap-3 px-4 py-3 bg-green-500/10 border border-green-500/30 rounded-xl"
+            >
+              <div
+                class="w-2 h-2 rounded-full bg-green-500 animate-pulse"
+              ></div>
+              <span class="text-green-300 text-sm font-medium"
+                >Tracking - User Track is active</span
+              >
+            </div>
+          </div>
+
+          <div
+            v-if="endTrackingTime"
+            class="mt-6 pt-6 border-t border-slate-700/50"
+          >
+            <div
+              class="flex items-center gap-3 px-4 py-3 bg-purple-500/10 border border-purple-500/30 rounded-xl"
+            >
+              <svg
+                class="w-5 h-5 text-purple-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span class="text-purple-300 text-sm font-medium"
+                >Track completed - User Tracking successfully</span
+              >
+            </div>
+          </div>
         </div>
       </div>
 
@@ -706,7 +944,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium dark:text-slate-400 mb-1">AC Power</p>
+                <p class="text-sm font-medium dark:text-slate-400 mb-1">
+                  AC Power
+                </p>
                 <p
                   class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600"
                 >
@@ -739,7 +979,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium dark:text-slate-400 mb-1">Generator</p>
+                <p class="text-sm font-medium dark:text-slate-400 mb-1">
+                  Generator
+                </p>
                 <p
                   class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600"
                 >
@@ -772,7 +1014,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           >
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium dark:text-slate-400 mb-1">Broadband</p>
+                <p class="text-sm font-medium dark:text-slate-400 mb-1">
+                  Broadband
+                </p>
                 <p
                   class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600"
                 >
@@ -829,7 +1073,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
               </svg>
             </div>
             <div>
-              <h2 class="text-xl font-semibold dark:text-slate-200">Cabinets</h2>
+              <h2 class="text-xl font-semibold dark:text-slate-200">
+                Cabinets
+              </h2>
               <p class="text-sm dark:text-slate-400">
                 {{ cabinets.length }} cabinet{{
                   cabinets.length !== 1 ? "s" : ""
@@ -1000,7 +1246,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
               <!-- Cabinet Stats Grid -->
               <div class="p-6">
-                <div class="dark:bg-slate-800/40 grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div
+                  class="dark:bg-slate-800/40 grid grid-cols-2 md:grid-cols-5 gap-3"
+                >
                   <!-- Rectifiers -->
                   <div
                     class="dark:bg-slate-800/40 border dark:border-slate-700/50 rounded-lg p-4 hover:border-green-500/40 transition-all"
@@ -1023,7 +1271,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         cab.rectifier_count
                       }}</span>
                     </div>
-                    <p class="text-xs dark:text-slate-400 font-medium">Rectifiers</p>
+                    <p class="text-xs dark:text-slate-400 font-medium">
+                      Rectifiers
+                    </p>
                   </div>
 
                   <!-- Batteries -->
@@ -1078,7 +1328,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         cab.site_grad || "N/A"
                       }}</span>
                     </div>
-                    <p class="text-xs dark:text-slate-400 font-medium">Site Grade</p>
+                    <p class="text-xs dark:text-slate-400 font-medium">
+                      Site Grade
+                    </p>
                   </div>
 
                   <!-- Problems -->
@@ -1103,7 +1355,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                         cab.problems?.length || 0
                       }}</span>
                     </div>
-                    <p class="text-xs dark:text-slate-400 font-medium">Problems</p>
+                    <p class="text-xs dark:text-slate-400 font-medium">
+                      Problems
+                    </p>
                   </div>
 
                   <!-- Audit -->
@@ -1285,7 +1539,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   </svg>
                 </div>
                 <div>
-                  <p class="font-semibold dark:text-slate-200 text-lg">Solar Cell</p>
+                  <p class="font-semibold dark:text-slate-200 text-lg">
+                    Solar Cell
+                  </p>
                   <p class="text-sm dark:text-slate-400">Solar power system</p>
                 </div>
               </div>
@@ -1346,7 +1602,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
         />
       </svg>
       <p class="dark:text-slate-400 text-lg font-medium">No data available</p>
-      <p class="dark:text-slate-500 text-sm mt-2">Unable to load site information</p>
+      <p class="dark:text-slate-500 text-sm mt-2">
+        Unable to load site information
+      </p>
     </div>
   </div>
 </template>
