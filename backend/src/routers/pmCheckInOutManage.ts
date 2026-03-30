@@ -45,5 +45,23 @@ pmCheckInOutManage.post("/checkOut", async (c) => {
 });
 
 
+pmCheckInOutManage.post("/updateProgressStatus", async (c) => {
+    const body = await c.req.json();
+    try {
+        const result = await pmCheckInOutService.updateProgressStatus(body.data , pool);
+        return c.json({
+            success: true,
+            data: result,
+        });
+    } catch (error) {
+        return c.json(
+            {
+                success: false,
+                message: "Failed to fetch PM site list",
+            },
+            500
+        );
+    }
+});
 
 export default pmCheckInOutManage;

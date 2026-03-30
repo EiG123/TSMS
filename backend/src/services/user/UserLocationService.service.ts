@@ -3,6 +3,7 @@ import { success } from "zod";
 
 export const UserLocationService = {
     async location(data: any, db: any) {
+        console.log(data);
         const client = await db.connect();
         if (data.userId === undefined) {
             return {
@@ -25,6 +26,8 @@ export const UserLocationService = {
                 OR user_locations.longitude IS DISTINCT FROM EXCLUDED.longitude;
             `;
             await client.query(sql, [data.userId, data.lat, data.lng, data.status, data.job])
+
+            // const sql_pm = `UPDATE INTO pm SET progress_status`;
             return {
                 success: true,
                 result: "good"

@@ -25,6 +25,22 @@ export const pmServiceManage = {
         return response.data;
     },
 
+    async updateProgressStatus(data: any){
+        const response = await axios.post(
+            "http://localhost:3000/api/pmCheckInOut/updateProgressStatus",
+            { data }
+        );
+        return response.data;
+    },
+
+    // async progress_status(pmId: any, status: any) {
+    //     const response = await axios.post(
+    //         "http://localhost:3000/api/pmCheckInOut/progress_status",
+    //         { pmId, status }
+    //     );
+    //     return response.data;
+    // },
+
     // async valuePmByIdTitleIdTitleChildId(data: any) {
     //     const response = await axios.post(
     //         "http://localhost:3000/api/pmServiceManage/valuePmByIdTitleIdTitleChildId",

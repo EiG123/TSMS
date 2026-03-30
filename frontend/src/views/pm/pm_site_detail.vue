@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
@@ -10,64 +10,37 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const pmId = ref(route.params.id as string);
+const userId = authStore.userId;
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
 const showModules = ref(true);
 
-const hide = () => {
-  showModules.value = !showModules.value;
-};
+// ─── Unified Work State ───────────────────────────────────────────
+type WorkState = "pending" | "Inprogress" | "checkedin" | "checkedout";
+const workState = ref<WorkState>("pending");
 
-const goBack = () => {
-  router.back();
-};
+const startWorkTime = ref<string | null>(null);
+const checkInTime = ref<string | null>(null);
+const checkOutTime = ref<string | null>(null);
 
-const goEdit = () => {
-  router.push(`/pm_nodeb_edit/${pmId.value}`);
-};
-
-const isTracking = ref(false);
-const startTrackingTime = ref<string | null>(null);
-const endTrackingTime = ref<string | null>(null);
-
+// ─── GPS Tracking ─────────────────────────────────────────────────
 let watchId: number;
-
 let intervalId: any;
-
-let currentLocation = ref({});
-
-const stopTracking = async () => {
-  isTracking.value = false;
-  endTrackingTime.value = formatDate(new Date().toISOString());
-
-
-  navigator.geolocation.clearWatch(watchId);
-  clearInterval(intervalId);
-  currentLocation.value = {
-    userId: userId,
-    status: "inactive",
-  };
-  await UserLocation.sendLocation(currentLocation.value);
-};
-
-const startHeartbeat = async () => {
-  intervalId = setInterval(async () => {
-    if (!currentLocation.value) return;
-    await UserLocation.sendLocation(currentLocation.value);
-  }, 10000);
-};
+const currentLocation = ref<Record<string, any>>({});
+const progress_status = ref();
 
 const watchPosition = () => {
-  console.log(userId);
   watchId = navigator.geolocation.watchPosition(
     (pos) => {
       currentLocation.value = {
-        userId: userId,
+        pmId,
+        userId,
         lat: pos.coords.latitude,
         lng: pos.coords.longitude,
         status: "active",
         job: pMsiteData.value.site_name,
+        progress_status: progress_status.value,
       };
     },
     (err) => console.error(err),
@@ -75,86 +48,92 @@ const watchPosition = () => {
   );
 };
 
-const startTracking = () => {
-  isTracking.value = true;
-  startTrackingTime.value = formatDate(new Date().toISOString());
-
-  watchPosition(); // track real-time browser
-  startHeartbeat(); // ยิง API เป็นช่วงๆ
+const startHeartbeat = () => {
+  intervalId = setInterval(async () => {
+    if (!currentLocation.value?.lat) return;
+    await UserLocation.sendLocation(currentLocation.value);
+  }, 10000);
 };
 
-const userTracking = () => {
-  console.log(isTracking.value);
-
-  if (!isTracking.value) {
-    console.log("siu");
-    startTracking();
-  } else {
-    stopTracking();
-  }
+const stopGPS = async () => {
+  navigator.geolocation.clearWatch(watchId);
+  clearInterval(intervalId);
+  await UserLocation.sendLocation({ userId, status: "inactive" });
 };
 
-const handleDelete = async () => {
-  const confirmed = window.confirm("คุณต้องการลบ PM นี้ใช่หรือไม่?");
-  if (!confirmed) return;
-
-  loading.value = true;
-
-  try {
-    await pmServiceManage.deletePmById(pmId.value);
-    router.push(`/pm_nodeb`);
-  } catch (error) {
-    alert("ไม่สามารถลบข้อมูลได้");
-  } finally {
-    loading.value = false;
-  }
-};
-
-const userId = authStore.userId;
-
-const isCheckedIn = ref(false);
-const checkInTime = ref<string | null>(null);
-const checkOutTime = ref<string | null>(null);
-
-const service_status = ref("");
-
-const cabinets = ref([]);
-
-const handleCheckInOut = async () => {
-  if (!isCheckedIn.value) {
+// ─── Main Action Handler ──────────────────────────────────────────
+const handleMainAction = async () => {
+  if (workState.value === "pending") {
     const confirmed = window.confirm(
-      "คุณต้องการ Check in เพื่อเริ่มบันทึกผล PM ใช่หรือไม่?"
+      "เริ่มออกงานและเปิด GPS Tracking ใช่หรือไม่?"
     );
     if (!confirmed) return;
 
     loading.value = true;
-
     try {
+      // ส่ง progress_status ไป DB ก่อน
+      await pmServiceManage.updateProgressStatus({
+        pmId: pmId.value,
+        userId,
+        progress_status: "Inprogress",
+      });
+      startWorkTime.value = formatDate(new Date().toISOString());
+      progress_status.value = "Inprogress";
+      workState.value = "Inprogress"; // ✅ sync UI
+      watchPosition();
+      startHeartbeat();
+    } catch {
+      alert("ไม่สามารถเริ่มงานได้ กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      loading.value = false;
+    }
+  } else if (workState.value === "Inprogress") {
+    const confirmed = window.confirm(
+      "Check in เพื่อเริ่มบันทึกผล PM ใช่หรือไม่?"
+    );
+    if (!confirmed) return;
+
+    loading.value = true;
+    try {
+      await pmServiceManage.updateProgressStatus({
+        pmId: pmId.value,
+        userId,
+        progress_status: "checkin",
+      });
       await pmServiceManage.checkIn(pmId.value, userId);
-      isCheckedIn.value = true;
       checkInTime.value = formatDate(new Date().toISOString());
-      checkOutTime.value = null;
+      progress_status.value = "checkedin";
+      workState.value = "checkedin"; // ✅ sync UI
+      console.log(workState.value);
+      console.log(progress_status.value);
       alert("Check in สำเร็จ! เริ่มบันทึกผล PM ได้แล้ว");
-      loadData();
-    } catch (error) {
-      console.error("Check in failed:", error);
+      await loadState();
+    } catch {
       alert("ไม่สามารถ Check in ได้ กรุณาลองใหม่อีกครั้ง");
     } finally {
       loading.value = false;
     }
-  } else {
-    const confirmed = window.confirm("คุณต้องการ Check out ใช่หรือไม่?");
+  } else if (workState.value === "checkedin") {
+    const confirmed = window.confirm(
+      "Check out และหยุด GPS Tracking ใช่หรือไม่?"
+    );
     if (!confirmed) return;
 
     loading.value = true;
-
     try {
+      await pmServiceManage.updateProgressStatus({
+        pmId: pmId.value,
+        userId,
+        progress_status: "checkout",
+      });
       await pmServiceManage.checkOut(pmId.value, userId);
       checkOutTime.value = formatDate(new Date().toISOString());
+      progress_status.value = "checkedout";
+      workState.value = "checkedout"; // ✅ sync UI
+      await stopGPS();
       alert("Check out สำเร็จ! บันทึกเวลาเรียบร้อยแล้ว");
       window.location.reload();
-    } catch (error) {
-      console.error("Check out failed:", error);
+    } catch {
       alert("ไม่สามารถ Check out ได้ กรุณาลองใหม่อีกครั้ง");
     } finally {
       loading.value = false;
@@ -162,34 +141,160 @@ const handleCheckInOut = async () => {
   }
 };
 
+// ─── Computed UI ──────────────────────────────────────────────────
+const stateConfig = computed(() => {
+  const configs = {
+    pending: {
+      iconColor: "from-blue-500 to-blue-600 shadow-blue-500/30",
+      title: "Ready to Start",
+      description: "กด Start Work เพื่อเริ่มออกงานและเปิด GPS",
+      btnColor:
+        "from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/30",
+      btnLabel: "Start Work",
+      statusBar: null,
+    },
+    Inprogress: {
+      iconColor: "from-amber-500 to-orange-500 shadow-amber-500/30",
+      title: "On The Way",
+      description: "GPS กำลัง Track ตำแหน่ง — กด Check In เมื่อถึงหน้างาน",
+      btnColor:
+        "from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-green-500/30",
+      btnLabel: "Check In",
+      statusBar: {
+        bg: "bg-amber-500/10 border-amber-500/30",
+        dot: "bg-amber-400",
+        text: "text-amber-300",
+        label: "GPS กำลัง Track ตำแหน่ง...",
+      },
+    },
+    checkedin: {
+      iconColor: "from-green-500 to-green-600 shadow-green-500/30",
+      title: "In Progress",
+      description: "กำลังทำงานอยู่ — บันทึกผล PM ได้เลย",
+      btnColor:
+        "from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-orange-500/30",
+      btnLabel: "Check Out",
+      statusBar: {
+        bg: "bg-green-500/10 border-green-500/30",
+        dot: "bg-green-500",
+        text: "text-green-300",
+        label: "กำลังบันทึกผล PM — GPS ยังทำงานอยู่",
+      },
+    },
+    checkedout: {
+      iconColor: "from-purple-500 to-purple-600 shadow-purple-500/30",
+      title: "Work Completed",
+      description: "บันทึกเวลาเรียบร้อย — GPS หยุดทำงานแล้ว",
+      btnColor:
+        "bg-purple-500/20 border border-purple-500/40 text-purple-300 cursor-not-allowed opacity-75",
+      btnLabel: "Completed",
+      statusBar: {
+        bg: "bg-purple-500/10 border-purple-500/30",
+        dot: null,
+        text: "text-purple-300",
+        label: "งานเสร็จสิ้น — GPS หยุดทำงานแล้ว",
+      },
+    },
+  };
+  return configs[workState.value];
+});
+
+const actionDisabled = computed(
+  () => loading.value || workState.value === "checkedout"
+);
+
+const isCheckedIn = computed(() => workState.value === "checkedin");
+
+// ─── Cabinets ─────────────────────────────────────────────────────
+const cabinets = ref([]);
+
+const AddCabinets = () =>
+  router.push({ name: "pm_add_cabinet", query: { pmId: pmId.value } });
+
+const handleCabinet = (cabinet_id: any) => alert(cabinet_id);
+
+const handleCabinetDelete = async (cabinet_id: any) => {
+  if (!confirm("คุณต้องการ ลบ Cabinet ID:" + cabinet_id + "หรือไม่")) return;
+  loading.value = true;
+  try {
+    await pmServiceManage.deleteCabinet({ cabinet_id });
+    window.location.reload();
+  } catch (error) {
+    console.error("Cabinet Delete Error:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// ─── Data / Nav / Utils ───────────────────────────────────────────
+const hide = () => {
+  showModules.value = !showModules.value;
+};
+const goBack = () => router.back();
+const goEdit = () => router.push(`/pm_nodeb_edit/${pmId.value}`);
+
+const handleDelete = async () => {
+  if (!window.confirm("คุณต้องการลบ PM นี้ใช่หรือไม่?")) return;
+  loading.value = true;
+  try {
+    await pmServiceManage.deletePmById(pmId.value);
+    router.push(`/pm_nodeb`);
+  } catch {
+    alert("ไม่สามารถลบข้อมูลได้");
+  } finally {
+    loading.value = false;
+  }
+};
+
+const loadState = async () => {
+  if (progress_status.value === "pending") {
+    workState.value = "pending";
+  } else if (progress_status.value === "Inprogress") {
+    workState.value = "Inprogress";
+  } else if (progress_status.value === "checkedin") {
+    // โหลดหน้าใหม่แล้ว state เป็น checkedin (ไม่มี GPS เพราะ page refresh)
+    workState.value = "checkedin";
+    const cabinet = await pmServiceManage.getPmCabinetById(pmId.value);
+    cabinets.value = cabinet.data.result.cabinets;
+  } else if (progress_status.value === "checkedout") {
+    workState.value = "checkedout";
+  }
+};
+
 const loadData = async () => {
   const res = await getPmList.getPmById(pmId.value);
-  if (res.data.data.status === "checkin") {
-    isCheckedIn.value = true;
-    const cabinet = await pmServiceManage.getPmCabinetById(pmId.value);
-    console.log(cabinet);
-    cabinets.value = cabinet.data.result.cabinets;
-    console.log(cabinets.value);
-  } else if (res.data.data.status === "checkout") {
-    isCheckedIn.value = false;
-  }
+  progress_status.value = res.data.data.progress_status;
+  loadState();
   pMsiteData.value = res.data.data;
-  service_status.value = res.data.data.service_status;
 };
 
 onMounted(async () => {
   loading.value = true;
   try {
-    loadData();
-  } catch (error) {
-    console.error("Failed to load PM data:", error);
+    await loadData();
+  } catch {
     alert("ไม่เจอ API SiteList");
   } finally {
     loading.value = false;
   }
 });
 
-// Navigation functions
+onBeforeUnmount(() => {
+  // cleanup GPS ถ้า user ออกจากหน้าก่อน checkout
+  if (workState.value === "Inprogress" || workState.value === "checkedin") {
+    navigator.geolocation.clearWatch(watchId);
+    clearInterval(intervalId);
+  }
+});
+
+const formatDate = (dateString?: string): string => {
+  if (!dateString) return "-";
+  return new Intl.DateTimeFormat("th-TH", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(dateString));
+};
+
 const navigations = [
   {
     name: "Summary",
@@ -204,12 +309,7 @@ const navigations = [
     name: "Cabinets",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
     action: () =>
-      router.push({
-        name: `pm_cabinet_page`,
-        query: {
-          pmId: pmId.value,
-        },
-      }),
+      router.push({ name: "pm_cabinet_page", query: { pmId: pmId.value } }),
   },
   {
     name: "Problems",
@@ -222,46 +322,7 @@ const navigations = [
     action: () => alert("Go to AuditPage"),
   },
 ];
-
-const AddCabinets = () => {
-  router.push({
-    name: "pm_add_cabinet",
-    query: {
-      pmId: pmId.value,
-    },
-  });
-};
-
-const handleCabinet = (cabinet_id: any) => {
-  alert(cabinet_id);
-};
-
-const handleCabinetDelete = async (cabinet_id: any) => {
-  loading.value = true;
-  try {
-    if (confirm("คุณต้องการ ลบ Cabinet ID:" + cabinet_id + "หรือไม่")) {
-      await pmServiceManage.deleteCabinet({
-        cabinet_id,
-      });
-      window.location.reload();
-    }
-  } catch (error) {
-    console.log("Cabinet Delete Log ERROR: ", error);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const formatDate = (dateString?: string): string => {
-  if (!dateString) return "-";
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat("th-TH", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
-};
 </script>
-
 <template>
   <div
     class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
@@ -416,255 +477,28 @@ const formatDate = (dateString?: string): string => {
         </div>
       </div>
       <!-- Tracking User Section -->
-      <div
-        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg overflow-hidden"
-      >
-        <div class="p-6">
-          <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-          >
-            <div class="flex items-start gap-4">
-              <div
-                :class="[
-                  'w-16 h-16 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300',
-                  !isTracking
-                    ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
-                    : endTrackingTime
-                    ? 'bg-gradient-to-br from-purple-500 to-purple-600 shadow-purple-500/30'
-                    : 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/30 animate-pulse',
-                ]"
-              >
-                <svg
-                  v-if="!isTracking"
-                  class="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                  />
-                </svg>
-                <svg
-                  v-else-if="!endTrackingTime"
-                  class="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <svg
-                  v-else
-                  class="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-
-              <div>
-                <h3 class="text-xl font-semibold dark:text-slate-200 mb-2">
-                  {{
-                    !isTracking
-                      ? "Ready to Tracking"
-                      : endTrackingTime
-                      ? "Tracking Completed"
-                      : "In Tracking"
-                  }}
-                </h3>
-                <p class="dark:text-slate-400 text-sm mb-3">
-                  {{
-                    !isTracking
-                      ? "Click check in to start Tracking User"
-                      : endTrackingTime
-                      ? "All times have been recorded successfully"
-                      : "Currently working - ready to check out"
-                  }}
-                </p>
-
-                <div class="space-y-1.5">
-                  <div
-                    v-if="startTrackingTime"
-                    class="flex items-center gap-2 text-sm"
-                  >
-                    <svg
-                      class="w-4 h-4 text-green-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span class="text-green-400 font-medium"
-                      >Start Tracking Time:</span
-                    >
-                    <span class="text-slate-300">{{ startTrackingTime }}</span>
-                  </div>
-                  <div
-                    v-if="endTrackingTime"
-                    class="flex items-center gap-2 text-sm"
-                  >
-                    <svg
-                      class="w-4 h-4 text-purple-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span class="text-purple-400 font-medium"
-                      >End Tracking Time:</span
-                    >
-                    <span class="text-slate-300">{{ endTrackingTime }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              @click="userTracking"
-              :disabled="loading || endTrackingTime !== null"
-              :class="[
-                'flex items-center gap-3 px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg whitespace-nowrap',
-                endTrackingTime
-                  ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300 cursor-not-allowed opacity-75'
-                  : !isTracking
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:-translate-y-0.5 shadow-blue-500/30 hover:shadow-blue-500/50'
-                  : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white hover:-translate-y-0.5 shadow-orange-500/30 hover:shadow-orange-500/50',
-              ]"
-            >
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  v-if="!isTracking"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                />
-                <path
-                  v-else-if="!endTrackingTime"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-                <path
-                  v-else
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span class="text-lg">
-                {{
-                  !isTracking
-                    ? "Strat Tracking"
-                    : endTrackingTime
-                    ? "Ended Tracking"
-                    : "End Tracking"
-                }}
-              </span>
-            </button>
-          </div>
-
-          <!-- Status Bar -->
-          <div
-            v-if="isTracking && !endTrackingTime"
-            class="mt-6 pt-6 border-t border-slate-700/50"
-          >
-            <div
-              class="flex items-center gap-3 px-4 py-3 bg-green-500/10 border border-green-500/30 rounded-xl"
-            >
-              <div
-                class="w-2 h-2 rounded-full bg-green-500 animate-pulse"
-              ></div>
-              <span class="text-green-300 text-sm font-medium"
-                >Tracking - User Track is active</span
-              >
-            </div>
-          </div>
-
-          <div
-            v-if="endTrackingTime"
-            class="mt-6 pt-6 border-t border-slate-700/50"
-          >
-            <div
-              class="flex items-center gap-3 px-4 py-3 bg-purple-500/10 border border-purple-500/30 rounded-xl"
-            >
-              <svg
-                class="w-5 h-5 text-purple-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span class="text-purple-300 text-sm font-medium"
-                >Track completed - User Tracking successfully</span
-              >
-            </div>
-          </div>
-        </div>
-      </div>
 
       <!-- Check In/Out Section -->
+
+      <!-- Work Status Card (แทนที่ 2 card เดิม) -->
       <div
         class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div class="p-6">
           <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-6"
           >
+            <!-- Left: Icon + Info + Timeline -->
             <div class="flex items-start gap-4">
               <div
                 :class="[
-                  'w-16 h-16 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300',
-                  !isCheckedIn
-                    ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/30'
-                    : checkOutTime
-                    ? 'bg-gradient-to-br from-purple-500 to-purple-600 shadow-purple-500/30'
-                    : 'bg-gradient-to-br from-green-500 to-green-600 shadow-green-500/30 animate-pulse',
+                  'w-16 h-16 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300 bg-gradient-to-br',
+                  stateConfig.iconColor,
                 ]"
               >
+                <!-- pending -->
                 <svg
-                  v-if="!isCheckedIn"
+                  v-if="workState === 'pending'"
                   class="w-8 h-8 text-white"
                   fill="none"
                   stroke="currentColor"
@@ -674,11 +508,33 @@ const formatDate = (dateString?: string): string => {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
+                <!-- Inprogress -->
                 <svg
-                  v-else-if="!checkOutTime"
+                  v-else-if="workState === 'Inprogress'"
+                  class="w-8 h-8 text-white animate-pulse"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                  />
+                </svg>
+                <!-- checkedin -->
+                <svg
+                  v-else-if="workState === 'checkedin'"
                   class="w-8 h-8 text-white"
                   fill="none"
                   stroke="currentColor"
@@ -691,6 +547,7 @@ const formatDate = (dateString?: string): string => {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
+                <!-- checkedout -->
                 <svg
                   v-else
                   class="w-8 h-8 text-white"
@@ -707,81 +564,59 @@ const formatDate = (dateString?: string): string => {
                 </svg>
               </div>
 
-              <div>
-                <h3 class="text-xl font-semibold dark:text-slate-200 mb-2">
-                  {{
-                    !isCheckedIn
-                      ? "Ready to Start"
-                      : checkOutTime
-                      ? "Work Completed"
-                      : "In Progress"
-                  }}
+              <div class="flex-1">
+                <h3 class="text-xl font-semibold dark:text-slate-200 mb-1">
+                  {{ stateConfig.title }}
                 </h3>
-                <p class="dark:text-slate-400 text-sm mb-3">
-                  {{
-                    !isCheckedIn
-                      ? "Click check in to start recording PM results"
-                      : checkOutTime
-                      ? "All times have been recorded successfully"
-                      : "Currently working - ready to check out"
-                  }}
+                <p class="dark:text-slate-400 text-sm mb-4">
+                  {{ stateConfig.description }}
                 </p>
 
-                <div class="space-y-1.5">
+                <!-- Timeline -->
+                <div class="space-y-2">
+                  <div
+                    v-if="startWorkTime"
+                    class="flex items-center gap-2 text-sm"
+                  >
+                    <span
+                      class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"
+                    ></span>
+                    <span class="text-amber-400 font-medium">Start Work:</span>
+                    <span class="dark:text-slate-300">{{ startWorkTime }}</span>
+                  </div>
                   <div
                     v-if="checkInTime"
                     class="flex items-center gap-2 text-sm"
                   >
-                    <svg
-                      class="w-4 h-4 text-green-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span class="text-green-400 font-medium">Check in:</span>
-                    <span class="text-slate-300">{{ checkInTime }}</span>
+                    <span
+                      class="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"
+                    ></span>
+                    <span class="text-green-400 font-medium">Check In:</span>
+                    <span class="dark:text-slate-300">{{ checkInTime }}</span>
                   </div>
                   <div
                     v-if="checkOutTime"
                     class="flex items-center gap-2 text-sm"
                   >
-                    <svg
-                      class="w-4 h-4 text-purple-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span class="text-purple-400 font-medium">Check out:</span>
-                    <span class="text-slate-300">{{ checkOutTime }}</span>
+                    <span
+                      class="w-2 h-2 rounded-full bg-purple-400 flex-shrink-0"
+                    ></span>
+                    <span class="text-purple-400 font-medium">Check Out:</span>
+                    <span class="dark:text-slate-300">{{ checkOutTime }}</span>
                   </div>
                 </div>
               </div>
             </div>
 
+            <!-- Right: Single Action Button -->
             <button
-              @click="handleCheckInOut"
-              :disabled="loading || checkOutTime !== null"
+              @click="handleMainAction"
+              :disabled="actionDisabled"
               :class="[
-                'flex items-center gap-3 px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg whitespace-nowrap',
-                checkOutTime
-                  ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300 cursor-not-allowed opacity-75'
-                  : !isCheckedIn
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:-translate-y-0.5 shadow-blue-500/30 hover:shadow-blue-500/50'
-                  : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white hover:-translate-y-0.5 shadow-orange-500/30 hover:shadow-orange-500/50',
+                'flex items-center gap-3 px-8 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg whitespace-nowrap text-white',
+                workState !== 'checkedout'
+                  ? `bg-gradient-to-r ${stateConfig.btnColor} hover:-translate-y-0.5`
+                  : stateConfig.btnColor,
               ]"
             >
               <svg
@@ -791,14 +626,28 @@ const formatDate = (dateString?: string): string => {
                 viewBox="0 0 24 24"
               >
                 <path
-                  v-if="!isCheckedIn"
+                  v-if="workState === 'pending'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                />
+                <path
+                  v-if="workState === 'pending'"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+                <path
+                  v-else-if="workState === 'Inprogress'"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
                 />
                 <path
-                  v-else-if="!checkOutTime"
+                  v-else-if="workState === 'checkedin'"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
@@ -812,43 +661,30 @@ const formatDate = (dateString?: string): string => {
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span class="text-lg">
-                {{
-                  !isCheckedIn
-                    ? "Check In"
-                    : checkOutTime
-                    ? "Checked Out"
-                    : "Check Out"
-                }}
-              </span>
+              <span class="text-lg">{{ stateConfig.btnLabel }}</span>
             </button>
           </div>
 
           <!-- Status Bar -->
           <div
-            v-if="isCheckedIn && !checkOutTime"
-            class="mt-6 pt-6 border-t border-slate-700/50"
+            v-if="stateConfig.statusBar"
+            class="mt-6 pt-6 border-t dark:border-slate-700/50"
           >
             <div
-              class="flex items-center gap-3 px-4 py-3 bg-green-500/10 border border-green-500/30 rounded-xl"
+              :class="[
+                'flex items-center gap-3 px-4 py-3 border rounded-xl',
+                stateConfig.statusBar.bg,
+              ]"
             >
               <div
-                class="w-2 h-2 rounded-full bg-green-500 animate-pulse"
+                v-if="stateConfig.statusBar.dot"
+                :class="[
+                  'w-2 h-2 rounded-full animate-pulse',
+                  stateConfig.statusBar.dot,
+                ]"
               ></div>
-              <span class="text-green-300 text-sm font-medium"
-                >Working - PM recording is active</span
-              >
-            </div>
-          </div>
-
-          <div
-            v-if="checkOutTime"
-            class="mt-6 pt-6 border-t border-slate-700/50"
-          >
-            <div
-              class="flex items-center gap-3 px-4 py-3 bg-purple-500/10 border border-purple-500/30 rounded-xl"
-            >
               <svg
+                v-else
                 class="w-5 h-5 text-purple-400"
                 fill="none"
                 stroke="currentColor"
@@ -861,8 +697,9 @@ const formatDate = (dateString?: string): string => {
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span class="text-purple-300 text-sm font-medium"
-                >Work completed - All times recorded successfully</span
+              <span
+                :class="['text-sm font-medium', stateConfig.statusBar.text]"
+                >{{ stateConfig.statusBar.label }}</span
               >
             </div>
           </div>
@@ -907,7 +744,7 @@ const formatDate = (dateString?: string): string => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium">
-                    {{ pMsiteData.region || "-"}}
+                    {{ pMsiteData.region || "-" }}
                   </p>
                 </div>
               </div>
@@ -921,7 +758,7 @@ const formatDate = (dateString?: string): string => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium">
-                    {{ pMsiteData.company || "-"}}
+                    {{ pMsiteData.company || "-" }}
                   </p>
                 </div>
               </div>
@@ -994,7 +831,7 @@ const formatDate = (dateString?: string): string => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium">
-                    {{ pMsiteData.planwork || "N/A" }}
+                    {{ pMsiteData.planwork || "-" }}
                   </p>
                 </div>
               </div>

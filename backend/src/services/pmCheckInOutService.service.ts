@@ -29,7 +29,7 @@ export const pmCheckInOutService = {
 
     async checkIn(pmId: number, user_id: number, db: any) {
         const client = await db.connect();
-
+        
         try {
             const sql = `
             UPDATE pm
@@ -93,4 +93,18 @@ export const pmCheckInOutService = {
             client.release();
         }
     },
+
+    async updateProgressStatus(data: any, db: any) {
+        console.log(data);
+        const client = await db.connect();
+        try {
+            const sql = `UPDATE pm SET progress_status = $1 WHERE id = $2`
+
+            await client.query(sql, [data.progress_status, data.pmId]);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            client.release();
+        }
+    }
 }
