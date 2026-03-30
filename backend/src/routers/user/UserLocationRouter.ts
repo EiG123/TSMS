@@ -8,7 +8,6 @@ const UserLocationRouter = new Hono();
 
 UserLocationRouter.post("/location", async (c) => {
     const body = await c.req.json();
-    console.log(body);
     try {
         const res = await UserLocationService.location(body, pool);
         return c.json({

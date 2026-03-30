@@ -39,7 +39,8 @@ let currentLocation = ref({});
 
 const stopTracking = async () => {
   isTracking.value = false;
-  endTrackingTime.value = new Date().toISOString();
+  endTrackingTime.value = formatDate(new Date().toISOString());
+
 
   navigator.geolocation.clearWatch(watchId);
   clearInterval(intervalId);
@@ -66,6 +67,7 @@ const watchPosition = () => {
         lat: pos.coords.latitude,
         lng: pos.coords.longitude,
         status: "active",
+        job: pMsiteData.value.site_name,
       };
     },
     (err) => console.error(err),
@@ -75,7 +77,7 @@ const watchPosition = () => {
 
 const startTracking = () => {
   isTracking.value = true;
-  startTrackingTime.value = new Date().toISOString();
+  startTrackingTime.value = formatDate(new Date().toISOString());
 
   watchPosition(); // track real-time browser
   startHeartbeat(); // ยิง API เป็นช่วงๆ
@@ -130,7 +132,7 @@ const handleCheckInOut = async () => {
     try {
       await pmServiceManage.checkIn(pmId.value, userId);
       isCheckedIn.value = true;
-      checkInTime.value = new Date().toLocaleString("th-TH");
+      checkInTime.value = formatDate(new Date().toISOString());
       checkOutTime.value = null;
       alert("Check in สำเร็จ! เริ่มบันทึกผล PM ได้แล้ว");
       loadData();
@@ -148,7 +150,7 @@ const handleCheckInOut = async () => {
 
     try {
       await pmServiceManage.checkOut(pmId.value, userId);
-      checkOutTime.value = new Date().toLocaleString("th-TH");
+      checkOutTime.value = formatDate(new Date().toISOString());
       alert("Check out สำเร็จ! บันทึกเวลาเรียบร้อยแล้ว");
       window.location.reload();
     } catch (error) {
@@ -248,6 +250,15 @@ const handleCabinetDelete = async (cabinet_id: any) => {
   } finally {
     loading.value = false;
   }
+};
+
+const formatDate = (dateString?: string): string => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("th-TH", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
 };
 </script>
 
@@ -896,7 +907,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium">
-                    {{ pMsiteData.region }}
+                    {{ pMsiteData.region || "-"}}
                   </p>
                 </div>
               </div>
@@ -910,7 +921,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium">
-                    {{ pMsiteData.company }}
+                    {{ pMsiteData.company || "-"}}
                   </p>
                 </div>
               </div>
@@ -941,7 +952,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium font-mono">
-                    {{ pMsiteData.date }}
+                    {{ formatDate(pMsiteData.plan) }}
                   </p>
                 </div>
               </div>
@@ -955,7 +966,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium font-mono">
-                    {{ pMsiteData.pm_date }}
+                    {{ formatDate(pMsiteData.pm_date) }}
                   </p>
                 </div>
               </div>
@@ -969,7 +980,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                   class="dark:bg-slate-900/40 border border-slate-700/50 rounded-lg px-4 py-3"
                 >
                   <p class="dark:text-slate-200 font-medium font-mono">
-                    {{ pMsiteData.date }}
+                    {{ formatDate(pMsiteData.date) }}
                   </p>
                 </div>
               </div>

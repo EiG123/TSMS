@@ -56,7 +56,8 @@ const defaultIcon = L.icon({
 
 // Highlighted icon (สีแดง)
 const highlightIcon = L.icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
@@ -88,8 +89,7 @@ const updateMarkers = (data: UserLocationData[]) => {
       existing.setLatLng([lat, lng]);
       existing.setIcon(icon);
     } else {
-      const marker = L.marker([lat, lng], { icon })
-        .addTo(map.value!)
+      const marker = L.marker([lat, lng], { icon }).addTo(map.value!)
         .bindPopup(`
           <b>User ID:</b> ${user.user_id}<br/>
           <b>Lat:</b> ${lat}<br/>
@@ -162,14 +162,21 @@ onUnmounted(() => {
     <!-- Content -->
     <div class="flex-1 grid grid-cols-4 gap-4 p-4 bg-gray-100 overflow-hidden">
       <!-- Sidebar -->
-      <div class="col-span-1 bg-white rounded-2xl shadow p-4 flex flex-col overflow-hidden">
+      <div
+        class="col-span-1 bg-white rounded-2xl shadow p-4 flex flex-col overflow-hidden"
+      >
         <h2 class="font-medium mb-3">
           Users
-          <span class="ml-1 text-xs text-gray-400 font-normal">({{ locations.length }})</span>
+          <span class="ml-1 text-xs text-gray-400 font-normal"
+            >({{ locations.length }})</span
+          >
         </h2>
 
         <!-- Empty state -->
-        <div v-if="locations.length === 0" class="text-sm text-gray-400 text-center mt-6">
+        <div
+          v-if="locations.length === 0"
+          class="text-sm text-gray-400 text-center mt-6"
+        >
           ไม่มีข้อมูล
         </div>
 
@@ -201,8 +208,32 @@ onUnmounted(() => {
 
             <!-- Lat / Lng -->
             <div class="text-gray-500 text-xs space-y-0.5">
-              <div>🌐 {{ Number(user.latitude).toFixed(5) }}, {{ Number(user.longitude).toFixed(5) }}</div>
+              <div>
+                🌐 {{ Number(user.latitude).toFixed(5) }},
+                {{ Number(user.longitude).toFixed(5) }}
+              </div>
               <div>🕒 {{ formatDate(user.updated_at) }}</div>
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                  />
+                </svg>Go to {{ user.job }}
+              </div>
             </div>
           </li>
         </ul>
