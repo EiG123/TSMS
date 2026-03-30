@@ -16,6 +16,7 @@ export const pmServiceManage = {
                 p.date,
                 p.planwork,
                 p.service_status,
+                p.progress_status,
                 p.vendor,
                 p.created_by,
                 p.created_at,

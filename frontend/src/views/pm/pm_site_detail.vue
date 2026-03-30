@@ -34,7 +34,7 @@ const watchPosition = () => {
   watchId = navigator.geolocation.watchPosition(
     (pos) => {
       currentLocation.value = {
-        pmId,
+        pmId: pmId.value,
         userId,
         lat: pos.coords.latitude,
         lng: pos.coords.longitude,
@@ -98,7 +98,7 @@ const handleMainAction = async () => {
       await pmServiceManage.updateProgressStatus({
         pmId: pmId.value,
         userId,
-        progress_status: "checkin",
+        progress_status: "checkedin",
       });
       await pmServiceManage.checkIn(pmId.value, userId);
       checkInTime.value = formatDate(new Date().toISOString());
@@ -211,8 +211,9 @@ const cabinets = ref([]);
 const AddCabinets = () =>
   router.push({ name: "pm_add_cabinet", query: { pmId: pmId.value } });
 
-const handleCabinet = (cabinet_id: any) => alert(cabinet_id);
-
+const handleCabinet = (cabinet_id: any) => {
+  router.push({ name: "pm_cabinet_detail", params: { id: cabinet_id } });
+};
 const handleCabinetDelete = async (cabinet_id: any) => {
   if (!confirm("คุณต้องการ ลบ Cabinet ID:" + cabinet_id + "หรือไม่")) return;
   loading.value = true;
@@ -251,6 +252,8 @@ const loadState = async () => {
     workState.value = "pending";
   } else if (progress_status.value === "Inprogress") {
     workState.value = "Inprogress";
+    watchPosition(); // ← resume GPS
+    startHeartbeat(); // ← resume heartbeat
   } else if (progress_status.value === "checkedin") {
     // โหลดหน้าใหม่แล้ว state เป็น checkedin (ไม่มี GPS เพราะ page refresh)
     workState.value = "checkedin";
@@ -264,7 +267,7 @@ const loadState = async () => {
 const loadData = async () => {
   const res = await getPmList.getPmById(pmId.value);
   progress_status.value = res.data.data.progress_status;
-  loadState();
+  await loadState();
   pMsiteData.value = res.data.data;
 };
 

@@ -310,6 +310,11 @@ const useFormatDate = (dateString) => {
                 <th
                   class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
                 >
+                  Progress Status
+                </th>
+                <th
+                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
+                >
                   Verify
                 </th>
                 <th
@@ -505,7 +510,7 @@ const useFormatDate = (dateString) => {
                   </div>
                 </td>
 
-                <!-- Status -->
+                <!-- Service Status -->
                 <td class="px-6 py-4 text-center">
                   <span
                     class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
@@ -573,6 +578,48 @@ const useFormatDate = (dateString) => {
                       {{ useFormatDate(row.date) || "Not scheduled" }}
                     </span>
                   </div>
+                </td>
+
+                <!-- Progress Status -->
+                <td class="px-6 py-4 text-center">
+                  <span
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
+                    :class="{
+                      'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400':
+                        row.progress_status === 'pending',
+                      'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-400':
+                        row.progress_status === 'Inprogress',
+                      'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400':
+                        row.progress_status === 'checkin',
+                      'bg-purple-100 text-purple-700 dark:bg-purple-500/15 dark:text-purple-400':
+                        row.progress_status === 'checkout',
+                      'bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400':
+                        row.progress_status === '' || !row.progress_status,
+                    }"
+                  >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full"
+                      :class="{
+                        'bg-green-500': row.progress_status === 'pending',
+                        'bg-yellow-500': row.progress_status === 'Inprogress',
+                        'bg-blue-500': row.progress_status === 'checkin',
+                        'bg-purple-500': row.progress_status === 'checkout',
+                        'bg-gray-400':
+                          row.progress_status === '' || !row.progress_status,
+                      }"
+                    ></span>
+                    {{
+                      row.progress_status === "pending"
+                        ? "Pending"
+                        : row.progress_status === "Inprogress"
+                        ? "Inprogress"
+                        : row.progress_status === "checkin"
+                        ? "Check In"
+                        : row.progress_status === "checkout"
+                        ? "Check Out"
+                        : "Unknown"
+                    }}
+                  </span>
                 </td>
 
                 <!-- Verify -->
