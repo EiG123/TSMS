@@ -11,8 +11,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const pmId = ref(route.params.id as string);
 const userId = authStore.userId;
-
-console.log(authStore.userRole);
+const userRole = authStore.userRole;
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
@@ -428,25 +427,27 @@ const navigations = [
                   </svg>
                   Edit
                 </button>
-                <button
-                  @click="handleDelete"
-                  class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-                >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <div v-if="userRole === `dev` || userRole === `admin`">
+                  <button
+                    @click="handleDelete"
+                    class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                  Delete
-                </button>
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1111,9 +1112,7 @@ const navigations = [
                       <path d="M16 5l3 3" />
                     </svg>
                   </div>
-
-                  <div >
-                    <div @click="handleCabinetDelete(cab.id)">
+                  <div @click="handleCabinetDelete(cab.id)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -1135,7 +1134,6 @@ const navigations = [
                       />
                       <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                     </svg>
-                  </div>
                   </div>
 
                   <svg
