@@ -118,9 +118,9 @@ const progressBadge: Record<
 </script>
 
 <template>
-  <div class="page-root">
+  <div class="page-root bg-white dark:bg-slate-900">
     <!-- ── Header ── -->
-    <header class="page-header">
+    <header class="page-header dark:bg-slate-900">
       <div>
         <h1 class="page-title">PM NodeB List</h1>
         <p class="page-sub">
@@ -130,16 +130,21 @@ const progressBadge: Record<
 
       <div class="controls">
         <!-- Year -->
-        <select v-model="selectedYear" class="ctrl-select">
+        <select
+          v-model="selectedYear"
+          class="ctrl-select bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50"
+        >
           <option>2025/2026</option>
           <option>2026/2027</option>
           <option>2027/2028</option>
         </select>
 
         <!-- Search -->
-        <div class="search-wrap">
+        <div
+          class="search-wrap bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50"
+        >
           <svg
-            class="search-icon"
+            class="search-icon bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50"
             width="14"
             height="14"
             viewBox="0 0 20 20"
@@ -183,7 +188,7 @@ const progressBadge: Record<
     </div>
 
     <!-- ── Content ── -->
-    <div v-else class="table-wrap">
+    <div v-else class="table-wrap bg-white dark:bg-slate-900">
       <!-- Empty -->
       <div v-if="paginatedList.length === 0" class="state-center">
         <svg
@@ -234,7 +239,7 @@ const progressBadge: Record<
         class="table-wrap hidden md:block"
       >
         <div class="table-scroll">
-          <table class="data-table">
+          <table class="data-table bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50">
             <thead>
               <tr>
                 <th>Site</th>
@@ -264,7 +269,7 @@ const progressBadge: Record<
                 @click="goView(row.id)"
               >
                 <!-- Site -->
-                <td class="td-site">
+                <td class="td-site text-slate-900 dark:text-cyan-50">
                   <span class="site-name">{{ row.site_name || "N/A" }}</span>
                   <span class="site-id">{{ row.site_id }}</span>
                 </td>
@@ -421,8 +426,8 @@ const progressBadge: Record<
         </div>
 
         <!-- Footer -->
-        <div class="table-footer">
-          <span class="footer-count">
+        <div class="table-footer bg-cyan-50 dark:bg-slate-900">
+          <span class="footer-count text-slate-900 dark:text-cyan-50">
             {{ (currentPage - 1) * pageSize + 1 }}–{{
               Math.min(currentPage * pageSize, filteredList.length)
             }}
@@ -471,7 +476,6 @@ const progressBadge: Record<
 /* ── Root ── */
 .page-root {
   min-height: 100vh;
-  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
   padding: 1.5rem 2rem;
   font-family: "DM Sans", "Noto Sans Thai", sans-serif;
   font-size: 13px;
@@ -517,8 +521,6 @@ const progressBadge: Record<
   padding: 0 10px;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
-  background: #fff;
-  color: #1e293b;
   font-size: 12px;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -530,7 +532,6 @@ const progressBadge: Record<
 }
 :global(.dark) .ctrl-select,
 :global(.dark) .search-input {
-  background: rgba(30, 41, 59, 0.6);
   border-color: rgba(100, 116, 139, 0.35);
   color: #e2e8f0;
 }
@@ -543,7 +544,6 @@ const progressBadge: Record<
   left: 8px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
   pointer-events: none;
 }
 .search-input {
@@ -601,16 +601,12 @@ const progressBadge: Record<
 
 /* ── Table wrapper ── */
 .table-wrap {
-  background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
-:global(.dark) .table-wrap {
-  background: rgba(30, 41, 59, 0.5);
-  border-color: rgba(100, 116, 139, 0.25);
-}
+
 .table-scroll {
   overflow-x: auto;
 }
@@ -622,21 +618,9 @@ const progressBadge: Record<
   font-size: 12px;
 }
 .data-table thead tr {
-  background: linear-gradient(
-    90deg,
-    rgba(59, 130, 246, 0.06),
-    rgba(124, 58, 237, 0.06)
-  );
   border-bottom: 1px solid #e2e8f0;
 }
-:global(.dark) .data-table thead tr {
-  background: linear-gradient(
-    90deg,
-    rgba(59, 130, 246, 0.1),
-    rgba(124, 58, 237, 0.1)
-  );
-  border-bottom-color: rgba(100, 116, 139, 0.25);
-}
+
 .data-table th {
   padding: 8px 12px;
   text-align: left;
@@ -644,11 +628,7 @@ const progressBadge: Record<
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #64748b;
   white-space: nowrap;
-}
-:global(.dark) .data-table th {
-  color: #94a3b8;
 }
 .th-actions {
   text-align: center;
@@ -674,13 +654,10 @@ const progressBadge: Record<
 
 .data-table td {
   padding: 7px 12px;
-  color: #475569;
   white-space: nowrap;
   vertical-align: middle;
 }
-:global(.dark) .data-table td {
-  color: #94a3b8;
-}
+
 
 /* ── Special cells ── */
 .td-site {
@@ -689,12 +666,9 @@ const progressBadge: Record<
 .site-name {
   display: block;
   font-weight: 600;
-  color: #1e293b;
   font-size: 12px;
 }
-:global(.dark) .site-name {
-  color: #e2e8f0;
-}
+
 .site-id {
   display: block;
   font-family: "JetBrains Mono", monospace;
@@ -706,10 +680,6 @@ const progressBadge: Record<
 .td-mono {
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #64748b;
-}
-:global(.dark) .td-mono {
-  color: #64748b;
 }
 
 .td-center {
@@ -879,15 +849,10 @@ const progressBadge: Record<
   justify-content: space-between;
   padding: 8px 16px;
   border-top: 1px solid #f1f5f9;
-  background: #fafafa;
 }
-:global(.dark) .table-footer {
-  border-top-color: rgba(100, 116, 139, 0.2);
-  background: rgba(15, 23, 42, 0.3);
-}
+
 .footer-count {
   font-size: 11px;
-  color: #94a3b8;
 }
 
 .pagination {
