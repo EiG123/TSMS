@@ -40,7 +40,20 @@ export const AuthService = {
       }
 
       // Query user by email
-      const query = "SELECT * FROM users WHERE email = $1";
+      const query = `SELECT 
+          u.id, 
+          u.email, 
+          u.username, 
+          u.phone, 
+          u.region, 
+          u.company, 
+          u.status,
+          u.password,
+          r.name AS role -- หรือ r.role_name ตามชื่อคอลัมน์ในตาราง roles
+      FROM users AS u
+      LEFT JOIN user_roles AS ur ON u.id = ur.user_id
+      LEFT JOIN roles AS r ON ur.role_id = r.id
+      WHERE u.email = $1;`;
       const result = await db.query(query, [email]);
       const user = result.rows[0];
 

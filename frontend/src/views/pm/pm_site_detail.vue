@@ -12,6 +12,8 @@ const authStore = useAuthStore();
 const pmId = ref(route.params.id as string);
 const userId = authStore.userId;
 
+console.log(authStore.userRole);
+
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
 const showModules = ref(true);
@@ -1110,7 +1112,8 @@ const navigations = [
                     </svg>
                   </div>
 
-                  <div @click="handleCabinetDelete(cab.id)">
+                  <div >
+                    <div @click="handleCabinetDelete(cab.id)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -1132,6 +1135,7 @@ const navigations = [
                       />
                       <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                     </svg>
+                  </div>
                   </div>
 
                   <svg
