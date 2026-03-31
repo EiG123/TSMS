@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
+import PmNodebCard from "./pmNodebCard.vue";
 
 const router = useRouter();
 const goNew = () => router.push("/pm_nodeb_new");
 const goEdit = (id: string) => router.push(`/pm_nodeb_edit/${id}`);
 const goView = (id: string) => router.push(`/pm_site_detail/${id}`);
-const handleDelete = async (id: number) => {
-  const confirmed = window.confirm("คุณต้องการลบ Dropdown นี้ใช่หรือไม่?");
 
-  if (!confirmed) return;
-
+const handleDelete = async (e: Event, id: number) => {
+  e.stopPropagation();
+  if (!window.confirm("คุณต้องการลบรายการนี้ใช่หรือไม่?")) return;
   loading.value = true;
-
   try {
     await pmServiceManage.deletePmById(id);
-    window.location.reload();
-  } catch (error) {
+    await loadData();
+  } catch {
     alert("ไม่สามารถลบข้อมูลได้");
   } finally {
     loading.value = false;
@@ -30,23 +29,25 @@ const siteList = ref<any[]>([]);
 const loading = ref(false);
 const searchQuery = ref("");
 const selectedYear = ref("2025/2026");
-
-// pagination
 const currentPage = ref(1);
 const pageSize = 10;
 
-// Loading Data Function
 const loadData = async () => {
   const res = await getPmList.getPmList();
-  console.log(res.data);
   siteList.value = res.data;
 };
 
-// ===== lifecycle =====
+const isMobile = ref(window.innerWidth < 768);
+
+const onResize = () => {
+  isMobile.value = window.innerWidth < 768;
+};
+
 onMounted(async () => {
+  window.addEventListener("resize", onResize);
   loading.value = true;
   try {
-    loadData();
+    await loadData();
   } catch {
     alert("ไม่เจอ API SiteList");
   } finally {
@@ -54,87 +55,93 @@ onMounted(async () => {
   }
 });
 
-// ===== search & filter =====
-const filteredList = computed(() => {
-  return siteList.value.filter((site) => {
-    const matchSearch =
-      !searchQuery.value ||
-      site.site_id?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      site.region?.toLowerCase().includes(searchQuery.value.toLowerCase());
-    return matchSearch;
-  });
+onUnmounted(() => window.removeEventListener("resize", onResize));
+
+watch([searchQuery, selectedYear], () => {
+  currentPage.value = 1;
 });
 
-// ===== pagination logic =====
-const totalPages = computed(() =>
-  Math.ceil(filteredList.value.length / pageSize)
+const filteredList = computed(() =>
+  siteList.value.filter((s) => {
+    if (!searchQuery.value) return true;
+    const q = searchQuery.value.toLowerCase();
+    return (
+      s.site_id?.toLowerCase().includes(q) ||
+      s.region?.toLowerCase().includes(q)
+    );
+  })
 );
 
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredList.value.length / pageSize))
+);
 const paginatedList = computed(() => {
   const start = (currentPage.value - 1) * pageSize;
   return filteredList.value.slice(start, start + pageSize);
 });
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
+  if (currentPage.value < totalPages.value) currentPage.value++;
 };
-
 const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
+  if (currentPage.value > 1) currentPage.value--;
 };
 
-const handleSearch = () => {
-  currentPage.value = 1;
-};
-
-const useFormatDate = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
+const fmtDate = (d: string) => {
+  if (!d) return "—";
   return new Intl.DateTimeFormat("th-TH", {
-    dateStyle: "full",
+    dateStyle: "short",
     timeStyle: "short",
-  }).format(date);
+  }).format(new Date(d));
+};
+
+const listVal = (arr: any[], key: string) =>
+  arr?.length ? arr.map((i) => i[key] ?? "—").join(", ") : "—";
+
+// badge configs
+const serviceBadge: Record<
+  string,
+  { label: string; cls: string; dot: string }
+> = {
+  onService: { label: "On Service", cls: "badge-green", dot: "dot-green" },
+  cancel: { label: "Cancelled", cls: "badge-red", dot: "dot-red" },
+};
+const progressBadge: Record<
+  string,
+  { label: string; cls: string; dot: string }
+> = {
+  pending: { label: "Pending", cls: "badge-slate", dot: "dot-slate" },
+  Inprogress: { label: "In Progress", cls: "badge-amber", dot: "dot-amber" },
+  checkin: { label: "Check In", cls: "badge-blue", dot: "dot-blue" },
+  checkout: { label: "Check Out", cls: "badge-purple", dot: "dot-purple" },
 };
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
-  >
-    <!-- Header -->
-    <div class="mb-1 animate-fade-in">
-      <h1
-        class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-3"
-      >
-        PM NodeB List
-      </h1>
-    </div>
+  <div class="page-root">
+    <!-- ── Header ── -->
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">PM NodeB List</h1>
+        <p class="page-sub">
+          {{ filteredList.length }} sites · {{ selectedYear }}
+        </p>
+      </div>
 
-    <!-- Controls -->
-    <div
-      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 animate-slide-down"
-    >
-      <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto flex-1">
-        <!-- Year Select -->
-        <select
-          v-model="selectedYear"
-          class="bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl px-4 py-3 text-gray-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
-        >
+      <div class="controls">
+        <!-- Year -->
+        <select v-model="selectedYear" class="ctrl-select">
           <option>2025/2026</option>
           <option>2026/2027</option>
           <option>2027/2028</option>
         </select>
 
-        <!-- Search Input -->
-        <div class="relative flex-1 min-w-[250px]">
+        <!-- Search -->
+        <div class="search-wrap">
           <svg
-            class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 pointer-events-none"
-            width="20"
-            height="20"
+            class="search-icon"
+            width="14"
+            height="14"
             viewBox="0 0 20 20"
             fill="none"
           >
@@ -148,497 +155,203 @@ const useFormatDate = (dateString) => {
           </svg>
           <input
             v-model="searchQuery"
-            @input="handleSearch"
             type="text"
-            placeholder="Search Site ID or Region..."
-            class="w-full bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 rounded-xl pl-10 pr-4 py-3 text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
+            placeholder="Site ID / Region…"
+            class="search-input"
           />
         </div>
+
+        <!-- New -->
+        <button @click="goNew" class="btn-new">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M10 4v12M4 10h12"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          New Site PM
+        </button>
       </div>
+    </header>
 
-      <!-- New Button -->
-      <button
-        @click="goNew"
-        class="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-300"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M10 4v12M4 10h12"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-        </svg>
-        New Site PM
-      </button>
+    <!-- ── Loading ── -->
+    <div v-if="loading" class="state-center">
+      <div class="spinner"></div>
+      <span class="state-text">Loading…</span>
     </div>
 
-    <!-- Loading State -->
-    <div
-      v-if="loading"
-      class="flex flex-col items-center justify-center py-16 animate-fade-in"
-    >
-      <div
-        class="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"
-      ></div>
-      <p class="text-gray-600 dark:text-slate-400 text-lg">
-        Loading site data...
-      </p>
-    </div>
-
-    <!-- Table -->
-    <div v-else class="animate-slide-up">
-      <!-- Empty State -->
-      <div
-        v-if="paginatedList.length === 0"
-        class="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-slate-500 bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 shadow-lg"
-      >
+    <!-- ── Content ── -->
+    <div v-else class="table-wrap">
+      <!-- Empty -->
+      <div v-if="paginatedList.length === 0" class="state-center">
         <svg
-          width="64"
-          height="64"
+          width="40"
+          height="40"
           viewBox="0 0 64 64"
           fill="none"
-          class="mb-4 opacity-50"
+          class="empty-icon"
         >
-          <path
-            d="M32 56c13.255 0 24-10.745 24-24S45.255 8 32 8 8 18.745 8 32s10.745 24 24 24z"
+          <circle
+            cx="32"
+            cy="32"
+            r="28"
             stroke="currentColor"
             stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
           />
           <path
-            d="M22 32h20M32 22v20"
+            d="M20 32h24M32 20v24"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
           />
         </svg>
-        <p class="text-lg font-semibold text-gray-600 dark:text-slate-400 mb-1">
-          No sites found
-        </p>
-        <span class="text-sm text-gray-500 dark:text-slate-500">
-          Try adjusting your search or filters
-        </span>
+        <span class="state-text">ไม่พบข้อมูล</span>
       </div>
 
-      <!-- Table Wrapper -->
+      <!-- Table -->
+      <!-- Mobile: แสดงเมื่อมีข้อมูล + จอเล็ก -->
       <div
-        v-else
-        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 shadow-lg overflow-hidden"
+        v-if="!loading && paginatedList.length > 0"
+        v-show="isMobile"
+        class="flex flex-col gap-3"
       >
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <!-- Table Head -->
+        <PmNodebCard
+          v-for="row in paginatedList"
+          :key="row.id"
+          :row="row"
+          :format-date="fmtDate"
+          @view="goView"
+          @edit="goEdit"
+          @delete="handleDelete"
+        />
+      </div>
+      <!-- Desktop: แสดงเมื่อมีข้อมูล + จอใหญ่ -->
+      <div
+        v-if="!loading && paginatedList.length > 0"
+        v-show="!isMobile"
+        class="table-wrap hidden md:block"
+      >
+        <div class="table-scroll">
+          <table class="data-table">
             <thead>
-              <tr
-                class="bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 border-b border-gray-200 dark:border-slate-700/50"
-              >
-                <!-- <th class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider w-14">
-                  #
-                </th> -->
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Site Name
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Cabinets
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Mowing
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Broadband
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  SolarCell
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Region
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Province
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Vendor
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Created By
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Created At
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Updated By
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Updated At
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Service Status
-                </th>
-                <th
-                  class="text-left px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  PM Date
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Progress Status
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Verify
-                </th>
-                <th
-                  class="text-center px-6 py-4 text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider"
-                >
-                  Actions
-                </th>
+              <tr>
+                <th>Site</th>
+                <th>Cabinets</th>
+                <th>Mowing</th>
+                <th>Broadband</th>
+                <th>SolarCell</th>
+                <th>Region</th>
+                <th>Province</th>
+                <th>Vendor</th>
+                <th>Created By</th>
+                <th>Created At</th>
+                <th>Updated By</th>
+                <th>Updated At</th>
+                <th>Service</th>
+                <th>PM Date</th>
+                <th>Progress</th>
+                <th>Verify</th>
+                <th class="th-actions">Actions</th>
               </tr>
             </thead>
-
-            <!-- Table Body -->
-            <tbody class="divide-y divide-gray-100 dark:divide-slate-700/50">
+            <tbody>
               <tr
                 v-for="row in paginatedList"
                 :key="row.id"
-                class="group hover:bg-blue-50/50 dark:hover:bg-blue-500/5 transition-colors duration-150"
+                class="data-row"
+                @click="goView(row.id)"
               >
-                <!-- No. -->
-                <!-- <td class="px-6 py-4">
-                  <div
-                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs"
-                  >
-                    {{ (currentPage - 1) * pageSize + index + 1 }}
-                  </div>
-                </td> -->
-
-                <!-- Site Name -->
-                <td class="px-6 py-4">
-                  <span class="font-semibold text-gray-800 dark:text-slate-200">
-                    {{ row.site_name || "N/A" }}
-                  </span>
-                  <p
-                    class="text-xs text-gray-400 dark:text-slate-500 font-mono mt-0.5"
-                  >
-                    {{ row.site_id || "" }}
-                  </p>
+                <!-- Site -->
+                <td class="td-site">
+                  <span class="site-name">{{ row.site_name || "N/A" }}</span>
+                  <span class="site-id">{{ row.site_id }}</span>
                 </td>
 
-                <!-- Cabinets -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  <div v-for="(cab, index) in row.cabinets" :key="index">
-                    {{ cab.cabinet_name || "NONE" }}
-                  </div>
-                </td>
-
-                <!-- Mowing -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  <div v-for="(mow, index) in row.mowing" :key="index">
-                    {{ mow.round || "NONE" }}
-                  </div>
-                </td>
-
-                <!-- Broadband -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  <div v-for="(bb, index) in row.broadband" :key="index">
-                    {{ bb.count || "NONE" }}
-                  </div>
-                </td>
-
-                <!-- Solar Cell -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  <div v-for="(solar, index) in row.solarcell" :key="index">
-                    {{ solar.status || "NONE" }}
-                  </div>
-                </td>
+                <td>{{ listVal(row.cabinets, "cabinet_name") }}</td>
+                <td>{{ listVal(row.mowing, "round") }}</td>
+                <td>{{ listVal(row.broadband, "count") }}</td>
+                <td>{{ listVal(row.solarcell, "status") }}</td>
 
                 <!-- Region -->
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="w-6 h-6 rounded-md bg-blue-500/10 flex items-center justify-center flex-shrink-0"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        class="text-blue-500 dark:text-blue-400"
-                      >
-                        <path
-                          d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                        <path
-                          d="M1.333 8h13.334M8 1.333A10.2 10.2 0 0 1 10.667 8 10.2 10.2 0 0 1 8 14.667 10.2 10.2 0 0 1 5.333 8 10.2 10.2 0 0 1 8 1.333z"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <span class="text-gray-700 dark:text-slate-300">{{
-                      row.region || "N/A"
-                    }}</span>
-                  </div>
+                <td>
+                  <span class="cell-region">
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      />
+                      <path
+                        d="M1.333 8h13.334M8 1.333A10.2 10.2 0 0 1 10.667 8 10.2 10.2 0 0 1 8 14.667 10.2 10.2 0 0 1 5.333 8 10.2 10.2 0 0 1 8 1.333z"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    {{ row.region || "—" }}
+                  </span>
                 </td>
 
-                <!-- Province -->
-                <td class="text-black dark:text-white px-6 py-4"></td>
-
-                <!-- Vendor -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  {{ row.vendor || "NONE" }}
-                </td>
-
-                <!-- Created By -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  {{ row.created_by || "NONE" }}
-                </td>
-
-                <!-- Created At -->
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="w-6 h-6 rounded-md bg-purple-500/10 flex items-center justify-center flex-shrink-0"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        class="text-purple-500 dark:text-purple-400"
-                      >
-                        <rect
-                          x="2"
-                          y="3.333"
-                          width="12"
-                          height="10.667"
-                          rx="2"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                        />
-                        <path
-                          d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                    </div>
-                    <span
-                      class="text-gray-700 dark:text-slate-300 font-mono text-sm"
-                    >
-                      {{ useFormatDate(row.created_at) || "NONE" }}
-                    </span>
-                  </div>
-                </td>
-
-                <!-- Updated By -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  {{ row.updated_by || "No Updated" }}
-                </td>
-
-                <!-- Updated At -->
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="w-6 h-6 rounded-md bg-purple-500/10 flex items-center justify-center flex-shrink-0"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        class="text-purple-500 dark:text-purple-400"
-                      >
-                        <rect
-                          x="2"
-                          y="3.333"
-                          width="12"
-                          height="10.667"
-                          rx="2"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                        />
-                        <path
-                          d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                    </div>
-                    <span
-                      class="text-gray-700 dark:text-slate-300 font-mono text-sm"
-                    >
-                      {{ useFormatDate(row.updated_at) || "No Updated" }}
-                    </span>
-                  </div>
-                </td>
+                <td>{{ row.province || "—" }}</td>
+                <td>{{ row.vendor || "—" }}</td>
+                <td>{{ row.created_by || "—" }}</td>
+                <td class="td-mono">{{ fmtDate(row.created_at) }}</td>
+                <td>{{ row.updated_by || "—" }}</td>
+                <td class="td-mono">{{ fmtDate(row.updated_at) }}</td>
 
                 <!-- Service Status -->
-                <td class="px-6 py-4 text-center">
+                <td class="td-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-                    :class="{
-                      'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400':
-                        row.service_status === 'onService',
-                      'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400':
-                        row.service_status === 'cancel',
-                      'bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400':
-                        row.service_status === '' || !row.service_status,
-                    }"
+                    class="badge"
+                    :class="
+                      serviceBadge[row.service_status]?.cls ?? 'badge-gray'
+                    "
                   >
-                    <span
-                      class="w-1.5 h-1.5 rounded-full"
-                      :class="{
-                        'bg-green-500': row.service_status === 'onService',
-                        'bg-red-500': row.service_status === 'cancel',
-                        'bg-gray-400':
-                          row.service_status === '' || !row.service_status,
-                      }"
-                    ></span>
-                    {{
-                      row.service_status === "onService"
-                        ? "On Service"
-                        : row.service_status === "cancel"
-                        ? "Cancelled"
-                        : "Unknown"
-                    }}
+                    <i
+                      class="dot"
+                      :class="
+                        serviceBadge[row.service_status]?.dot ?? 'dot-gray'
+                      "
+                    ></i>
+                    {{ serviceBadge[row.service_status]?.label ?? "Unknown" }}
                   </span>
                 </td>
 
-                <!-- PM Date -->
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="w-6 h-6 rounded-md bg-purple-500/10 flex items-center justify-center flex-shrink-0"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        class="text-purple-500 dark:text-purple-400"
-                      >
-                        <rect
-                          x="2"
-                          y="3.333"
-                          width="12"
-                          height="10.667"
-                          rx="2"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                        />
-                        <path
-                          d="M10.667 2v2.667M5.333 2v2.667M2 7.333h12"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                    </div>
-                    <span
-                      class="text-gray-700 dark:text-slate-300 font-mono text-sm"
-                    >
-                      {{ useFormatDate(row.date) || "Not scheduled" }}
-                    </span>
-                  </div>
-                </td>
+                <td class="td-mono">{{ fmtDate(row.date) }}</td>
 
-                <!-- Progress Status -->
-                <td class="px-6 py-4 text-center">
+                <!-- Progress -->
+                <td class="td-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-                    :class="{
-                      'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400':
-                        row.progress_status === 'pending',
-                      'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-400':
-                        row.progress_status === 'Inprogress',
-                      'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400':
-                        row.progress_status === 'checkin',
-                      'bg-purple-100 text-purple-700 dark:bg-purple-500/15 dark:text-purple-400':
-                        row.progress_status === 'checkout',
-                      'bg-gray-100 text-gray-600 dark:bg-gray-500/15 dark:text-gray-400':
-                        row.progress_status === '' || !row.progress_status,
-                    }"
+                    class="badge"
+                    :class="
+                      progressBadge[row.progress_status]?.cls ?? 'badge-gray'
+                    "
                   >
-                    <span
-                      class="w-1.5 h-1.5 rounded-full"
-                      :class="{
-                        'bg-green-500': row.progress_status === 'pending',
-                        'bg-yellow-500': row.progress_status === 'Inprogress',
-                        'bg-blue-500': row.progress_status === 'checkin',
-                        'bg-purple-500': row.progress_status === 'checkout',
-                        'bg-gray-400':
-                          row.progress_status === '' || !row.progress_status,
-                      }"
-                    ></span>
-                    {{
-                      row.progress_status === "pending"
-                        ? "Pending"
-                        : row.progress_status === "Inprogress"
-                        ? "Inprogress"
-                        : row.progress_status === "checkin"
-                        ? "Check In"
-                        : row.progress_status === "checkout"
-                        ? "Check Out"
-                        : "Unknown"
-                    }}
+                    <i
+                      class="dot"
+                      :class="
+                        progressBadge[row.progress_status]?.dot ?? 'dot-gray'
+                      "
+                    ></i>
+                    {{ progressBadge[row.progress_status]?.label ?? "Unknown" }}
                   </span>
                 </td>
 
-                <!-- Verify -->
-                <td class="text-black dark:text-white px-6 py-4">
-                  {{ row.verify || "NONE" }}
-                </td>
+                <td class="td-center">{{ row.verify || "—" }}</td>
 
                 <!-- Actions -->
-                <td class="px-6 py-4">
-                  <div class="flex items-center justify-center gap-2">
-                    <!-- View -->
+                <td class="td-actions" @click.stop>
+                  <div class="action-group">
                     <button
                       @click="goView(row.id)"
+                      class="act-btn act-view"
                       title="View"
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 transition-all duration-200 hover:-translate-y-0.5"
                     >
                       <svg
-                        width="14"
-                        height="14"
+                        width="13"
+                        height="13"
                         viewBox="0 0 16 16"
                         fill="none"
                       >
@@ -647,7 +360,6 @@ const useFormatDate = (dateString) => {
                           stroke="currentColor"
                           stroke-width="1.5"
                           stroke-linecap="round"
-                          stroke-linejoin="round"
                         />
                         <circle
                           cx="8"
@@ -658,16 +370,14 @@ const useFormatDate = (dateString) => {
                         />
                       </svg>
                     </button>
-
-                    <!-- Edit -->
                     <button
                       @click="goEdit(row.id)"
+                      class="act-btn act-edit"
                       title="Edit"
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500/10 dark:bg-purple-500/15 border border-purple-500/30 hover:bg-purple-500/20 dark:hover:bg-purple-500/25 hover:border-purple-500/50 text-purple-600 dark:text-purple-300 transition-all duration-200 hover:-translate-y-0.5"
                     >
                       <svg
-                        width="14"
-                        height="14"
+                        width="13"
+                        height="13"
                         viewBox="0 0 16 16"
                         fill="none"
                       >
@@ -676,20 +386,17 @@ const useFormatDate = (dateString) => {
                           stroke="currentColor"
                           stroke-width="1.5"
                           stroke-linecap="round"
-                          stroke-linejoin="round"
                         />
                       </svg>
                     </button>
-
-                    <!-- Delete -->
                     <button
-                      @click="handleDelete(row.id)"
+                      @click="handleDelete($event, row.id)"
+                      class="act-btn act-del"
                       title="Delete"
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 transition-all duration-200 hover:-translate-y-0.5"
                     >
                       <svg
-                        width="14"
-                        height="14"
+                        width="13"
+                        height="13"
                         viewBox="0 0 16 16"
                         fill="none"
                       >
@@ -698,7 +405,6 @@ const useFormatDate = (dateString) => {
                           stroke="currentColor"
                           stroke-width="1.5"
                           stroke-linecap="round"
-                          stroke-linejoin="round"
                         />
                       </svg>
                     </button>
@@ -709,109 +415,534 @@ const useFormatDate = (dateString) => {
           </table>
         </div>
 
-        <!-- Table Footer: row count -->
-        <div
-          class="px-6 py-3 border-t border-gray-100 dark:border-slate-700/50 flex items-center justify-between bg-gray-50/50 dark:bg-slate-900/20"
-        >
-          <span class="text-xs text-gray-500 dark:text-slate-500">
-            Showing {{ (currentPage - 1) * pageSize + 1 }}–{{
+        <!-- Empty state: แสดงเมื่อไม่มีข้อมูล (ทั้ง mobile และ desktop) -->
+        <div v-if="!loading && paginatedList.length === 0" class="state-center">
+          <span class="state-text">ไม่พบข้อมูล</span>
+        </div>
+
+        <!-- Footer -->
+        <div class="table-footer">
+          <span class="footer-count">
+            {{ (currentPage - 1) * pageSize + 1 }}–{{
               Math.min(currentPage * pageSize, filteredList.length)
             }}
-            of {{ filteredList.length }} entries
+            of {{ filteredList.length }}
           </span>
+
+          <!-- Pagination -->
+          <div v-if="totalPages > 1" class="pagination">
+            <button
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              class="page-btn"
+            >
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M12.5 15l-5-5 5-5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+            <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+            <button
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              class="page-btn"
+            >
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M7.5 15l5-5-5-5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Pagination -->
-    <div
-      v-if="!loading && paginatedList.length > 0"
-      class="flex justify-center items-center gap-6 mt-6 animate-fade-in"
-    >
-      <button
-        @click="prevPage"
-        :disabled="currentPage === 1"
-        class="flex items-center gap-2 bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500/40 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 backdrop-blur-sm disabled:hover:bg-white dark:disabled:hover:bg-slate-800/60 disabled:hover:border-gray-300 dark:disabled:hover:border-slate-700/50"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M12.5 15l-5-5 5-5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        Previous
-      </button>
-
-      <div class="flex items-center gap-2 font-mono font-medium">
-        <span class="text-blue-500 dark:text-blue-400 text-xl">{{
-          currentPage
-        }}</span>
-        <span class="text-gray-400 dark:text-slate-600">/</span>
-        <span class="text-gray-600 dark:text-slate-400">{{ totalPages }}</span>
-      </div>
-
-      <button
-        @click="nextPage"
-        :disabled="currentPage === totalPages"
-        class="flex items-center gap-2 bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500/40 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 dark:text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 backdrop-blur-sm disabled:hover:bg-white dark:disabled:hover:bg-slate-800/60 disabled:hover:border-gray-300 dark:disabled:hover:border-slate-700/50"
-      >
-        Next
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M7.5 15l5-5-5-5"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* ── Root ── */
+.page-root {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  padding: 1.5rem 2rem;
+  font-family: "DM Sans", "Noto Sans Thai", sans-serif;
+  font-size: 13px;
+}
+:global(.dark) .page-root {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
 }
 
-@keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ── Header ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #3b82f6, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+.page-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
 }
 
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ── Controls ── */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.ctrl-select,
+.search-input {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #1e293b;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ctrl-select:focus,
+.search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+:global(.dark) .ctrl-select,
+:global(.dark) .search-input {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(100, 116, 139, 0.35);
+  color: #e2e8f0;
+}
+.search-wrap {
+  position: relative;
+  width: 200px;
+}
+.search-icon {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+.search-input {
+  padding-left: 28px;
+  width: 100%;
 }
 
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
+.btn-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #3b82f6, #7c3aed);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
 }
-.animate-slide-down {
-  animation: slide-down 0.6s ease-out 0.1s both;
+.btn-new:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
-.animate-slide-up {
-  animation: slide-up 0.6s ease-out 0.2s both;
+
+/* ── States ── */
+.state-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  gap: 12px;
+}
+.state-text {
+  font-size: 13px;
+  color: #94a3b8;
+}
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.empty-icon {
+  color: #cbd5e1;
+}
+
+/* ── Table wrapper ── */
+.table-wrap {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+:global(.dark) .table-wrap {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(100, 116, 139, 0.25);
+}
+.table-scroll {
+  overflow-x: auto;
+}
+
+/* ── Table ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.data-table thead tr {
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.06),
+    rgba(124, 58, 237, 0.06)
+  );
+  border-bottom: 1px solid #e2e8f0;
+}
+:global(.dark) .data-table thead tr {
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(124, 58, 237, 0.1)
+  );
+  border-bottom-color: rgba(100, 116, 139, 0.25);
+}
+.data-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  white-space: nowrap;
+}
+:global(.dark) .data-table th {
+  color: #94a3b8;
+}
+.th-actions {
+  text-align: center;
+}
+
+.data-row {
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+:global(.dark) .data-row {
+  border-bottom-color: rgba(100, 116, 139, 0.15);
+}
+.data-row:last-child {
+  border-bottom: none;
+}
+.data-row:hover {
+  background: rgba(59, 130, 246, 0.04);
+}
+:global(.dark) .data-row:hover {
+  background: rgba(59, 130, 246, 0.07);
+}
+
+.data-table td {
+  padding: 7px 12px;
+  color: #475569;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+:global(.dark) .data-table td {
+  color: #94a3b8;
+}
+
+/* ── Special cells ── */
+.td-site {
+  min-width: 130px;
+}
+.site-name {
+  display: block;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 12px;
+}
+:global(.dark) .site-name {
+  color: #e2e8f0;
+}
+.site-id {
+  display: block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+
+.td-mono {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: #64748b;
+}
+:global(.dark) .td-mono {
+  color: #64748b;
+}
+
+.td-center {
+  text-align: center;
+}
+
+.cell-region {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #3b82f6;
+}
+
+/* ── Badges ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badge-green {
+  background: #dcfce7;
+  color: #15803d;
+}
+.badge-red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.badge-gray {
+  background: #f1f5f9;
+  color: #64748b;
+}
+.badge-amber {
+  background: #fef9c3;
+  color: #a16207;
+}
+.badge-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.badge-purple {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+.badge-slate {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+:global(.dark) .badge-green {
+  background: rgba(22, 163, 74, 0.15);
+  color: #4ade80;
+}
+:global(.dark) .badge-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+:global(.dark) .badge-gray {
+  background: rgba(100, 116, 139, 0.15);
+  color: #94a3b8;
+}
+:global(.dark) .badge-amber {
+  background: rgba(234, 179, 8, 0.15);
+  color: #fbbf24;
+}
+:global(.dark) .badge-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+:global(.dark) .badge-purple {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+}
+:global(.dark) .badge-slate {
+  background: rgba(100, 116, 139, 0.15);
+  color: #94a3b8;
+}
+
+.dot-green {
+  background: #22c55e;
+}
+.dot-red {
+  background: #ef4444;
+}
+.dot-gray {
+  background: #94a3b8;
+}
+.dot-amber {
+  background: #f59e0b;
+}
+.dot-blue {
+  background: #3b82f6;
+}
+.dot-purple {
+  background: #8b5cf6;
+}
+.dot-slate {
+  background: #64748b;
+}
+
+/* ── Actions ── */
+.td-actions {
+  text-align: center;
+  padding: 6px 12px;
+}
+.action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.act-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.act-btn:hover {
+  transform: translateY(-1px);
+}
+
+.act-view {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #3b82f6;
+}
+.act-edit {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.25);
+  color: #7c3aed;
+}
+.act-del {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+.act-view:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+.act-edit:hover {
+  background: rgba(139, 92, 246, 0.2);
+}
+.act-del:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* ── Footer ── */
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-top: 1px solid #f1f5f9;
+  background: #fafafa;
+}
+:global(.dark) .table-footer {
+  border-top-color: rgba(100, 116, 139, 0.2);
+  background: rgba(15, 23, 42, 0.3);
+}
+.footer-count {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.page-btn:hover:not(:disabled) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.06);
+}
+.page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+:global(.dark) .page-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(100, 116, 139, 0.35);
+  color: #94a3b8;
+}
+.page-info {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  min-width: 52px;
+  text-align: center;
+}
+:global(.dark) .page-info {
+  color: #94a3b8;
+}
+
+.mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Animations ── */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
