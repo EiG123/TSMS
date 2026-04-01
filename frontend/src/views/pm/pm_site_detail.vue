@@ -303,6 +303,7 @@ const navigations = [
   {
     name: "Summary",
     icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+    action: () => router.push(`/pm_site_detail/${pmId.value}`),
   },
   {
     name: "Site Data",
@@ -313,7 +314,12 @@ const navigations = [
     name: "Cabinets",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
     action: () =>
-      router.push({ name: "pm_cabinet_page", query: { pmId: pmId.value } }),
+      router.push({
+        name: `pm_cabinet_page`,
+        query: {
+          pmId: pmId.value,
+        },
+      }),
   },
   {
     name: "Problems",
@@ -329,7 +335,7 @@ const navigations = [
 </script>
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
+    class="min-h-screen bg-white dark:bg-slate-900 from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 md:p-8 transition-colors duration-300"
   >
     <!-- Loading State -->
     <div
@@ -463,7 +469,12 @@ const navigations = [
             v-for="nav in navigations"
             :key="nav.name"
             @click="nav.action"
-            class="flex items-center gap-2 px-5 py-3 dark:bg-slate-700/30 hover:bg-slate-700/50 border dark:border-slate-600/30 hover:border-blue-500/40 dark:text-slate-300 hover:text-blue-300 rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
+            :class="[
+              'flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-200 whitespace-nowrap',
+              nav.name === activeTab
+                ? 'dark:bg-blue-500/20 border-2 border-blue-500/50 dark:text-blue-300 shadow-lg shadow-blue-500/20'
+                : 'dark:bg-slate-700/30 hover:bg-slate-700/50 border dark:border-slate-600/30 hover:border-blue-500/40 dark:text-slate-300 hover:text-blue-300',
+            ]"
           >
             <svg
               class="w-5 h-5"

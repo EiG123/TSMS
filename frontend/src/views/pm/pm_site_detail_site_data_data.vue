@@ -109,7 +109,7 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8"
   >
     <!-- Loading State -->
     <div
@@ -150,11 +150,11 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
 
       <!-- Header Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-orange-500/10"
+            class="absolute inset-0"
           ></div>
 
           <div class="relative px-8 py-6">
@@ -169,17 +169,17 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                 </h1>
                 <div class="flex items-center gap-3 flex-wrap">
                   <div class="flex items-center gap-2">
-                    <span class="text-sm text-slate-400">Site:</span>
+                    <span class="text-sm dark:text-slate-400">Site:</span>
                     <span
-                      class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg text-sm font-semibold border border-blue-500/30"
+                      class="px-3 py-1 dark:bg-blue-500/20 dark:text-blue-300 rounded-lg text-sm font-semibold border border-blue-500/30"
                     >
                       {{ pMsiteData.site_name }}
                     </span>
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="text-sm text-slate-400">Total:</span>
+                    <span class="text-sm dark:text-slate-400">Total:</span>
                     <span
-                      class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-lg text-sm font-semibold border border-yellow-500/30"
+                      class="px-3 py-1 dark:bg-yellow-500/20 text-yellow-300 rounded-lg text-sm font-semibold border border-yellow-500/30"
                     >
                       {{ kwh_meters_list.length }} items
                     </span>
@@ -202,11 +202,11 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
         <div
           v-for="(kwh, index) in kwh_meters_list"
           :key="index"
-          class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300"
+          class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300"
         >
           <!-- Card Header -->
           <div
-            class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-b border-slate-700/50 px-6 py-4"
+            class="dark:bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-b border-slate-700/50 px-6 py-4"
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-4">
@@ -214,7 +214,7 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                   class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center shadow-lg shadow-yellow-500/30"
                 >
                   <svg
-                    class="w-6 h-6 text-white"
+                    class="w-6 h-6 dark:text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -228,10 +228,10 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-xl font-semibold text-slate-200">
+                  <h3 class="text-xl font-semibold dark:text-slate-200">
                     {{ getSectionTitle() }} {{ kwh.number || index + 1 }}
                   </h3>
-                  <p class="text-sm text-slate-400 mt-0.5">
+                  <p class="text-sm dark:text-slate-400 mt-0.5">
                     Phase:
                     <span class="text-yellow-400 font-semibold">{{
                       kwh.phase || "N/A"
@@ -248,13 +248,13 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
               <div
                 v-for="(title, titleIndex) in title_list"
                 :key="titleIndex"
-                class="flex items-start gap-3 p-4 bg-slate-900/40 border border-slate-700/50 rounded-xl hover:bg-slate-900/60 hover:border-slate-600/50 transition-all duration-200"
+                class="flex items-start gap-3 p-4 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl hover:border-slate-600/50 transition-all duration-200"
               >
                 <!-- Number Badge -->
                 <div
-                  class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center"
+                  class="flex-shrink-0 w-8 h-8 rounded-lg dark:bg-blue-500/20 border dark:border-blue-500/30 flex items-center justify-center"
                 >
-                  <span class="text-blue-300 font-bold text-sm">{{
+                  <span class="dark:text-blue-300 font-bold text-sm">{{
                     titleIndex + 1
                   }}</span>
                 </div>
@@ -264,10 +264,10 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                   class="flex-1 min-w-0"
                   @click="goEnterData(title.title, title.id, kwh.number)"
                 >
-                  <p class="text-slate-200 font-medium">{{ title.title }}</p>
+                  <p class="dark:text-slate-200 font-medium">{{ title.title }}</p>
                   <p
                     v-if="title.description"
-                    class="text-sm text-slate-400 mt-1"
+                    class="text-sm dark:text-slate-400 mt-1"
                   >
                     {{ title.description }}
                   </p>
@@ -348,97 +348,6 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
             </svg>
             Add First Item
           </button>
-        </div>
-      </div>
-
-      <!-- Quick Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div
-          class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6"
-        >
-          <div class="flex items-center gap-4">
-            <div
-              class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center"
-            >
-              <svg
-                class="w-6 h-6 text-blue-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <div>
-              <p class="text-sm text-slate-400">Total Items</p>
-              <p class="text-2xl font-bold text-slate-200">
-                {{ kwh_meters_list.length }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6"
-        >
-          <div class="flex items-center gap-4">
-            <div
-              class="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center"
-            >
-              <svg
-                class="w-6 h-6 text-yellow-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                />
-              </svg>
-            </div>
-            <div>
-              <p class="text-sm text-slate-400">Checklist Items</p>
-              <p class="text-2xl font-bold text-yellow-400">
-                {{ title_list.length }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6"
-        >
-          <div class="flex items-center gap-4">
-            <div
-              class="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center"
-            >
-              <svg
-                class="w-6 h-6 text-green-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <div>
-              <p class="text-sm text-slate-400">Completed</p>
-              <p class="text-2xl font-bold text-green-400">0</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

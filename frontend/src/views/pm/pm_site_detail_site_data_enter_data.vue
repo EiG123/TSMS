@@ -96,7 +96,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen dark:bg-slate-900 p-4 md:p-8"
   >
     <!-- Loading State -->
     <div
@@ -134,11 +134,11 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
 
       <!-- Header Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            class="absolute inset-0 dark:bg-gradient-to-r from-blue-500/10 to-purple-500/10"
           ></div>
 
           <div class="relative px-8 py-6">
@@ -182,11 +182,11 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
           <div
             v-for="(items, groupName) in groupedTitleChild"
             :key="groupName"
-            class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+            class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
           >
             <!-- Group Header -->
             <div
-              class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-slate-700/50 px-6 py-4"
+              class="dark:bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-slate-700/50 px-6 py-4"
             >
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -208,7 +208,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
                     </svg>
                   </div>
                   <div>
-                    <h3 class="text-xl font-semibold text-slate-200">
+                    <h3 class="text-xl font-semibold dark:text-slate-200">
                       {{ groupName }}
                     </h3>
                     <p class="text-sm text-slate-400 mt-0.5">
@@ -231,13 +231,13 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
               <div
                 v-for="(item, itemIndex) in items"
                 :key="itemIndex"
-                class="bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
+                class="dark:bg-slate-900/40 border border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300"
               >
                 <!-- Item Header -->
                 <div
-                  class="px-6 py-4 bg-gradient-to-r from-slate-800/60 to-slate-900/60 border-b border-slate-700/50"
+                  class="px-6 py-4 bg-gray-400 dark:bg-gradient-to-r from-slate-800/60 to-slate-900/60 border-b border-slate-700/50"
                 >
-                  <h4 class="text-lg font-semibold text-slate-200">
+                  <h4 class="text-lg font-semibold dark:text-slate-200">
                     {{ item.title_child_name }}
                   </h4>
                 </div>
@@ -256,7 +256,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
                       class="group relative rounded-xl overflow-hidden border border-slate-700/50 hover:border-blue-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
                     >
                       <!-- Image -->
-                      <div class="aspect-square bg-slate-900 overflow-hidden">
+                      <div class="aspect-square bg-gray-300 dark:bg-slate-900 overflow-hidden">
                         <img
                           v-if="img.file_path"
                           :src="
@@ -326,8 +326,8 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
                 </div>
 
                 <!-- No image placeholder -->
-                <div v-else class="p-8">
-                  <div
+                <div v-else class="p-3">
+                  <!-- <div
                     class="flex flex-col items-center justify-center text-center"
                   >
                     <div
@@ -353,7 +353,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
                     <p class="text-slate-600 text-xs mt-1">
                       Upload images to see them here
                     </p>
-                  </div>
+                  </div> -->
                 </div>
 
                 <!-- Enter Data Button -->

@@ -217,7 +217,7 @@ const handleSectionClick = (section: any) => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8"
   >
     <!-- Loading State -->
     <div
@@ -225,7 +225,7 @@ const handleSectionClick = (section: any) => {
       class="flex flex-col items-center justify-center h-96 animate-fade-in"
     >
       <div
-        class="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4"
+        class="w-16 h-16 border-4 border-slate-500/30 border-t-slate-500 rounded-full animate-spin mb-4"
       ></div>
       <p class="text-slate-400 text-lg">Loading site details...</p>
     </div>
@@ -258,11 +258,11 @@ const handleSectionClick = (section: any) => {
 
       <!-- Header Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+        class="bg-white dark:bg-slate-800/40 rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            class="absolute inset-0 dark:bg-slate-900"
           ></div>
 
           <div class="relative px-8 py-6">
@@ -298,7 +298,7 @@ const handleSectionClick = (section: any) => {
               <div class="flex gap-3">
                 <button
                   @click="goEdit"
-                  class="flex items-center gap-2 bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-300 px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-blue-500/10"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -317,7 +317,7 @@ const handleSectionClick = (section: any) => {
                 </button>
                 <button
                   @click="handleDelete"
-                  class="flex items-center gap-2 bg-red-500/15 border border-red-500/30 hover:bg-red-500/25 hover:border-red-500/50 text-red-300 px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-red-500/10"
+                    class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -342,7 +342,7 @@ const handleSectionClick = (section: any) => {
 
       <!-- Navigation Tabs -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-x-auto"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-x-auto"
       >
         <div class="flex gap-2 p-4">
           <button
@@ -352,8 +352,8 @@ const handleSectionClick = (section: any) => {
             :class="[
               'flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all duration-200 whitespace-nowrap',
               nav.name === activeTab
-                ? 'bg-blue-500/20 border-2 border-blue-500/50 text-blue-300 shadow-lg shadow-blue-500/20'
-                : 'bg-slate-700/30 hover:bg-slate-700/50 border border-slate-600/30 hover:border-blue-500/40 text-slate-300 hover:text-blue-300',
+                ? 'dark:bg-blue-500/20 border-2 border-blue-500/50 dark:text-blue-300 shadow-lg shadow-blue-500/20'
+                : 'dark:bg-slate-700/30 hover:bg-slate-700/50 border dark:border-slate-600/30 hover:border-blue-500/40 dark:text-slate-300 hover:text-blue-300',
             ]"
           >
             <svg
@@ -380,7 +380,7 @@ const handleSectionClick = (section: any) => {
           v-for="section in sections"
           :key="section.id"
           @click="handleSectionClick(section)"
-          class="group bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40"
+          class="group dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border dark:border-slate-700/50 shadow-lg overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/40"
         >
           <!-- Card Content -->
           <div class="p-6">
@@ -392,7 +392,7 @@ const handleSectionClick = (section: any) => {
                 ]"
               >
                 <svg
-                  class="w-7 h-7 text-white"
+                  class="w-7 h-7 dark:text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -428,7 +428,7 @@ const handleSectionClick = (section: any) => {
 
             <div>
               <h3
-                class="text-xl font-semibold text-slate-200 mb-1 group-hover:text-blue-300 transition-colors"
+                class="text-xl font-semibold dark:text-slate-200 mb-1 group-hover:text-blue-300 transition-colors"
               >
                 {{ section.title }}
               </h3>
@@ -456,90 +456,6 @@ const handleSectionClick = (section: any) => {
             class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
             :class="`ring-1 ring-inset ring-${section.color}-500/30`"
           ></div>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-6"
-      >
-        <h3 class="text-lg font-semibold text-slate-200 mb-4">Quick Actions</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button
-            class="flex items-center justify-center gap-2 bg-blue-500/15 hover:bg-blue-500/25 border border-blue-500/30 rounded-xl px-4 py-3 text-blue-300 hover:text-blue-200 transition-all duration-200 hover:-translate-y-0.5"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <span class="text-sm font-medium">Add Data</span>
-          </button>
-
-          <button
-            class="flex items-center justify-center gap-2 bg-green-500/15 hover:bg-green-500/25 border border-green-500/30 rounded-xl px-4 py-3 text-green-300 hover:text-green-200 transition-all duration-200 hover:-translate-y-0.5"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span class="text-sm font-medium">Verify</span>
-          </button>
-
-          <button
-            class="flex items-center justify-center gap-2 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 rounded-xl px-4 py-3 text-purple-300 hover:text-purple-200 transition-all duration-200 hover:-translate-y-0.5"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-            <span class="text-sm font-medium">Export</span>
-          </button>
-
-          <button
-            class="flex items-center justify-center gap-2 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 rounded-xl px-4 py-3 text-orange-300 hover:text-orange-200 transition-all duration-200 hover:-translate-y-0.5"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-              />
-            </svg>
-            <span class="text-sm font-medium">Upload</span>
-          </button>
         </div>
       </div>
     </div>
