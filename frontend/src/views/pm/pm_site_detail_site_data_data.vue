@@ -60,8 +60,13 @@ onMounted(async () => {
     const res = await getPmList.getPmById(pmId.value);
     pMsiteData.value = res.data.data;
     kwh_meters_list.value = res.data.data.kwh_meters || [];
+
     const res_title = await pmTitleManage.getTitleByType(type.value);
     title_list.value = res_title.data.result || [];
+    // kwh_meters_list.value = res_title.data.result || [];
+    if (kwh_meters_list.value.length === 0) {
+      kwh_meters_list.value = res_title.data.result || [];
+    }
     console.log("Title List:", title_list.value);
   } catch (error) {
     console.error("Failed to load PM data:", error);

@@ -23,6 +23,11 @@ const title = computed(() => props.title);
 const title_id = computed(() => props.title_id);
 const order_number = computed(() => props.order_number);
 
+const send_order_number = ref(1);
+if(order_number.value !== undefined){
+  send_order_number.value = order_number.value;
+}
+
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
 const title_child_list = ref<any[]>([]);
@@ -62,11 +67,12 @@ onMounted(async () => {
       pm_id: pmId.value,
       title: title.value,
       title_id: title_id.value,
-      order_number: order_number.value,
+      order_number: send_order_number.value,
     });
     title_child_list.value = res_title_child.data.result || [];
     console.log("Title Child List:", title_child_list.value);
     const data = res_title_child.data.result[0] || {};
+    console.log(data);
     status.value = data.status || "inactive";
   } catch (error) {
     console.error("Failed to load title child:", error);
@@ -82,7 +88,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
       pmId: pmId.value,
       title_id: title_id,
       title_child_id: title_child_id,
-      order_number: order_number.value,
+      order_number: send_order_number.value,
     },
   });
 };

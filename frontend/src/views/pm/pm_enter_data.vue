@@ -29,7 +29,10 @@ const title_child_id = computed(() => props.title_child_id);
 const order_number = computed(() => props.order_number);
 
 console.log(pmId.value);
-console.log(order_number.value);
+const send_order_number = ref(1);
+if(order_number.value !== undefined){
+  send_order_number.value = order_number.value;
+}
 
 const handleCancel = () => {
   router.back();
@@ -70,12 +73,13 @@ const pm_images = ref<any[]>([]);
 
 onMounted(async () => {
   loading.value = true;
+  console.log(send_order_number.value);
   try {
     const res_title_child_value = await pmTitleManage.getTitleChildDataByTitle({
       pm_id: pmId.value,
       title_id: title_id.value,
       title_child_id: title_child_id.value,
-      order_number: order_number.value,
+      order_number: send_order_number.value,
     });
 
     const data = res_title_child_value.data.result[0] || {};
@@ -147,7 +151,7 @@ const handleSubmit = async () => {
     form.append("value_input_type_2", value_input_type_2.value);
     form.append("value_input_type_3", value_input_type_3.value);
 
-    form.append("order_number", order_number.value);
+    form.append("order_number", send_order_number.value);
 
     const imagesMeta: any[] = [];
 
