@@ -387,7 +387,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
       <!-- Empty State -->
       <div
         v-if="Object.keys(groupedTitleChild).length === 0"
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-12"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg p-12"
       >
         <div class="text-center">
           <div
@@ -415,7 +415,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
       </div>
 
       <!-- Summary Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div
           class="bg-slate-800/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6"
         >
@@ -503,7 +503,7 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

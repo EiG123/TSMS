@@ -110,19 +110,25 @@ const progressBadge: Record<
   string,
   { label: string; cls: string; dot: string }
 > = {
-  pending: { label: "Pending", cls: "badge-slate", dot: "dot-slate" },
+  pending: { label: "Pending", cls: "badge-green", dot: "dot-green" },
   Inprogress: { label: "In Progress", cls: "badge-amber", dot: "dot-amber" },
-  checkin: { label: "Check In", cls: "badge-blue", dot: "dot-blue" },
+  checkedin: { label: "Check In", cls: "badge-blue", dot: "dot-blue" },
   checkout: { label: "Check Out", cls: "badge-purple", dot: "dot-purple" },
 };
 </script>
 
 <template>
-  <div class="page-root bg-white dark:bg-slate-900 transition-colors duration-300">
+  <div
+    class="page-root bg-white dark:bg-slate-900 transition-colors duration-300"
+  >
     <!-- ── Header ── -->
-    <header class="page-header bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700/50">
+    <header
+      class="page-header bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700/50"
+    >
       <div>
-        <h1 class="page-title text-gray-900 dark:text-slate-100">PM NodeB List</h1>
+        <h1 class="page-title text-gray-900 dark:text-slate-100">
+          PM NodeB List
+        </h1>
         <p class="page-sub text-gray-600 dark:text-slate-400">
           {{ filteredList.length }} sites · {{ selectedYear }}
         </p>
@@ -167,7 +173,10 @@ const progressBadge: Record<
         </div>
 
         <!-- New -->
-        <button @click="goNew" class="btn-new bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50">
+        <button
+          @click="goNew"
+          class="btn-new bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50"
+        >
           <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
             <path
               d="M10 4v12M4 10h12"
@@ -212,7 +221,9 @@ const progressBadge: Record<
             stroke-linecap="round"
           />
         </svg>
-        <span class="state-text text-gray-600 dark:text-slate-400">ไม่พบข้อมูล</span>
+        <span class="state-text text-gray-600 dark:text-slate-400"
+          >ไม่พบข้อมูล</span
+        >
       </div>
 
       <!-- Table -->
@@ -239,7 +250,9 @@ const progressBadge: Record<
         class="table-wrap hidden md:block"
       >
         <div class="overflow-x-auto">
-          <table class="data-table bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-200">
+          <table
+            class="data-table bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-200"
+          >
             <thead class="bg-gray-50 dark:bg-slate-800/60">
               <tr class="border-b border-gray-200 dark:border-slate-700/50">
                 <th class="text-gray-700 dark:text-slate-300">Site</th>
@@ -258,7 +271,9 @@ const progressBadge: Record<
                 <th class="text-gray-700 dark:text-slate-300">PM Date</th>
                 <th class="text-gray-700 dark:text-slate-300">Progress</th>
                 <th class="text-gray-700 dark:text-slate-300">Verify</th>
-                <th class="th-actions text-gray-700 dark:text-slate-300">Actions</th>
+                <th class="th-actions text-gray-700 dark:text-slate-300">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-slate-700/30">
@@ -270,19 +285,39 @@ const progressBadge: Record<
               >
                 <!-- Site -->
                 <td class="td-site">
-                  <span class="site-name text-gray-900 dark:text-slate-100 font-medium">{{ row.site_name || "N/A" }}</span>
-                  <span class="site-id text-gray-500 dark:text-slate-500 text-xs">{{ row.site_id }}</span>
+                  <span
+                    class="site-name text-gray-900 dark:text-slate-100 font-medium"
+                    >{{ row.site_name || "N/A" }}</span
+                  >
+                  <span
+                    class="site-id text-gray-500 dark:text-slate-500 text-xs"
+                    >{{ row.site_id }}</span
+                  >
                 </td>
 
-                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.cabinets, "cabinet_name") }}</td>
-                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.mowing, "round") }}</td>
-                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.broadband, "count") }}</td>
-                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.solarcell, "status") }}</td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ listVal(row.cabinets, "cabinet_name") }}
+                </td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ listVal(row.mowing, "round") }}
+                </td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ listVal(row.broadband, "count") }}
+                </td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ listVal(row.solarcell, "status") }}
+                </td>
 
                 <!-- Region -->
                 <td>
                   <span class="cell-region text-gray-700 dark:text-slate-300">
-                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" class="text-blue-500 dark:text-blue-400">
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      class="text-blue-500 dark:text-blue-400"
+                    >
                       <path
                         d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
                         stroke="currentColor"
@@ -299,12 +334,24 @@ const progressBadge: Record<
                   </span>
                 </td>
 
-                <td class="text-gray-800 dark:text-slate-300">{{ row.province || "—" }}</td>
-                <td class="text-gray-800 dark:text-slate-300">{{ row.vendor || "—" }}</td>
-                <td class="text-gray-800 dark:text-slate-300">{{ row.created_by || "—" }}</td>
-                <td class="td-mono text-gray-700 dark:text-slate-400">{{ fmtDate(row.created_at) }}</td>
-                <td class="text-gray-800 dark:text-slate-300">{{ row.updated_by || "—" }}</td>
-                <td class="td-mono text-gray-700 dark:text-slate-400">{{ fmtDate(row.updated_at) }}</td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ row.province || "—" }}
+                </td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ row.vendor || "—" }}
+                </td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ row.created_by || "—" }}
+                </td>
+                <td class="td-mono text-gray-700 dark:text-slate-400">
+                  {{ fmtDate(row.created_at) }}
+                </td>
+                <td class="text-gray-800 dark:text-slate-300">
+                  {{ row.updated_by || "—" }}
+                </td>
+                <td class="td-mono text-gray-700 dark:text-slate-400">
+                  {{ fmtDate(row.updated_at) }}
+                </td>
 
                 <!-- Service Status -->
                 <td class="td-center">
@@ -324,7 +371,9 @@ const progressBadge: Record<
                   </span>
                 </td>
 
-                <td class="td-mono text-gray-700 dark:text-slate-400">{{ fmtDate(row.date) }}</td>
+                <td class="td-mono text-gray-700 dark:text-slate-400">
+                  {{ fmtDate(row.date) }}
+                </td>
 
                 <!-- Progress -->
                 <td class="td-center">
@@ -340,11 +389,16 @@ const progressBadge: Record<
                         progressBadge[row.progress_status]?.dot ?? 'dot-gray'
                       "
                     ></i>
-                    {{ progressBadge[row.progress_status]?.label ?? "Unknown" }}
+                    {{
+                      progressBadge[row.progress_status]?.label ??
+                      row.progress_status
+                    }}
                   </span>
                 </td>
 
-                <td class="td-center text-gray-800 dark:text-slate-300">{{ row.verify || "—" }}</td>
+                <td class="td-center text-gray-800 dark:text-slate-300">
+                  {{ row.verify || "—" }}
+                </td>
 
                 <!-- Actions -->
                 <td class="td-actions" @click.stop>
@@ -422,11 +476,15 @@ const progressBadge: Record<
 
         <!-- Empty state: แสดงเมื่อไม่มีข้อมูล (ทั้ง mobile และ desktop) -->
         <div v-if="!loading && paginatedList.length === 0" class="state-center">
-          <span class="state-text text-gray-600 dark:text-slate-400">ไม่พบข้อมูล</span>
+          <span class="state-text text-gray-600 dark:text-slate-400"
+            >ไม่พบข้อมูล</span
+          >
         </div>
 
         <!-- Footer -->
-        <div class="table-footer bg-gray-50 dark:bg-slate-800/60 border-t border-gray-200 dark:border-slate-700/50">
+        <div
+          class="table-footer bg-gray-50 dark:bg-slate-800/60 border-t border-gray-200 dark:border-slate-700/50"
+        >
           <span class="footer-count text-gray-700 dark:text-slate-300">
             {{ (currentPage - 1) * pageSize + 1 }}–{{
               Math.min(currentPage * pageSize, filteredList.length)
@@ -450,7 +508,9 @@ const progressBadge: Record<
                 />
               </svg>
             </button>
-            <span class="page-info text-gray-700 dark:text-slate-300">{{ currentPage }} / {{ totalPages }}</span>
+            <span class="page-info text-gray-700 dark:text-slate-300"
+              >{{ currentPage }} / {{ totalPages }}</span
+            >
             <button
               @click="nextPage"
               :disabled="currentPage === totalPages"
@@ -653,7 +713,6 @@ const progressBadge: Record<
   white-space: nowrap;
   vertical-align: middle;
 }
-
 
 /* ── Special cells ── */
 .td-site {

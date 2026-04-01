@@ -59,7 +59,7 @@ const startHeartbeat = () => {
 const stopGPS = async () => {
   navigator.geolocation.clearWatch(watchId);
   clearInterval(intervalId);
-  await UserLocation.sendLocation({ userId, status: "inactive" });
+  await UserLocation.sendLocation({ userId, status: "inactive", job: "0" });
 };
 
 // ─── Main Action Handler ──────────────────────────────────────────

@@ -60,8 +60,8 @@ onMounted(async () => {
   loading.value = true;
   try {
     const res = await getPmList.getPmById(pmId.value);
-
-    if (res.data.data.status === "checkin") {
+    console.log(res.data.data);
+    if (res.data.data.progress_status === "checkedin") {
       isCheckedIn.value = true;
       const cabinet = await pmServiceManage.getPmCabinetById(pmId.value);
       console.log(cabinet);
@@ -69,6 +69,9 @@ onMounted(async () => {
       console.log(cabinets.value);
     } else if (res.data.data.status === "checkout") {
       isCheckedIn.value = false;
+      const cabinet = await pmServiceManage.getPmCabinetById(pmId.value);
+      cabinets.value = cabinet.data.result.cabinets;
+      console.log(cabinets.value);
     }
     pMsiteData.value = res.data.data;
     service_status.value = res.data.data.service_status;
@@ -147,7 +150,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-white dark:bg-slate-900 from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
   >
     <!-- Loading State -->
     <div
@@ -188,11 +191,11 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
       <!-- Header Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            class="absolute inset-0"
           ></div>
 
           <div class="relative px-8 py-6">
@@ -228,7 +231,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
               <div class="flex gap-3">
                 <button
                   @click="goEdit"
-                  class="flex items-center gap-2 bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-300 px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-blue-500/10"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 hover:border-blue-500/50 text-blue-600 dark:text-blue-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -247,7 +250,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
                 </button>
                 <button
                   @click="handleDelete"
-                  class="flex items-center gap-2 bg-red-500/15 border border-red-500/30 hover:bg-red-500/25 hover:border-red-500/50 text-red-300 px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-red-500/10"
+                    class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -272,14 +275,14 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
       <!-- Navigation Tabs -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-x-auto"
+        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-x-auto"
       >
         <div class="flex gap-2 p-4">
           <button
             v-for="nav in navigations"
             :key="nav.name"
             @click="nav.action"
-            class="flex items-center gap-2 px-5 py-3 bg-slate-700/30 hover:bg-slate-700/50 border border-slate-600/30 hover:border-blue-500/40 text-slate-300 hover:text-blue-300 rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
+            class="flex items-center gap-2 px-5 py-3 bg-white dark:bg-slate-700/30 hover:bg-slate-700/50 border dark:border-slate-600/30 hover:border-blue-500/40 dark:text-slate-300 hover:text-blue-300 rounded-xl font-medium transition-all duration-200 whitespace-nowrap"
           >
             <svg
               class="w-5 h-5"
@@ -301,8 +304,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
 
       <!-- Cabinets Section -->
       <div
-        v-if="isCheckedIn"
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
         <!-- Header -->
         <div
@@ -361,7 +363,9 @@ const handleCabinetDelete = async (cabinet_id: any) => {
         <!-- Content -->
         <div v-if="showModules" class="p-6">
           <!-- Add Cabinet Button (Always show at top) -->
-          <div class="mb-4">
+          <div 
+          v-if="isCheckedIn"
+          class="mb-4">
             <button
               @click="AddCabinets"
               class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-200 hover:-translate-y-0.5"
@@ -657,7 +661,7 @@ const handleCabinetDelete = async (cabinet_id: any) => {
           >
             <div class="text-center">
               <div
-                class="w-20 h-20 bg-slate-800/50 rounded-xl flex items-center justify-center mx-auto mb-4"
+                class="w-20 h-20 dark:bg-slate-800/50 border rounded-xl flex items-center justify-center mx-auto mb-4"
               >
                 <svg
                   class="w-10 h-10 text-slate-600"

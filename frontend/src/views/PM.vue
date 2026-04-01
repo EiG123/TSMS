@@ -82,7 +82,7 @@ const pmCards = [
 
 <template>
   <div
-    class="min-h-screen bg-gray-200 dark:bg-slate-900 p-4 md:p-8 transition-colors duration-300"
+    class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8 transition-colors duration-300"
   >
     <div class="max-w-7xl mx-auto">
       <!-- Header Section -->
