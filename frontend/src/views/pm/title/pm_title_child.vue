@@ -12,17 +12,18 @@ const loading = ref(false);
 const pmTitles = ref([]);
 const pmTitlesChild = ref([]);
 
-const pmId = ref(route.params.id as string);
+const pmTitleId = ref(route.params.id as string);
 
 // ===== lifecycle =====
 onMounted(async () => {
   loading.value = true;
   try {
-    const resTitle = await pmTitleManage.getPmTitleById(pmId.value);
+    const resTitle = await pmTitleManage.getPmTitleById(pmTitleId.value);
     pmTitles.value = resTitle.data.result;
 
-    const resTitleChild = await pmTitleManage.getAllPmTitleChild(pmId.value);
+    const resTitleChild = await pmTitleManage.getAllPmTitleChild(pmTitleId.value);
     pmTitlesChild.value = resTitleChild.data.result;
+
   } catch {
     alert("ไม่เจอ API getAllPmTitleChild");
   } finally {

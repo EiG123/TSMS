@@ -118,12 +118,12 @@ const progressBadge: Record<
 </script>
 
 <template>
-  <div class="page-root bg-white dark:bg-slate-900">
+  <div class="page-root bg-white dark:bg-slate-900 transition-colors duration-300">
     <!-- ── Header ── -->
-    <header class="page-header dark:bg-slate-900">
+    <header class="page-header bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700/50">
       <div>
-        <h1 class="page-title">PM NodeB List</h1>
-        <p class="page-sub">
+        <h1 class="page-title text-gray-900 dark:text-slate-100">PM NodeB List</h1>
+        <p class="page-sub text-gray-600 dark:text-slate-400">
           {{ filteredList.length }} sites · {{ selectedYear }}
         </p>
       </div>
@@ -132,7 +132,7 @@ const progressBadge: Record<
         <!-- Year -->
         <select
           v-model="selectedYear"
-          class="ctrl-select bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50"
+          class="ctrl-select bg-white dark:bg-slate-800/60 text-gray-900 dark:text-slate-200 border border-gray-300 dark:border-slate-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option>2025/2026</option>
           <option>2026/2027</option>
@@ -141,10 +141,10 @@ const progressBadge: Record<
 
         <!-- Search -->
         <div
-          class="search-wrap bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50"
+          class="search-wrap bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50"
         >
           <svg
-            class="search-icon bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50"
+            class="search-icon text-gray-400 dark:text-slate-500"
             width="14"
             height="14"
             viewBox="0 0 20 20"
@@ -162,12 +162,12 @@ const progressBadge: Record<
             v-model="searchQuery"
             type="text"
             placeholder="Site ID / Region…"
-            class="search-input"
+            class="search-input bg-transparent text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500"
           />
         </div>
 
         <!-- New -->
-        <button @click="goNew" class="btn-new">
+        <button @click="goNew" class="btn-new bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50">
           <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
             <path
               d="M10 4v12M4 10h12"
@@ -183,8 +183,8 @@ const progressBadge: Record<
 
     <!-- ── Loading ── -->
     <div v-if="loading" class="state-center">
-      <div class="spinner"></div>
-      <span class="state-text">Loading…</span>
+      <div class="spinner border-blue-500/30 border-t-blue-500"></div>
+      <span class="state-text text-gray-600 dark:text-slate-400">Loading…</span>
     </div>
 
     <!-- ── Content ── -->
@@ -196,7 +196,7 @@ const progressBadge: Record<
           height="40"
           viewBox="0 0 64 64"
           fill="none"
-          class="empty-icon"
+          class="empty-icon text-gray-400 dark:text-slate-600"
         >
           <circle
             cx="32"
@@ -212,7 +212,7 @@ const progressBadge: Record<
             stroke-linecap="round"
           />
         </svg>
-        <span class="state-text">ไม่พบข้อมูล</span>
+        <span class="state-text text-gray-600 dark:text-slate-400">ไม่พบข้อมูล</span>
       </div>
 
       <!-- Table -->
@@ -238,51 +238,51 @@ const progressBadge: Record<
         v-show="!isMobile"
         class="table-wrap hidden md:block"
       >
-        <div class="table-scroll">
-          <table class="data-table bg-white dark:bg-slate-900 text-slate-900 dark:text-cyan-50">
-            <thead>
-              <tr>
-                <th>Site</th>
-                <th>Cabinets</th>
-                <th>Mowing</th>
-                <th>Broadband</th>
-                <th>SolarCell</th>
-                <th>Region</th>
-                <th>Province</th>
-                <th>Vendor</th>
-                <th>Created By</th>
-                <th>Created At</th>
-                <th>Updated By</th>
-                <th>Updated At</th>
-                <th>Service</th>
-                <th>PM Date</th>
-                <th>Progress</th>
-                <th>Verify</th>
-                <th class="th-actions">Actions</th>
+        <div class="overflow-x-auto">
+          <table class="data-table bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-200">
+            <thead class="bg-gray-50 dark:bg-slate-800/60">
+              <tr class="border-b border-gray-200 dark:border-slate-700/50">
+                <th class="text-gray-700 dark:text-slate-300">Site</th>
+                <th class="text-gray-700 dark:text-slate-300">Cabinets</th>
+                <th class="text-gray-700 dark:text-slate-300">Mowing</th>
+                <th class="text-gray-700 dark:text-slate-300">Broadband</th>
+                <th class="text-gray-700 dark:text-slate-300">SolarCell</th>
+                <th class="text-gray-700 dark:text-slate-300">Region</th>
+                <th class="text-gray-700 dark:text-slate-300">Province</th>
+                <th class="text-gray-700 dark:text-slate-300">Vendor</th>
+                <th class="text-gray-700 dark:text-slate-300">Created By</th>
+                <th class="text-gray-700 dark:text-slate-300">Created At</th>
+                <th class="text-gray-700 dark:text-slate-300">Updated By</th>
+                <th class="text-gray-700 dark:text-slate-300">Updated At</th>
+                <th class="text-gray-700 dark:text-slate-300">Service</th>
+                <th class="text-gray-700 dark:text-slate-300">PM Date</th>
+                <th class="text-gray-700 dark:text-slate-300">Progress</th>
+                <th class="text-gray-700 dark:text-slate-300">Verify</th>
+                <th class="th-actions text-gray-700 dark:text-slate-300">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-200 dark:divide-slate-700/30">
               <tr
                 v-for="row in paginatedList"
                 :key="row.id"
-                class="data-row"
+                class="data-row hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
                 @click="goView(row.id)"
               >
                 <!-- Site -->
-                <td class="td-site text-slate-900 dark:text-cyan-50">
-                  <span class="site-name">{{ row.site_name || "N/A" }}</span>
-                  <span class="site-id">{{ row.site_id }}</span>
+                <td class="td-site">
+                  <span class="site-name text-gray-900 dark:text-slate-100 font-medium">{{ row.site_name || "N/A" }}</span>
+                  <span class="site-id text-gray-500 dark:text-slate-500 text-xs">{{ row.site_id }}</span>
                 </td>
 
-                <td>{{ listVal(row.cabinets, "cabinet_name") }}</td>
-                <td>{{ listVal(row.mowing, "round") }}</td>
-                <td>{{ listVal(row.broadband, "count") }}</td>
-                <td>{{ listVal(row.solarcell, "status") }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.cabinets, "cabinet_name") }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.mowing, "round") }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.broadband, "count") }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ listVal(row.solarcell, "status") }}</td>
 
                 <!-- Region -->
                 <td>
-                  <span class="cell-region">
-                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+                  <span class="cell-region text-gray-700 dark:text-slate-300">
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" class="text-blue-500 dark:text-blue-400">
                       <path
                         d="M8 14.667A6.667 6.667 0 1 0 8 1.333a6.667 6.667 0 0 0 0 13.334z"
                         stroke="currentColor"
@@ -299,12 +299,12 @@ const progressBadge: Record<
                   </span>
                 </td>
 
-                <td>{{ row.province || "—" }}</td>
-                <td>{{ row.vendor || "—" }}</td>
-                <td>{{ row.created_by || "—" }}</td>
-                <td class="td-mono">{{ fmtDate(row.created_at) }}</td>
-                <td>{{ row.updated_by || "—" }}</td>
-                <td class="td-mono">{{ fmtDate(row.updated_at) }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ row.province || "—" }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ row.vendor || "—" }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ row.created_by || "—" }}</td>
+                <td class="td-mono text-gray-700 dark:text-slate-400">{{ fmtDate(row.created_at) }}</td>
+                <td class="text-gray-800 dark:text-slate-300">{{ row.updated_by || "—" }}</td>
+                <td class="td-mono text-gray-700 dark:text-slate-400">{{ fmtDate(row.updated_at) }}</td>
 
                 <!-- Service Status -->
                 <td class="td-center">
@@ -324,7 +324,7 @@ const progressBadge: Record<
                   </span>
                 </td>
 
-                <td class="td-mono">{{ fmtDate(row.date) }}</td>
+                <td class="td-mono text-gray-700 dark:text-slate-400">{{ fmtDate(row.date) }}</td>
 
                 <!-- Progress -->
                 <td class="td-center">
@@ -344,14 +344,14 @@ const progressBadge: Record<
                   </span>
                 </td>
 
-                <td class="td-center">{{ row.verify || "—" }}</td>
+                <td class="td-center text-gray-800 dark:text-slate-300">{{ row.verify || "—" }}</td>
 
                 <!-- Actions -->
                 <td class="td-actions" @click.stop>
                   <div class="action-group">
                     <button
                       @click="goView(row.id)"
-                      class="act-btn act-view"
+                      class="act-btn act-view bg-blue-500/10 dark:bg-blue-500/15 hover:bg-blue-500/20 dark:hover:bg-blue-500/25 text-blue-600 dark:text-blue-400 border border-blue-500/30"
                       title="View"
                     >
                       <svg
@@ -377,7 +377,7 @@ const progressBadge: Record<
                     </button>
                     <button
                       @click="goEdit(row.id)"
-                      class="act-btn act-edit"
+                      class="act-btn act-edit bg-yellow-500/10 dark:bg-yellow-500/15 hover:bg-yellow-500/20 dark:hover:bg-yellow-500/25 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30"
                       title="Edit"
                     >
                       <svg
@@ -396,7 +396,7 @@ const progressBadge: Record<
                     </button>
                     <button
                       @click="handleDelete($event, row.id)"
-                      class="act-btn act-del"
+                      class="act-btn act-del bg-red-500/10 dark:bg-red-500/15 hover:bg-red-500/20 dark:hover:bg-red-500/25 text-red-600 dark:text-red-400 border border-red-500/30"
                       title="Delete"
                     >
                       <svg
@@ -422,12 +422,12 @@ const progressBadge: Record<
 
         <!-- Empty state: แสดงเมื่อไม่มีข้อมูล (ทั้ง mobile และ desktop) -->
         <div v-if="!loading && paginatedList.length === 0" class="state-center">
-          <span class="state-text">ไม่พบข้อมูล</span>
+          <span class="state-text text-gray-600 dark:text-slate-400">ไม่พบข้อมูล</span>
         </div>
 
         <!-- Footer -->
-        <div class="table-footer bg-cyan-50 dark:bg-slate-900">
-          <span class="footer-count text-slate-900 dark:text-cyan-50">
+        <div class="table-footer bg-gray-50 dark:bg-slate-800/60 border-t border-gray-200 dark:border-slate-700/50">
+          <span class="footer-count text-gray-700 dark:text-slate-300">
             {{ (currentPage - 1) * pageSize + 1 }}–{{
               Math.min(currentPage * pageSize, filteredList.length)
             }}
@@ -439,7 +439,7 @@ const progressBadge: Record<
             <button
               @click="prevPage"
               :disabled="currentPage === 1"
-              class="page-btn"
+              class="page-btn bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
                 <path
@@ -450,11 +450,11 @@ const progressBadge: Record<
                 />
               </svg>
             </button>
-            <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+            <span class="page-info text-gray-700 dark:text-slate-300">{{ currentPage }} / {{ totalPages }}</span>
             <button
               @click="nextPage"
               :disabled="currentPage === totalPages"
-              class="page-btn"
+              class="page-btn bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
                 <path
@@ -605,10 +605,6 @@ const progressBadge: Record<
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-}
-
-.table-scroll {
-  overflow-x: auto;
 }
 
 /* ── Table ── */

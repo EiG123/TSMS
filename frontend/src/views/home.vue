@@ -26,7 +26,7 @@ const cards = [
 </script>
 
 <template>
-  <div class="min-h-screen bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6 transition-colors duration-300">
+  <div class="min-h-screen bg-white dark:bg-slate-900 p-6 transition-colors duration-300">
     
     <!-- Welcome Section -->
     <div class="mb-8">

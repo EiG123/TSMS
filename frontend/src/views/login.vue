@@ -41,7 +41,7 @@ const goRegister = () => {
 
 <template>
   <div
-    class="relative min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors duration-300"
+    class="relative min-h-screen bg-gradient-to-br dark:bg-slate-900 flex items-center justify-center p-4 transition-colors"
   >
     <button
       @click="themeStore.toggleTheme()"

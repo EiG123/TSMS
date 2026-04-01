@@ -1,0 +1,4 @@
+INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI0001', 'NodeB', NOW(), 'PW0001', 'onService');
+INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI0002', 'NodeB', NOW(), 'PW0002', 'onService');
+INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI0003', 'NodeB', NOW(), 'PW0003', 'Cancel');
+INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI0004', 'NodeB', NOW(), 'PW0004', 'Cancel');

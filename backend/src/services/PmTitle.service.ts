@@ -122,6 +122,7 @@ export const pmTitleService = {
   },
 
   async getAllPmTitleChild(pool: any, data: number) {
+    console.log(data);
     const client = await pool.connect();
     try {
       const sql = `
