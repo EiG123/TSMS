@@ -296,7 +296,7 @@ const progressBadge: Record<
                 </td>
 
                 <td class="text-gray-800 dark:text-slate-300">
-                  {{ listVal(row.cabinets, "cabinet_name") }}
+                  {{ row.cabinets.length }}
                 </td>
                 <td class="text-gray-800 dark:text-slate-300">
                   {{ listVal(row.mowing, "round") }}

@@ -153,6 +153,8 @@ const handleSubmit = async () => {
 
     form.append("order_number", send_order_number.value);
 
+    form.append("username", username.username);
+
     const imagesMeta: any[] = [];
 
     uploadedImages.value.forEach((file, index) => {
@@ -161,7 +163,6 @@ const handleSubmit = async () => {
           title_image_id: pm_images.value[index].title_image_id,
           img_number: index + 1,
         });
-
         form.append("files", file); // key เดียวกันหมด
       }
     });

@@ -171,6 +171,10 @@ export const PmService = {
     try {
       await client.query("BEGIN");
 
+      const sql_update = `UPDATE pm SET updated_at = NOW(), updated_by = $2 WHERE id = $1`;
+
+      await client.query(sql_update, [data.pm_id, data.username]);
+
       /* ==================== pm_details ==================== */
       const sql = `
       INSERT INTO pm_details (
