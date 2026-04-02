@@ -108,12 +108,10 @@ const loadData_init = async () => {
 const loadData_Title = async () => {
   title_info.value = await pmTitleManage.getAllTitleInfo({
     type: "pm_nodeb",
-    pm_id: pmId.value
+    pm_id: pmId.value,
   });
-  console.log(
-    title_info.value
-  );
-}
+  console.log(title_info.value);
+};
 
 onMounted(async () => {
   loading.value = true;
@@ -466,10 +464,16 @@ const handleSectionClick = (section: any) => {
                 <span
                   :class="`px-3 py-1 bg-${section.color}-500/20 border border-${section.color}-500/30 rounded-lg text-${section.color}-300 text-sm font-bold`"
                 >
-                  <div v-for="item in title_info" :key="item.id">
-                    <div v-if="item.key == section.key">
-                      {{item.total_detail}} / {{item.total_status}}
-                    </div>
+                  <div>
+                    {{
+                      title_info.find((item) => item.key === section.key)
+                        ?.total_detail || 0
+                    }}
+                    /
+                    {{
+                      title_info.find((item) => item.key === section.key)
+                        ?.total_status || 0
+                    }}
                   </div>
                 </span>
               </div>
