@@ -121,14 +121,13 @@ export const pmTitleService = {
     }
   },
 
-  async getAllPmTitleChild(pool: any, data: number) {
-    console.log(data);
+  async getAllPmTitleChild(pool: any, data: any) {
     const client = await pool.connect();
     try {
       const sql = `
           SELECT * FROM pm_title_child WHERE title_id = $1
       `;
-      const values = [data];
+      const values = [data.data.id];
       const result = await client.query(sql, values);
 
       console.log(result.rows);

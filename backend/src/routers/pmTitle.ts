@@ -105,8 +105,7 @@ pmTitleRouter.post("/getPmTitleById", async (c) => {
 
 pmTitleRouter.post("/getAllPmTitleChild", async (c) => {
     const body = await c.req.json();
-    console.log(body);
-    const data = await pmTitleService.getAllPmTitleChild(pool, body.data);
+    const data = await pmTitleService.getAllPmTitleChild(pool, body);
     if (data.success) {
         return c.json({
             data: data,

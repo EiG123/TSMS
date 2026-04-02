@@ -20,14 +20,17 @@ const fetchData = async () => {
       type: pm_type.value,
     });
     pmTitles.value = res.data.result;
+    console.log(pmTitles.value);
     for (let i = 0; i < pmTitles.value.length; i++) {
       const resTitleChild_count = await pmTitleManage.getAllPmTitleChild({
         id: pmTitles.value[i].id,
       });
+      console.log(resTitleChild_count)
       pmTitles.value[i].title_child_count =
         resTitleChild_count.data.result.length;
     }
-  } catch {
+  } catch (err){
+    console.log(err);
     alert("ไม่เจอ API getAllPmTitle");
   } finally {
     loading.value = false;
