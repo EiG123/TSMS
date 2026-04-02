@@ -3,6 +3,8 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
+import { pmTitleManage } from "../../services/PmTitle/pmTitleManage.api";
+
 import { useAuthStore } from "../../stores/auth";
 
 const route = useRoute();
@@ -50,6 +52,8 @@ const checkOutTime = ref<string | null>(null);
 
 const service_status = ref("");
 
+const title_info = ref("");
+
 const handleCheckInOut = async () => {
   if (!isCheckedIn.value) {
     const confirmed = window.confirm(
@@ -90,17 +94,32 @@ const handleCheckInOut = async () => {
   }
 };
 
+const loadData_init = async () => {
+  const res = await getPmList.getPmById(pmId.value);
+  if (res.data.data.status === "checkin") {
+    isCheckedIn.value = true;
+  } else if (res.data.data.status === "checkout") {
+    isCheckedIn.value = false;
+  }
+  pMsiteData.value = res.data.data;
+  service_status.value = res.data.data.service_status;
+};
+
+const loadData_Title = async () => {
+  title_info.value = await pmTitleManage.getAllTitleInfo({
+    type: "pm_nodeb",
+    pm_id: pmId.value
+  });
+  console.log(
+    title_info.value
+  );
+}
+
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await getPmList.getPmById(pmId.value);
-    if (res.data.data.status === "checkin") {
-      isCheckedIn.value = true;
-    } else if (res.data.data.status === "checkout") {
-      isCheckedIn.value = false;
-    }
-    pMsiteData.value = res.data.data;
-    service_status.value = res.data.data.service_status;
+    await loadData_init();
+    await loadData_Title();
   } catch (error) {
     console.error("Failed to load PM data:", error);
     alert("ไม่เจอ API SiteList");
@@ -153,13 +172,14 @@ const sections = [
     icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     color: "blue",
     route: {
-      name: `pm_site_detail_site_info`,
+      name: `pm_site_detail_site_data_data`,
       query: {
         id: pmId.value,
         type: "site_info",
       },
     },
     count: 0,
+    key: "site_info",
   },
   {
     id: "site-facility",
@@ -168,6 +188,7 @@ const sections = [
     color: "green",
     route: `/pm_site_detail_site_data_site_facility/${pmId.value}`,
     count: 0,
+    key: "site_facility",
   },
   {
     id: "ac-power",
@@ -182,6 +203,7 @@ const sections = [
       },
     },
     count: pMsiteData.value?.kwh_meters?.length || 0,
+    key: "kwh_meter",
   },
   {
     id: "generator",
@@ -190,6 +212,7 @@ const sections = [
     color: "purple",
     route: `/pm_site_detail_site_data_generator/${pmId.value}`,
     count: pMsiteData.value?.generators?.length || 0,
+    key: "generator",
   },
   {
     id: "grounding",
@@ -198,6 +221,7 @@ const sections = [
     color: "orange",
     route: `/pm_site_detail_site_data_grounding/${pmId.value}`,
     count: 0,
+    key: "grounding",
   },
   {
     id: "external-alarm",
@@ -206,6 +230,7 @@ const sections = [
     color: "red",
     route: `/pm_site_detail_site_data_external_alarm/${pmId.value}`,
     count: 0,
+    key: "external_alarm",
   },
 ];
 
@@ -216,9 +241,7 @@ const handleSectionClick = (section: any) => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8"
-  >
+  <div class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8">
     <!-- Loading State -->
     <div
       v-if="loading"
@@ -261,9 +284,7 @@ const handleSectionClick = (section: any) => {
         class="bg-white dark:bg-slate-800/40 rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
-          <div
-            class="absolute inset-0 dark:bg-slate-900"
-          ></div>
+          <div class="absolute inset-0 dark:bg-slate-900"></div>
 
           <div class="relative px-8 py-6">
             <div
@@ -317,7 +338,7 @@ const handleSectionClick = (section: any) => {
                 </button>
                 <button
                   @click="handleDelete"
-                    class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 bg-red-500/10 dark:bg-red-500/15 border border-red-500/30 hover:bg-red-500/20 dark:hover:bg-red-500/25 hover:border-red-500/50 text-red-600 dark:text-red-300 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5"
@@ -437,7 +458,7 @@ const handleSectionClick = (section: any) => {
 
             <!-- Count Badge (if applicable) -->
             <div
-              v-if="section.count > 0"
+              v-if="section.count >= 0"
               class="mt-4 pt-4 border-t border-slate-700/50"
             >
               <div class="flex items-center justify-between">
@@ -445,7 +466,11 @@ const handleSectionClick = (section: any) => {
                 <span
                   :class="`px-3 py-1 bg-${section.color}-500/20 border border-${section.color}-500/30 rounded-lg text-${section.color}-300 text-sm font-bold`"
                 >
-                  {{ section.count }}
+                  <div v-for="item in title_info" :key="item.id">
+                    <div v-if="item.key == section.key">
+                      {{item.total_detail}} / {{item.total_status}}
+                    </div>
+                  </div>
                 </span>
               </div>
             </div>

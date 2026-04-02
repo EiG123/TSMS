@@ -1,5 +1,5 @@
 import { date, success } from "zod";
-import { fi } from "zod/locales";
+import { fi, tr } from "zod/locales";
 
 export const pmTitleService = {
   async InsertTitle(
@@ -541,6 +541,71 @@ export const pmTitleService = {
       console.error("EditpmTitleChild error:", error);
       return { success: false };
     } finally {
+      client.release();
+    }
+  },
+
+  
+  async getAllTitleInfo(data: any, db: any) {
+    const client = await db.connect();
+    try{
+      console.log(data);
+      const sql = `
+      WITH status_agg AS (
+          SELECT 
+              pmt.id,
+              pmt.key,
+              SUM(
+                  (pmtc.value_status_1 = 'active')::int +
+                  (pmtc.value_status_2 = 'active')::int +
+                  (pmtc.value_status_3 = 'active')::int
+              ) AS total_status
+          FROM pm_title pmt
+          LEFT JOIN pm_title_child pmtc 
+              ON pmtc.title_id = pmt.id
+          WHERE pmt.type = $1
+          GROUP BY pmt.id, pmt.key
+      ),
+
+      detail_agg AS (
+          SELECT 
+              pmt.id,
+              SUM(
+                  (pmd.value_1 IS NOT NULL)::int +
+                  (pmd.value_2 IS NOT NULL)::int +
+                  (pmd.value_3 IS NOT NULL)::int
+              ) AS total_detail
+          FROM pm_title pmt
+          LEFT JOIN pm_title_child pmtc 
+              ON pmtc.title_id = pmt.id
+          LEFT JOIN pm_details pmd 
+              ON pmd.title_child_id = pmtc.id 
+              AND pmd.pm_id = $2
+          WHERE pmt.type = $1
+          GROUP BY pmt.id
+      )
+
+      SELECT 
+          s.key,
+          COALESCE(s.total_status, 0) AS total_status,
+          COALESCE(d.total_detail, 0) AS total_detail
+
+      FROM status_agg s
+      LEFT JOIN detail_agg d ON d.id = s.id;
+      `;
+
+      const res = await client.query(sql, [data.type, data.pm_id]);
+
+      return {
+        result: res.rows,
+        success: true
+      }
+    }catch (err) {
+      console.log(err);
+      return{
+        success: false
+      }
+    }finally{
       client.release();
     }
   },

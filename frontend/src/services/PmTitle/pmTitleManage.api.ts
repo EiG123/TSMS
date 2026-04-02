@@ -98,5 +98,10 @@ export const pmTitleManage = {
     async getTitleChildData(data: any) {
         const response = await axios.post("http://localhost:3000/api/pmTitle/getTitleChildData", { data })
         return response.data;
+    },
+
+    async getAllTitleInfo(data: any) {
+        const response = await axios.post("http://localhost:3000/api/pmTitle/getAllTitleInfo", { data })
+        return response.data.data;
     }
 };

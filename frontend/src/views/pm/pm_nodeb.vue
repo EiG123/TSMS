@@ -35,6 +35,7 @@ const pageSize = 10;
 const loadData = async () => {
   const res = await getPmList.getPmList();
   siteList.value = res.data;
+  console.log(siteList.value);
 };
 
 const isMobile = ref(window.innerWidth < 768);
