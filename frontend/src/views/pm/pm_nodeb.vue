@@ -126,7 +126,8 @@ const progressBadge: Record<
   pending: { label: "Pending", cls: "badge-green", dot: "dot-green" },
   Inprogress: { label: "In Progress", cls: "badge-amber", dot: "dot-amber" },
   checkedin: { label: "Check In", cls: "badge-blue", dot: "dot-blue" },
-  checkout: { label: "Check Out", cls: "badge-purple", dot: "dot-purple" },
+  checkout: { label: "Check Out", cls: "badge-gray", dot: "dot-gray" },
+  cancel: {label: "Cancel", cls: "badge-red", dot: "dot-red"},
 };
 </script>
 

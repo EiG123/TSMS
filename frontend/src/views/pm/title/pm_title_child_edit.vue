@@ -171,7 +171,7 @@ const handleSubmit = async () => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8"
   >
     <form
       @submit.prevent="handleSubmit"
@@ -201,11 +201,11 @@ const handleSubmit = async () => {
 
       <!-- Header -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            class="absolute inset-0 dark:bg-slate-900"
           ></div>
 
           <div class="relative px-8 py-6">
@@ -244,7 +244,7 @@ const handleSubmit = async () => {
 
       <!-- Basic Information -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div class="px-8 py-6 border-b border-slate-700/50">
           <h2
@@ -257,7 +257,7 @@ const handleSubmit = async () => {
         <div class="p-8 space-y-6">
           <!-- Title Child Name -->
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">
+            <label class="block text-sm font-medium dark:text-slate-300 mb-2">
               Title Child Name <span class="text-red-400">*</span>
             </label>
             <input
@@ -265,26 +265,26 @@ const handleSubmit = async () => {
               type="text"
               placeholder="Enter title child name"
               required
-              class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
 
           <!-- Description -->
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">
+            <label class="block text-sm font-medium dark:text-slate-300 mb-2">
               Description
             </label>
             <textarea
               v-model="description"
               placeholder="Enter description"
               rows="3"
-              class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+              class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
             ></textarea>
           </div>
 
           <!-- Status -->
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-3">
+            <label class="block text-sm font-medium dark:text-slate-300 mb-3">
               Status
             </label>
             <div class="flex gap-6">
@@ -293,10 +293,10 @@ const handleSubmit = async () => {
                   v-model="status"
                   type="radio"
                   value="active"
-                  class="w-5 h-5 text-blue-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+                  class="w-5 h-5 text-blue-500 dark:bg-slate-800 border-slate-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-blue-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-blue-400 transition-colors"
                   >Active</span
                 >
               </label>
@@ -305,10 +305,10 @@ const handleSubmit = async () => {
                   v-model="status"
                   type="radio"
                   value="inactive"
-                  class="w-5 h-5 text-blue-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
+                  class="w-5 h-5 text-blue-500 dark:bg-slate-800 border-slate-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-blue-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-blue-400 transition-colors"
                   >Inactive</span
                 >
               </label>
@@ -317,7 +317,7 @@ const handleSubmit = async () => {
 
           <!-- Rank -->
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-2">
+            <label class="block text-sm font-medium dark:text-slate-300 mb-2">
               Rank
             </label>
             <input
@@ -325,7 +325,7 @@ const handleSubmit = async () => {
               type="number"
               min="0"
               placeholder="0"
-              class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
         </div>
@@ -333,7 +333,7 @@ const handleSubmit = async () => {
 
       <!-- Value #1 -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div
           class="px-8 py-6 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-b border-slate-700/50"
@@ -344,14 +344,14 @@ const handleSubmit = async () => {
             >
               <span class="text-white font-bold">1</span>
             </div>
-            <h2 class="text-xl font-semibold text-slate-200">Value #1</h2>
+            <h2 class="text-xl font-semibold dark:text-slate-200">Value #1</h2>
           </div>
         </div>
 
         <div class="p-8 space-y-6">
           <!-- Value Status -->
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-3">
+            <label class="block text-sm font-medium dark:text-slate-300 mb-3">
               Status
             </label>
             <div class="flex gap-6">
@@ -363,7 +363,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-green-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-green-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-green-400 transition-colors"
                   >Active</span
                 >
               </label>
@@ -375,7 +375,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-green-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-green-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-green-400 transition-colors"
                   >Inactive</span
                 >
               </label>
@@ -389,25 +389,25 @@ const handleSubmit = async () => {
           >
             <!-- Value Name -->
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">
+              <label class="block text-sm font-medium dark:text-slate-300 mb-2">
                 Name
               </label>
               <input
                 v-model="value_name_1"
                 type="text"
                 placeholder="Enter value name"
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
               />
             </div>
 
             <!-- Input Type -->
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-3">
+              <label class="block text-sm font-medium dark:text-slate-300 mb-3">
                 Input Type
               </label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_1"
@@ -415,10 +415,10 @@ const handleSubmit = async () => {
                     value="text"
                     class="w-4 h-4 text-green-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Text</span>
+                  <span class="dark:text-slate-300 text-sm">Text</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_1"
@@ -426,10 +426,10 @@ const handleSubmit = async () => {
                     value="number"
                     class="w-4 h-4 text-green-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Number</span>
+                  <span class="dark:text-slate-300 text-sm">Number</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_1"
@@ -437,10 +437,10 @@ const handleSubmit = async () => {
                     value="date"
                     class="w-4 h-4 text-green-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Date</span>
+                  <span class="dark:text-slate-300 text-sm">Date</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_1"
@@ -448,10 +448,10 @@ const handleSubmit = async () => {
                     value="dropdown"
                     class="w-4 h-4 text-green-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Dropdown</span>
+                  <span class="dark:text-slate-300 text-sm">Dropdown</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-green-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_1"
@@ -459,7 +459,7 @@ const handleSubmit = async () => {
                     value="ocr"
                     class="w-4 h-4 text-green-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">OCR (AI)</span>
+                  <span class="dark:text-slate-300 text-sm">OCR (AI)</span>
                 </label>
               </div>
             </div>
@@ -470,7 +470,7 @@ const handleSubmit = async () => {
               class="space-y-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl"
             >
               <h4
-                class="text-sm font-semibold text-blue-300 flex items-center gap-2"
+                class="text-sm font-semibold dark:text-blue-300 flex items-center gap-2"
               >
                 <svg
                   class="w-4 h-4"
@@ -489,12 +489,12 @@ const handleSubmit = async () => {
               </h4>
 
               <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">
+                <label class="block text-sm font-medium dark:text-slate-300 mb-2">
                   Select Dropdown Name
                 </label>
                 <select
                   v-model="dropdown_head_id_1"
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option :value="null" class="bg-slate-800">
                     -- Select Dropdown --
@@ -503,7 +503,7 @@ const handleSubmit = async () => {
                     v-for="head in dropdownData"
                     :key="head.id"
                     :value="head.id"
-                    class="bg-slate-800"
+                    class="dark:bg-slate-800"
                   >
                     {{ head.dropdown_head }}
                   </option>
@@ -516,7 +516,7 @@ const handleSubmit = async () => {
                 </label>
                 <select
                   v-model="dropdown_member_id_1"
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option :value="null" class="bg-slate-800">
                     -- Select Value --
@@ -538,7 +538,7 @@ const handleSubmit = async () => {
 
       <!-- Value #2 (Similar structure, just change colors and variable names) -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div
           class="px-8 py-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-b border-slate-700/50"
@@ -549,13 +549,13 @@ const handleSubmit = async () => {
             >
               <span class="text-white font-bold">2</span>
             </div>
-            <h2 class="text-xl font-semibold text-slate-200">Value #2</h2>
+            <h2 class="text-xl font-semibold dark:text-slate-200">Value #2</h2>
           </div>
         </div>
 
         <div class="p-8 space-y-6">
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-3"
+            <label class="block text-sm font-medium dark:text-slate-300 mb-3"
               >Status</label
             >
             <div class="flex gap-6">
@@ -567,7 +567,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-purple-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-purple-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-purple-400 transition-colors"
                   >Active</span
                 >
               </label>
@@ -579,7 +579,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-purple-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-purple-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-purple-400 transition-colors"
                   >Inactive</span
                 >
               </label>
@@ -591,24 +591,24 @@ const handleSubmit = async () => {
             class="space-y-6 pt-4 border-t border-slate-700/30"
           >
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2"
+              <label class="block text-sm font-medium dark:text-slate-300 mb-2"
                 >Name</label
               >
               <input
                 v-model="value_name_2"
                 type="text"
                 placeholder="Enter value name"
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-3"
+              <label class="block text-sm font-medium dark:text-slate-300 mb-3"
                 >Input Type</label
               >
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_2"
@@ -616,10 +616,10 @@ const handleSubmit = async () => {
                     value="text"
                     class="w-4 h-4 text-purple-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Text</span>
+                  <span class="dark:text-slate-300 text-sm">Text</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_2"
@@ -627,10 +627,10 @@ const handleSubmit = async () => {
                     value="number"
                     class="w-4 h-4 text-purple-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Number</span>
+                  <span class="dark:text-slate-300 text-sm">Number</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_2"
@@ -638,10 +638,10 @@ const handleSubmit = async () => {
                     value="date"
                     class="w-4 h-4 text-purple-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Date</span>
+                  <span class="dark:text-slate-300 text-sm">Date</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_2"
@@ -649,10 +649,10 @@ const handleSubmit = async () => {
                     value="dropdown"
                     class="w-4 h-4 text-purple-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Dropdown</span>
+                  <span class="dark:text-slate-300 text-sm">Dropdown</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-purple-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_2"
@@ -660,7 +660,7 @@ const handleSubmit = async () => {
                     value="ocr"
                     class="w-4 h-4 text-purple-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">OCR (AI)</span>
+                  <span class="dark:text-slate-300 text-sm">OCR (AI)</span>
                 </label>
               </div>
             </div>
@@ -670,7 +670,7 @@ const handleSubmit = async () => {
               class="space-y-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl"
             >
               <h4
-                class="text-sm font-semibold text-blue-300 flex items-center gap-2"
+                class="text-sm font-semibold dark:text-blue-300 flex items-center gap-2"
               >
                 <svg
                   class="w-4 h-4"
@@ -688,12 +688,12 @@ const handleSubmit = async () => {
                 Dropdown Configuration
               </h4>
               <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2"
+                <label class="block text-sm font-medium dark:text-slate-300 mb-2"
                   >Select Dropdown Name</label
                 >
                 <select
                   v-model="dropdown_head_id_2"
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option :value="null" class="bg-slate-800">
                     -- Select Dropdown --
@@ -709,12 +709,12 @@ const handleSubmit = async () => {
                 </select>
               </div>
               <div v-if="dropdown_head_id_2">
-                <label class="block text-sm font-medium text-slate-300 mb-2"
+                <label class="block text-sm font-medium dark:text-slate-300 mb-2"
                   >Select Value</label
                 >
                 <select
                   v-model="dropdown_member_id_2"
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option :value="null" class="bg-slate-800">
                     -- Select Value --
@@ -736,7 +736,7 @@ const handleSubmit = async () => {
 
       <!-- Value #3 (Similar structure, change colors to orange) -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div
           class="px-8 py-6 bg-gradient-to-r from-orange-500/10 to-red-500/10 border-b border-slate-700/50"
@@ -747,13 +747,13 @@ const handleSubmit = async () => {
             >
               <span class="text-white font-bold">3</span>
             </div>
-            <h2 class="text-xl font-semibold text-slate-200">Value #3</h2>
+            <h2 class="text-xl font-semibold dark:text-slate-200">Value #3</h2>
           </div>
         </div>
 
         <div class="p-8 space-y-6">
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-3"
+            <label class="block text-sm font-medium dark:text-slate-300 mb-3"
               >Status</label
             >
             <div class="flex gap-6">
@@ -765,7 +765,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-orange-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-orange-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-orange-400 transition-colors"
                   >Active</span
                 >
               </label>
@@ -777,7 +777,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-orange-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-orange-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-orange-400 transition-colors"
                   >Inactive</span
                 >
               </label>
@@ -789,24 +789,24 @@ const handleSubmit = async () => {
             class="space-y-6 pt-4 border-t border-slate-700/30"
           >
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2"
+              <label class="block text-sm font-medium dark:text-slate-300 mb-2"
                 >Name</label
               >
               <input
                 v-model="value_name_3"
                 type="text"
                 placeholder="Enter value name"
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-3"
+              <label class="block text-sm font-medium dark:text-slate-300 mb-3"
                 >Input Type</label
               >
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_3"
@@ -814,10 +814,10 @@ const handleSubmit = async () => {
                     value="text"
                     class="w-4 h-4 text-orange-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Text</span>
+                  <span class="dark:text-slate-300 text-sm">Text</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_3"
@@ -825,10 +825,10 @@ const handleSubmit = async () => {
                     value="number"
                     class="w-4 h-4 text-orange-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Number</span>
+                  <span class="dark:text-slate-300 text-sm">Number</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_3"
@@ -836,10 +836,10 @@ const handleSubmit = async () => {
                     value="date"
                     class="w-4 h-4 text-orange-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Date</span>
+                  <span class="dark:text-slate-300 text-sm">Date</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_3"
@@ -847,10 +847,10 @@ const handleSubmit = async () => {
                     value="dropdown"
                     class="w-4 h-4 text-orange-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">Dropdown</span>
+                  <span class="dark:text-slate-300 text-sm">Dropdown</span>
                 </label>
                 <label
-                  class="flex items-center gap-2 px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
+                  class="flex items-center gap-2 px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-900/60 hover:border-orange-500/40 transition-all"
                 >
                   <input
                     v-model="value_input_type_3"
@@ -858,7 +858,7 @@ const handleSubmit = async () => {
                     value="ocr"
                     class="w-4 h-4 text-orange-500 bg-slate-800 border-slate-600"
                   />
-                  <span class="text-slate-300 text-sm">OCR (AI)</span>
+                  <span class="dark:text-slate-300 text-sm">OCR (AI)</span>
                 </label>
               </div>
             </div>
@@ -868,7 +868,7 @@ const handleSubmit = async () => {
               class="space-y-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl"
             >
               <h4
-                class="text-sm font-semibold text-blue-300 flex items-center gap-2"
+                class="text-sm font-semibold dark:text-blue-300 flex items-center gap-2"
               >
                 <svg
                   class="w-4 h-4"
@@ -886,12 +886,12 @@ const handleSubmit = async () => {
                 Dropdown Configuration
               </h4>
               <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2"
+                <label class="block text-sm font-medium dark:text-slate-300 mb-2"
                   >Select Dropdown Name</label
                 >
                 <select
                   v-model="dropdown_head_id_3"
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option :value="null" class="bg-slate-800">
                     -- Select Dropdown --
@@ -934,7 +934,7 @@ const handleSubmit = async () => {
 
       <!-- Image Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
       >
         <div
           class="px-8 py-6 bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border-b border-slate-700/50"
@@ -957,7 +957,7 @@ const handleSubmit = async () => {
                 />
               </svg>
             </div>
-            <h2 class="text-xl font-semibold text-slate-200">
+            <h2 class="text-xl font-semibold dark:text-slate-200">
               Image Configuration
             </h2>
           </div>
@@ -965,7 +965,7 @@ const handleSubmit = async () => {
 
         <div class="p-8 space-y-6">
           <div>
-            <label class="block text-sm font-medium text-slate-300 mb-3"
+            <label class="block text-sm font-medium dark:text-slate-300 mb-3"
               >Image Status</label
             >
             <div class="flex gap-6">
@@ -977,7 +977,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-yellow-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-yellow-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-yellow-400 transition-colors"
                   >Active</span
                 >
               </label>
@@ -989,7 +989,7 @@ const handleSubmit = async () => {
                   class="w-5 h-5 text-yellow-500 bg-slate-800 border-slate-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-0"
                 />
                 <span
-                  class="text-slate-300 group-hover:text-yellow-400 transition-colors"
+                  class="dark:text-slate-300 group-hover:text-yellow-400 transition-colors"
                   >Inactive</span
                 >
               </label>
@@ -1001,7 +1001,7 @@ const handleSubmit = async () => {
             class="space-y-6 pt-4 border-t border-slate-700/30"
           >
             <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2"
+              <label class="block text-sm font-medium dark:text-slate-300 mb-2"
                 >Number of Images</label
               >
               <input
@@ -1010,7 +1010,7 @@ const handleSubmit = async () => {
                 min="0"
                 max="10"
                 placeholder="0"
-                class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
               />
             </div>
 
@@ -1018,16 +1018,16 @@ const handleSubmit = async () => {
               <div
                 v-for="(desc, index) in image_descriptions"
                 :key="index"
-                class="p-4 bg-slate-900/40 border-l-4 border-yellow-500 rounded-r-xl"
+                class="p-4 dark:bg-slate-900/40 border-l-4 border-yellow-500 rounded-r-xl"
               >
-                <label class="block text-sm font-medium text-slate-300 mb-2">
+                <label class="block text-sm font-medium dark:text-slate-300 mb-2">
                   Image #{{ index + 1 }} Description
                 </label>
                 <input
                   v-model="image_descriptions[index]"
                   type="text"
                   :placeholder="`Description for image ${index + 1}`"
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>

@@ -1,7 +1,6 @@
 import { Hono } from "hono";
 import { pmServiceManage } from "../services/pmServiceManage.service.js";
 import pool from "../services/db.js";
-import { success } from "zod";
 
 
 const pmGetPmData = new Hono();
@@ -44,7 +43,6 @@ pmGetPmData.post("/getPmDataById", async (c) => {
 pmGetPmData.get("/pmGetPmList", async (c) => {
     try {
         const res = await pmServiceManage.pmGetPmList(pool);
-        console.log(res.success);
         return c.json({
             data: res.data,
             success: true
