@@ -223,7 +223,7 @@ const getInputIcon = (inputType: string) => {
 
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
+    class="min-h-screen bg-red dark:bg-slate-900 from-slate-900 via-slate-800 to-slate-900 p-4 md:p-8"
   >
     <!-- Loading State -->
     <div
@@ -266,11 +266,11 @@ const getInputIcon = (inputType: string) => {
 
       <!-- Header Section -->
       <div
-        class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
+        class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
           <div
-            class="absolute inset-0 bg-gradient-to-r from-green-500/10 to-emerald-500/10"
+            class="absolute inset-0 bg-white dark:bg-slate-900"
           ></div>
 
           <div class="relative px-8 py-6">
@@ -310,7 +310,7 @@ const getInputIcon = (inputType: string) => {
       <!-- Form Fields -->
       <div v-if="status === 'active'">
         <div
-          class="bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
+          class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden"
         >
           <div class="p-8 space-y-6">
             <!-- Value 1 -->
@@ -342,7 +342,7 @@ const getInputIcon = (inputType: string) => {
                   type="text"
                   :placeholder="`Enter ${value_name_1.toLowerCase()}`"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -353,7 +353,7 @@ const getInputIcon = (inputType: string) => {
                   type="number"
                   :placeholder="`Enter ${value_name_1.toLowerCase()}`"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -363,7 +363,7 @@ const getInputIcon = (inputType: string) => {
                   v-model="formData.value_1"
                   type="date"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -372,9 +372,9 @@ const getInputIcon = (inputType: string) => {
                 <select
                   v-model="formData.value_1"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                 >
-                  <option value="" class="bg-slate-800">
+                  <option value="" class="dark:bg-slate-800">
                     Select an option...
                   </option>
                   <!-- Add options here -->
@@ -389,7 +389,7 @@ const getInputIcon = (inputType: string) => {
                     type="text"
                     :placeholder="`Enter ${value_name_1.toLowerCase()}`"
                     required
-                    class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
@@ -445,7 +445,7 @@ const getInputIcon = (inputType: string) => {
                   type="text"
                   :placeholder="`Enter ${value_name_2.toLowerCase()}`"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -456,7 +456,7 @@ const getInputIcon = (inputType: string) => {
                   type="number"
                   :placeholder="`Enter ${value_name_2.toLowerCase()}`"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -466,7 +466,7 @@ const getInputIcon = (inputType: string) => {
                   v-model="formData.value_2"
                   type="date"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -475,9 +475,9 @@ const getInputIcon = (inputType: string) => {
                 <select
                   v-model="formData.value_2"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 >
-                  <option value="" class="bg-slate-800">
+                  <option value="" class="dark:bg-slate-800">
                     Select an option...
                   </option>
                   <!-- Add options here -->
@@ -492,7 +492,7 @@ const getInputIcon = (inputType: string) => {
                     type="text"
                     :placeholder="`Enter ${value_name_2.toLowerCase()}`"
                     required
-                    class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
@@ -548,7 +548,7 @@ const getInputIcon = (inputType: string) => {
                   type="text"
                   :placeholder="`Enter ${value_name_3.toLowerCase()}`"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -559,7 +559,7 @@ const getInputIcon = (inputType: string) => {
                   type="number"
                   :placeholder="`Enter ${value_name_3.toLowerCase()}`"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -569,7 +569,7 @@ const getInputIcon = (inputType: string) => {
                   v-model="formData.value_3"
                   type="date"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -578,9 +578,9 @@ const getInputIcon = (inputType: string) => {
                 <select
                   v-model="formData.value_3"
                   required
-                  class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 >
-                  <option value="" class="bg-slate-800">
+                  <option value="" class="dark:bg-slate-800">
                     Select an option...
                   </option>
                   <!-- Add options here -->
@@ -595,7 +595,7 @@ const getInputIcon = (inputType: string) => {
                     type="text"
                     :placeholder="`Enter ${value_name_3.toLowerCase()}`"
                     required
-                    class="w-full px-4 py-3 bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                    class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
@@ -626,7 +626,7 @@ const getInputIcon = (inputType: string) => {
               class="space-y-4 pt-3 border-t border-slate-700/30"
             >
               <label
-                class="flex items-center gap-2 text-sm font-medium text-slate-300"
+                class="flex items-center gap-2 text-sm font-medium dark:text-slate-300"
               >
                 <svg
                   class="w-4 h-4 text-yellow-500"
@@ -647,7 +647,7 @@ const getInputIcon = (inputType: string) => {
               <div
                 v-for="(img, index) in img_description"
                 :key="index"
-                class="p-4 bg-slate-900/40 border border-slate-700/50 rounded-xl space-y-3"
+                class="p-4 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl space-y-3"
               >
                 <!-- Description label -->
                 <p class="text-xs text-slate-400 font-medium">
@@ -741,7 +741,7 @@ const getInputIcon = (inputType: string) => {
         </div>
         <!-- Action Buttons -->
         <div
-          class="flex flex-col sm:flex-row justify-end gap-4 bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6"
+          class="flex flex-col sm:flex-row justify-end gap-4 dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6"
         >
           <button
             type="button"
