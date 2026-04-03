@@ -28,6 +28,8 @@ const handleDelete = async (e: Event, id: number) => {
 const siteList = ref<any[]>([]);
 const loading = ref(false);
 const searchQuery = ref("");
+const selectedProgress = ref("");
+const selectedService = ref("");
 const selectedYear = ref("2025/2026");
 const currentPage = ref(1);
 const pageSize = 10;
@@ -58,18 +60,28 @@ onMounted(async () => {
 
 onUnmounted(() => window.removeEventListener("resize", onResize));
 
-watch([searchQuery, selectedYear], () => {
+watch([searchQuery, selectedYear, selectedProgress, selectedService], () => {
   currentPage.value = 1;
 });
 
 const filteredList = computed(() =>
   siteList.value.filter((s) => {
-    if (!searchQuery.value) return true;
-    const q = searchQuery.value.toLowerCase();
-    return (
-      s.site_id?.toLowerCase().includes(q) ||
-      s.region?.toLowerCase().includes(q)
-    );
+    if (searchQuery.value.trim()) {
+      const q = searchQuery.value.trim().toLowerCase();
+      const matchSearch =
+        (s.site_id ?? "").toLowerCase().includes(q) ||
+        (s.site_name ?? "").toLowerCase().includes(q) ||
+        (s.region ?? "").toLowerCase().includes(q);
+      if (!matchSearch) return false;
+    }
+
+    if (selectedProgress.value && s.progress_status !== selectedProgress.value)
+      return false;
+
+    if (selectedService.value && s.service_status !== selectedService.value)
+      return false;
+
+    return true;
   })
 );
 
@@ -105,7 +117,7 @@ const serviceBadge: Record<
   { label: string; cls: string; dot: string }
 > = {
   onService: { label: "On Service", cls: "badge-green", dot: "dot-green" },
-  cancel: { label: "Cancelled", cls: "badge-red", dot: "dot-red" },
+  Cancel: { label: "Cancel", cls: "badge-red", dot: "dot-red" },
 };
 const progressBadge: Record<
   string,
@@ -146,6 +158,28 @@ const progressBadge: Record<
           <option>2027/2028</option>
         </select>
 
+        <!-- Progress filter -->
+        <select
+          v-model="selectedProgress"
+          class="ctrl-select bg-white dark:bg-slate-800/60 text-gray-900 dark:text-slate-200 border border-gray-300 dark:border-slate-700/50"
+        >
+          <option value="">All Progress</option>
+          <option value="pending">Pending</option>
+          <option value="Inprogress">In Progress</option>
+          <option value="checkedin">Check In</option>
+          <option value="checkout">Check Out</option>
+        </select>
+
+        <!-- Service filter -->
+        <select
+          v-model="selectedService"
+          class="ctrl-select bg-white dark:bg-slate-800/60 text-gray-900 dark:text-slate-200 border border-gray-300 dark:border-slate-700/50"
+        >
+          <option value="">All Service</option>
+          <option value="onService">On Service</option>
+          <option value="Cancel">Cancel</option>
+        </select>
+
         <!-- Search -->
         <div
           class="search-wrap bg-white dark:bg-slate-800/60 border border-gray-300 dark:border-slate-700/50"
@@ -172,6 +206,17 @@ const progressBadge: Record<
             class="search-input bg-transparent text-gray-900 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500"
           />
         </div>
+
+        <button
+          @click="
+            selectedProgress = '';
+            selectedService = '';
+            searchQuery = '';
+          "
+          class="ctrl-select text-gray-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+        >
+          Clear
+        </button>
 
         <!-- New -->
         <button
