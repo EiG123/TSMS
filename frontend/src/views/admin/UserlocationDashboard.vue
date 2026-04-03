@@ -196,7 +196,7 @@ onUnmounted(() => {
             <!-- User ID -->
             <div class="flex items-center justify-between mb-1">
               <span class="font-semibold text-gray-800">
-                👤 User {{ user.user_id }}
+                👤 {{ user.username }}
               </span>
               <span
                 v-if="selectedUserId === user.user_id"

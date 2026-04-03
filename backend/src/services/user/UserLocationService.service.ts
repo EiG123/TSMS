@@ -47,8 +47,16 @@ export const UserLocationService = {
     async getLocation(db: any) {
         const client = await db.connect();
         try {
-            const sql = `SELECT * FROM user_locations WHERE status = 'active'`;
+            const sql = `
+            SELECT 
+                ul.*,
+                u.username
+            FROM user_locations AS ul
+            LEFT JOIN users as u ON u.id = ul.user_id 
+             WHERE ul.status = 'active'
+            `;
             const result = await client.query(sql);
+            console.log(result.rows);
             return {
                 success: true,
                 result: result.rows
