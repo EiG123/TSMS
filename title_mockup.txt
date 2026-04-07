@@ -1,0 +1,42 @@
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank) 
+    VALUES ('AC Power', 'kwh_meter', 'pm_nodeb', 'active', 0) 
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status) 
+SELECT id, 'Meter', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Input Voltage', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'MDB AC', 0, 'active' FROM inserted_title;
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Site Information', 'site_info', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'ภาพถ่ายรอบ ๆ สถานีฐาน', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Latitude *ละติจูด', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Longitude *ลองติจูด', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Site Type (GRF/RFT/IBC) *ประเภทของไซต์', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Tower Type *ประเภทของเสาสัญญาณ', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Tower Height (M.) *ความสูงของเสาสัญญาณ', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ต้องขออนุญาตก่อนเข้า Site หรือไม่ (Y/N)', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ชื่อผู้ติดต่อ สำหรับขอเข้า Site Dtac (Owner)', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'เบอร์ติดต่อ Site Dtac (Owner)', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'จำนวนกุญแจ (Dtac)', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ชื่อผู้ถือกุญแจ (Manager Dtac)', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'เบอร์ติดต่อผู้ถือกุญแจ (Manager Dtac)', 11, 'active' FROM inserted_title

@@ -14,7 +14,7 @@ const pm_status = ref("");
 const pm_rank = ref(0);
 
 const handleCancel = () => {
-  router.back;
+  router.back();
 };
 
 const handleSubmit = async () => {

@@ -320,7 +320,8 @@ export const pmTitleService = {
       const sql = `
         SELECT
             ptc.*,
-            COALESCE(pimg.images, '[]'::json) AS pm_images
+            COALESCE(pimg.images, '[]'::json) AS pm_images,
+            COALESCE(pd.details, '[]'::json) AS pm_details
         FROM pm_title_child ptc
 
         LEFT JOIN LATERAL (
@@ -342,6 +343,20 @@ export const pmTitleService = {
             WHERE pti.title_id = ptc.title_id
               AND pti.title_child_id = ptc.id
         ) pimg ON true
+
+        LEFT JOIN LATERAL (
+            SELECT json_agg(
+                json_build_object(
+                    'value_1', pd.value_1,
+                    'value_2', pd.value_2,
+                    'value_3', pd.value_3
+                )
+            ) AS details
+            FROM pm_details pd
+            WHERE pd.pm_id = $2
+              AND pd.title_id = ptc.title_id
+              AND pd.title_child_id = ptc.id
+        ) pd ON true
 
         WHERE ptc.title_id = $1;
       `;

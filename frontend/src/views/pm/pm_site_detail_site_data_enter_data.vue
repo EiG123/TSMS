@@ -56,6 +56,41 @@ const groupedTitleChild = computed(() => {
   );
 });
 
+const activeValueCount = computed(() => {
+  let count = 0;
+  title_child_list.value.forEach((item) => {
+    if (item.value_status_1 === "active") count++;
+    if (item.value_status_2 === "active") count++;
+    if (item.value_status_3 === "active") count++;
+  });
+  return count;
+});
+
+const activeValueCountPerGroup = (items: any[]) => {
+  let filled = 0;
+  let total = 0;
+
+  items.forEach((item) => {
+    // นับ total จาก value_status ที่ active (สิ่งที่ต้องกรอก)
+    if (item.value_status_1 === "active") total++;
+    if (item.value_status_2 === "active") total++;
+    if (item.value_status_3 === "active") total++;
+
+    // นับ filled จาก pm_details ที่มีค่าจริง
+    const details = item.pm_details ?? [];
+    details.forEach((d: any) => {
+      if (d.value_1 !== null && d.value_1 !== undefined && d.value_1 !== "")
+        filled++;
+      if (d.value_2 !== null && d.value_2 !== undefined && d.value_2 !== "")
+        filled++;
+      if (d.value_3 !== null && d.value_3 !== undefined && d.value_3 !== "")
+        filled++;
+    });
+  });
+
+  return { filled, total };
+};
+
 const loadData = async () => {
   const res = await pmTitleManage.getTitleChildByTitle({
     pm_id: pmId.value,
@@ -65,10 +100,11 @@ const loadData = async () => {
   });
   title_child_list.value = res.data.result || [];
 
+  console.log(title_child_list.value);
   // ปิดทุก group เริ่มต้น
-  Object.keys(groupedTitleChild.value).forEach(name => {
-    collapsedGroups.value[name] = true
-  })
+  Object.keys(groupedTitleChild.value).forEach((name) => {
+    collapsedGroups.value[name] = true;
+  });
 };
 
 onMounted(async () => {
@@ -166,7 +202,8 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
                 </h1>
                 <p class="text-slate-400 mt-1">
                   {{ Object.keys(groupedTitleChild).length }} categories •
-                  {{ title_child_list.length }} items
+                  {{ title_child_list.length }} items •
+                  {{ activeValueCount }} active values
                 </p>
               </div>
             </div>
@@ -217,9 +254,16 @@ const handleEnterData = (title_id: any, title_child_id: any) => {
                 </div>
               </div>
               <div
-                class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-lg text-sm font-semibold border border-blue-500/30"
+                class="px-3 py-1 rounded-lg text-sm font-semibold border"
+                :class="
+                  activeValueCountPerGroup(items).filled ===
+                  activeValueCountPerGroup(items).total
+                    ? 'bg-green-500/20 text-green-300 border-green-500/30'
+                    : 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                "
               >
-                {{ items.length }} Total
+                {{ activeValueCountPerGroup(items).filled }} /
+                {{ activeValueCountPerGroup(items).total }} items
               </div>
 
               <!-- เพิ่ม chevron icon ข้างขวา -->

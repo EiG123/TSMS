@@ -166,19 +166,19 @@ CREATE TABLE pm_title_child (
     rank INTEGER NOT NULL,
     status VARCHAR(30) NOT NULL,
 
-    value_status_1 VARCHAR(50),
+    value_status_1 VARCHAR(50) DEFAULT 'inactive',
     value_name_1 TEXT,
     value_input_type_1 VARCHAR(50),
 
-    value_status_2 VARCHAR(50),
+    value_status_2 VARCHAR(50) DEFAULT 'inactive',
     value_name_2 TEXT,
     value_input_type_2 VARCHAR(50),
 
-    value_status_3 VARCHAR(50),
+    value_status_3 VARCHAR(50) DEFAULT 'inactive',
     value_name_3 TEXT,
     value_input_type_3 VARCHAR(50),
 
-    img_status VARCHAR(50),
+    img_status VARCHAR(50) DEFAULT 'inactive',
 
     CONSTRAINT fk_title_child_title
         FOREIGN KEY (title_id)
