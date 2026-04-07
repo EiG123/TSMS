@@ -9,6 +9,7 @@ const router = useRouter();
 const goNew = () => router.push("/pm_nodeb_new");
 const goEdit = (id: string) => router.push(`/pm_nodeb_edit/${id}`);
 const goView = (id: string) => router.push(`/pm_site_detail/${id}`);
+const goBack = () => router.back();
 
 const handleDelete = async (e: Event, id: number) => {
   e.stopPropagation();
@@ -127,7 +128,7 @@ const progressBadge: Record<
   Inprogress: { label: "In Progress", cls: "badge-amber", dot: "dot-amber" },
   checkedin: { label: "Check In", cls: "badge-blue", dot: "dot-blue" },
   checkout: { label: "Check Out", cls: "badge-gray", dot: "dot-gray" },
-  cancel: {label: "Cancel", cls: "badge-red", dot: "dot-red"},
+  cancel: { label: "Cancel", cls: "badge-red", dot: "dot-red" },
 };
 </script>
 
@@ -135,6 +136,26 @@ const progressBadge: Record<
   <div
     class="page-root bg-white dark:bg-slate-900 transition-colors duration-300"
   >
+    <!-- Back Button -->
+    <button
+      @click="goBack"
+      class="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 mb-4"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"
+        />
+      </svg>
+      <span class="font-medium">Back to List</span>
+    </button>
     <!-- ── Header ── -->
     <header
       class="page-header bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700/50"

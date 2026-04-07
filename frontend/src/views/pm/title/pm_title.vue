@@ -5,6 +5,9 @@ import { pmTitleManage } from "../../../services/PmTitle/pmTitleManage.api";
 
 const router = useRouter();
 const goNew = () => router.push("/pm_title_add");
+const goBack = () => {
+  router.back();
+} 
 const goTitleChild = (id: string) => router.push(`/pm_title_child/${id}`);
 
 const loading = ref(false);
@@ -20,7 +23,6 @@ const fetchData = async () => {
       type: pm_type.value,
     });
     pmTitles.value = res.data.result;
-    console.log(pmTitles.value);
     for (let i = 0; i < pmTitles.value.length; i++) {
       const resTitleChild_count = await pmTitleManage.getAllPmTitleChild({
         id: pmTitles.value[i].id,
@@ -63,6 +65,26 @@ const handleDelete = async (id: number) => {
 
 <template>
   <div class="max-w-7xl mx-auto p-6">
+    <!-- Back Button -->
+      <button
+        @click="goBack"
+        class="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 mb-4"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        <span class="font-medium">Back to List</span>
+      </button>
     <!-- Header Section -->
     <div class="bg-white shadow-md rounded-lg p-6 mb-6">
       <div class="flex items-center justify-between mb-4">
