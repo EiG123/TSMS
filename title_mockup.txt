@@ -231,3 +231,62 @@ UNION ALL
 SELECT id, 'Battery Low Voltage Setting Alarm (V) *ค่าที่ตั้งเพื่อให้ส่งอรามเมื่อแบตเตอรี่ตํ่า ใกล้จะหมด', 10, 'active' FROM inserted_title
 UNION ALL
 SELECT id, 'Fuse Battery Sizing (A) *ขนาดเบรกเกอร์ แบตเตอรี่', 11, 'active' FROM inserted_title
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Cabinet', 'cabinet', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'แรงลมขาเข้า (CFM)', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'แรงลมขาออก (CFM)', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'อุณหภูมิภายนอกตู้ (°C)', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'อุณหภูมิภายในตู้ (°C) (ค่ามากกว่า 45°C ไม่ปกติ)', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'สภาพฟิลเตอร์(Filter)', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Theft Protection (ชุดล็อคแบบคาดตู้)', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Physical Chek (ประตูลูกบิด, ยางขอบประตู,การติดตั้งตู้อุปกรณ์, ฐานตู้อุปกรณ์ )', 6, 'active' FROM inserted_title
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Battery', 'battery', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Brand *ยี่ห้อแบตเตอรี่', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Model *รุ่นแบตเตอรี่', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Capacity (AH) *ขนาดแบตเตอรี่กี่ แอมป์', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Battery Type *ชนิดแบตเตอรี่', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Temperature Surface Battery (°C) *อุณหภูมิแบต', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Lead Acid - Voltage Battery at 0 Min. (V) *เทสแบต 0 นาที', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Lead Acid - Voltage Battery at 30 Min. (V) *เทสแบต 30 นาที', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Lead Acid - Voltage Battery at 60 Min. (V) *เทสแบต 60 นาที', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Lead Acid - Voltage Battery at 90 Min. (V) *เทสแบต 90 นาที', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Lead Acid - Voltage Battery at 120 Min. (V) *เทสแบต 120 นาที', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Lithuim - % State of health (SOH) (ค่าต้อง > 70%) *คุณภาพของแบตเตอรี่ลิเธียมกี่ %', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Lithuim - % State of Charge(SOC) *สถานะการชาร์จแบตเตอรี่ลิเธียมว่ามีกี่ %', 11, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Battery Thelf Protection *ชุดล็อกแบตกันขโมย', 12, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Physical Check (ขั้วแตกร้าว, มีน้ำกรดรั่วซึม, ขี้เกลือ, บวม)', 13, 'active' FROM inserted_title
+
+
+
