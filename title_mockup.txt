@@ -151,7 +151,7 @@ SELECT id, 'Insulator Support จากเสาล่อฟ้าและ Grou
 
 WITH inserted_title AS (
     INSERT INTO pm_title (title, key, type, status, rank)
-    VALUES ('External Alarm (Before PM) *ก่อนทำ PM ให้ตรวจสอบ alarm จาก PMBOT (-checkpmhistory SiteID)', 'external_alram', 'pm_nodeb', 'active', 0)
+    VALUES ('External Alarm (Before PM) *ก่อนทำ PM ให้ตรวจสอบ alarm จาก PMBOT (-checkpmhistory SiteID)', 'external_alarm', 'pm_nodeb', 'active', 0)
     RETURNING id
 )
 INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
@@ -289,4 +289,203 @@ UNION ALL
 SELECT id, 'Physical Check (ขั้วแตกร้าว, มีน้ำกรดรั่วซึม, ขี้เกลือ, บวม)', 13, 'active' FROM inserted_title
 
 
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Battery Backup', 'battery_backup', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Backup Time (Min.) *ความสามารถในการสำรองไฟ(นาที)', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Batt Priority *ตัวเลขลำดับความสำคัญ', 1, 'active' FROM inserted_title
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Test Alarm (-checkpm SiteID)', 'test_alarm', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Door/ Intrusion', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Main AC/ Power Failure', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'High Temperature', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Rectifier non urgent', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Rectifier urgent', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Fire system/ Smoke Detector', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'SPD Fault', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'PMU / CSU Fault', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Battery Stolen', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Battery Low Voltage', 9, 'active' FROM inserted_title
+
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('แทรกสี Filter', 'filter', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'แทรกสี Filter 01-04', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'แทรกสี Filter 05-08', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'แทรกสี Filter 09-12', 2, 'active' FROM inserted_title
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Online Equipment', 'online_equipment', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Cabinet No.', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'CI OLT Name', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Online Equipment in NodeB', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Brand/Model (ยี่ห้อ/รุ่น)', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Small Pocket / EDFA', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Load OLT ,Dslam กินกระแส (A)', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'External ALARM ทดสอบการส่ง Alarm ของอุปกรณ์ ทุกตัว Alarm ของอุปกรณ์ [ทุกตัวทำงานทุกตัว Check Bot]', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'EDFA Input/Output A/B (dBm) ,มาตรฐาน +19dBm', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'งานที่ต้องแก้ไขเร่งด่วนทันที', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'รูปของงานที่ต้องแก้ไขเร่งด่วน', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'OLT Data Problem Record Date', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'จำนวน OLT Problem ที่ลงบันทึก', 11, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'สรุปผลการทำ PM OLT', 12, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ข้อเสนอแนะจากการทำ PM OLT', 13, 'active' FROM inserted_title
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Mowing', 'mowing', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Mowing (Y/N) *มีการตัดหญ้า?', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'สภาพหญ้าในสถานี (Physical Check)', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Last Year PM Date', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Plan of Date', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Actual PM Date', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Name or Team Name', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Team's Company', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'รูปภาพ Mowing', 7, 'active' FROM inserted_title
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Solar Cell', 'solar_cell', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'มี Solar Cell', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Last Year PM Date', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Plan of Date', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Actual PM Date', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Name or Team Name', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Team's Companty', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Weather Status', 6, 'active' FROM inserted_title
+
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Air (2 times/Year)', 'air', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Air (Y/N) *ทำ PM Air หรือไม่?', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Last Year PM Date', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Plan of Date', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Actual PM Date', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ระบบควบคุมอุณหภูมิ', 4, 'active' FROM inserted_title
+
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('NOP Verify - External Alarm (After PM) *หลังทำ PM ให้ตรวจสอบ alarm จาก PMBOT', 'nop_verify_external_alarm', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'After Main Power Alarm จำนวน', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'After Rectifier Uegent Alarm จำนวน', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'After Rectifier Non Uegent Alarm จำนวน', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'After Door Open Alarm จำนวน', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'After Smoke Alarm จำนวน', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'After Batt Low Volt Alarm จำนวน', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'After Battery Stolen Alarm จำนวน', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'After SPD Failure Alarm จำนวน', 7, 'active' FROM inserted_title
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('NOP Verify', 'nop_verify', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Verify Date', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Verify Data PM Supervisor's Name', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '1.AC Power System (Status)', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '2. Generator System (Status)', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '3.DC Power System (Status)', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '4.Air System (Status)', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '5.Fire Alarm System (Status)', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '6.Grounding&Lightning System (Status)', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '7.External Alarm System (Status)', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '8.Equipment Installation (Status)', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '9.Environment (Status)', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '10.Tower (Status)', 11, 'active' FROM inserted_title 
 
