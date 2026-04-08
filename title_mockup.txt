@@ -40,3 +40,194 @@ UNION ALL
 SELECT id, 'ชื่อผู้ถือกุญแจ (Manager Dtac)', 10, 'active' FROM inserted_title
 UNION ALL
 SELECT id, 'เบอร์ติดต่อผู้ถือกุญแจ (Manager Dtac)', 11, 'active' FROM inserted_title
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Transformer *หม้อแปลงไฟฟ้า', 'transformer', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Has Transformer *มีใช้งานหรือไม่?', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Last Year PM Date', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Plan of Date', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Actual PM Date *วันที่ทำ PM', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Total Transformer No. *จำนวนหม้อแปลง', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Brand *ยี่ห้อหม้อแปลง', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Series No', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'System (1 or 3 Phase)', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Size Capacity (KVA) *ขนาดหม้อแปลง', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Rated Voltage : HV *ค่าแรงดันไฮโวลท์', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Rated Voltage : LV *ค่าแรงดันโลว์โวลท์', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Power Rating', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Power Actual Load', 11, 'active' FROM inserted_title
+UNION ALL
+SELECT id, '% Power Used', 12, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Phisical Check *ตรวจสอบสภาพทั่วไปหม้อแปลง', 13, 'active' FROM inserted_title
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Generator *เครื่องปั่นไฟ', 'generator', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Has Generator *มีใช้งานหรือไม่?', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Last Year PM Date', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Plan of Date', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Actual PM Date', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Brand *ยี่ห้อ', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'System (AC or DC)', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Sizing (KVA)', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ระดับน้ำมันเชื้อเพลิง %', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'วันที่ติดตั้ง Battery', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'วันที่เปลี่ยนถ่ายน้ำมันเครื่องและไส้กรอง', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ขนาด ATS (Amp)', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Physical Check *ตรวจสอบสภาพทั่วไป', 11, 'active' FROM inserted_title
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Site Facility', 'site_facility', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Key&Key Self Box กุญแจและที่เก็บ', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ป้ายชื่อสถานี', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'เสาไฟฟ้า หน้าสถานี', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ถนนทางเข้าสถานี', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ตรวจสอบสภาพ ประตู และรั้ว ( Criteria : ต้องอยู่ในสภาพปกติ ไม่เสียหาย )', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ตรวจสอบสภาพ Cable Routing Criteria : มีสภาพดี สายไม่ตกหย่อน สายไฟฟ้ามี label บอก Routing', 5, 'active' FROM inserted_title
+
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Grounding System', 'grounding', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'สภาพทั่วไป ของสาย Ground', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'สภาพทั่วไป ของบ่อ,ฝา,Rod ที่ Ground & Lightning Pit', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'ค่าความต้านทานที่ Ground Pit : <5 Ohm (Ohm)', 2, 'active' FROM inserted_title
+UNION ALL,
+SELECT id, 'ค่าความต้านทานที่ Lightning Pit : <5 Ohm (Ohm)', 3, 'active' FROM inserted_title
+UNION ALL,
+SELECT id, 'ค่าความต้านทานที่ Master Ground Bar: <5 Ohm (Ohm)', 4, 'active' FROM inserted_title
+UNION ALL,
+SELECT id, 'ความต่อเนื่องทางไฟฟ้า Lightning Pit – Ground Pit <1 Ohm และ ค่าความต่อเนื่องทางไฟฟ้าของระบบ Ground Loop < 1 Ohm', 5, 'active' FROM inserted_title
+UNION ALL,
+SELECT id, 'Insulator Support จากเสาล่อฟ้าและ Ground Bar ทุกจุด *แท่งฉนวนรองบาร์กราวด์', 6, 'active' FROM inserted_title
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('External Alarm (Before PM) *ก่อนทำ PM ให้ตรวจสอบ alarm จาก PMBOT (-checkpmhistory SiteID)', 'external_alram', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Before - Main Power Alarm จำนวน', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Before - Rectifier Urgent Alarm จำนวน', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Before - Rectifier Non Uegent Alarm จำนวน', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Before - Door Open Alarm จำนวน', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Before - Smoke Alarm จำนวน', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Before - Batt Low Volt Alarm จำนวน', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Before - Battery Stolen Alarm จำนวน', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Before - SPD Failure Alarm จำนวน', 7, 'active' FROM inserted_title
+
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('NodeB & TX Equipment', 'nodeb_tx_equipment', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Cabinet Brand (Huawei/Delta/Emerson/etc.) *ยี่ห้อตู้', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Cabinet Model *รุ่นตู้', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'FAN Cabinet (ทำความสะอาดพัดลมหัวตู้ Before/After)', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'NodeB/eNodeB Brand (Huawei/Ericsson/ZTE)', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'NodeB/eNodeB Model *ยี่ห้อ BBU/BB/DUW/DUS/BBR', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'TX Type (MW/OFC) *ตู้ ODF', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'TX Brand (Huawei/Nokia/etc.) *ยี่ห้อ ATN/L2SW', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'TX Model *รุ่นของ ATN, L2SW', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Node Type *ประเภทตู้เครือข่าย (NodeB=850/eNodeB=2100,1800,900/gNodeB=2600,700)', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Ground Leak Current (< 0.75 Amp) *วัดกระแสสายกราวด์ของตู้ NodeB', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Inlet and Connector *อุดรูช่องสายเข้าตู้', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Routing & Label *ป้ายบอกชื่อสายสัญญาณ/อุปกรณ์', 11, 'active' FROM inserted_title
+
+WITH inserted_title AS (
+    INSERT INTO pm_title (title, key, type, status, rank)
+    VALUES ('Rectifier', 'rectifier', 'pm_nodeb', 'active', 0)
+    RETURNING id
+)
+INSERT INTO pm_title_child (title_id, title_child_name, rank, status)
+SELECT id, 'Brand (Eltek/Huawei/etc.) *ยี่ห้อ CSU', 0, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Model (รุ่นของcontrol เช่น ORION) *รุ่น CSU', 1, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Module Model (รุ่นของPSU เช่น ESR-48/56B) *รุ่นของโมดูล Rectifier', 2, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Power /Module (W) *ขนาดวัตของโมดูล เอา DC Output(V) x (A)', 3, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'No. Module *จํานวนโมดูล', 4, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Load Current (A) *โหลดกี่แอมป์', 5, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Float Voltage Setting (V) (53.5V/54.0V) *แรงดันการชาร์จแบต', 6, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Current Limit Setting (A) *ค่ากระแสการชาร์จแบตเตอรี่', 7, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'LLVD Voltage Setting (V) *ค่าแรงดันที่ตัดการเชื่อมต่ออุุปกรณ์บนเสา', 8, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'BLVD Voltage Setting (V) *ค่าที่ตั้งไว้เพื่อตัดโหลดทั้งหมดเพื่อป้องกันแบตเตอรี่เสียหาย', 9, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Battery Low Voltage Setting Alarm (V) *ค่าที่ตั้งเพื่อให้ส่งอรามเมื่อแบตเตอรี่ตํ่า ใกล้จะหมด', 10, 'active' FROM inserted_title
+UNION ALL
+SELECT id, 'Fuse Battery Sizing (A) *ขนาดเบรกเกอร์ แบตเตอรี่', 11, 'active' FROM inserted_title
