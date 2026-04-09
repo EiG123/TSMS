@@ -73,7 +73,8 @@ onMounted(async () => {
       title_id: title_id.value,
       title_child_id: title_child_id.value,
     });
-    title_child_name.value = getTitleChildByTitle.data.result[0].title_child_name;
+    title_child_name.value =
+      getTitleChildByTitle.data.result[0].title_child_name;
     description.value = getTitleChildByTitle.data.result[0].description;
     status.value = getTitleChildByTitle.data.result[0].status;
     rank.value = getTitleChildByTitle.data.result[0].rank;
@@ -130,6 +131,27 @@ const handleCancel = () => {
 
 const handleSubmit = async () => {
   console.log("Submitting...");
+  if (value_status_1.value === 'active') {
+    if (!value_input_type_1.value) {
+      // handle error
+      alert("กรุณากรอก value type ตัวที่ 1");
+      return;
+    }
+  }
+  if (value_status_2.value === 'active') {
+    if (!value_input_type_2.value) {
+      // handle error
+      alert("กรุณากรอก value type ตัวที่ 2");
+      return;
+    }
+  }
+  if (value_status_3.value === 'active') {
+    if (!value_input_type_3.value) {
+      // handle error
+      alert("กรุณากรอก value type ตัวที่ 3");
+      return;
+    }
+  }
   const res = await pmTitleManage.EditpmTitleChild({
     title_id: title_id.value,
     title_child_id: title_child_id.value,
@@ -170,9 +192,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8"
-  >
+  <div class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8">
     <form
       @submit.prevent="handleSubmit"
       class="max-w-5xl mx-auto space-y-6 animate-slide-up"
@@ -204,9 +224,7 @@ const handleSubmit = async () => {
         class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
-          <div
-            class="absolute inset-0 dark:bg-slate-900"
-          ></div>
+          <div class="absolute inset-0 dark:bg-slate-900"></div>
 
           <div class="relative px-8 py-6">
             <div class="flex items-center gap-4">
@@ -489,7 +507,9 @@ const handleSubmit = async () => {
               </h4>
 
               <div>
-                <label class="block text-sm font-medium dark:text-slate-300 mb-2">
+                <label
+                  class="block text-sm font-medium dark:text-slate-300 mb-2"
+                >
                   Select Dropdown Name
                 </label>
                 <select
@@ -688,7 +708,8 @@ const handleSubmit = async () => {
                 Dropdown Configuration
               </h4>
               <div>
-                <label class="block text-sm font-medium dark:text-slate-300 mb-2"
+                <label
+                  class="block text-sm font-medium dark:text-slate-300 mb-2"
                   >Select Dropdown Name</label
                 >
                 <select
@@ -709,7 +730,8 @@ const handleSubmit = async () => {
                 </select>
               </div>
               <div v-if="dropdown_head_id_2">
-                <label class="block text-sm font-medium dark:text-slate-300 mb-2"
+                <label
+                  class="block text-sm font-medium dark:text-slate-300 mb-2"
                   >Select Value</label
                 >
                 <select
@@ -886,7 +908,8 @@ const handleSubmit = async () => {
                 Dropdown Configuration
               </h4>
               <div>
-                <label class="block text-sm font-medium dark:text-slate-300 mb-2"
+                <label
+                  class="block text-sm font-medium dark:text-slate-300 mb-2"
                   >Select Dropdown Name</label
                 >
                 <select
@@ -1020,7 +1043,9 @@ const handleSubmit = async () => {
                 :key="index"
                 class="p-4 dark:bg-slate-900/40 border-l-4 border-yellow-500 rounded-r-xl"
               >
-                <label class="block text-sm font-medium dark:text-slate-300 mb-2">
+                <label
+                  class="block text-sm font-medium dark:text-slate-300 mb-2"
+                >
                   Image #{{ index + 1 }} Description
                 </label>
                 <input

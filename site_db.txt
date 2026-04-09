@@ -150,7 +150,7 @@ CREATE TABLE pm_mowing (
 
 CREATE TABLE pm_title (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(50),
+    title VARCHAR(255),
     description VARCHAR(255),
     key VARCHAR(50),
     type VARCHAR(50),
@@ -161,7 +161,7 @@ CREATE TABLE pm_title (
 CREATE TABLE pm_title_child (
     id SERIAL PRIMARY KEY,
     title_id INTEGER NOT NULL,
-    title_child_name VARCHAR(100) NOT NULL,
+    title_child_name VARCHAR(255) NOT NULL,
     description TEXT,
     rank INTEGER NOT NULL,
     status VARCHAR(30) NOT NULL,
@@ -333,6 +333,7 @@ CREATE TABLE status_master (
 
 DROP TABLE IF EXISTS pm_problem;
 DROP TABLE IF EXISTS pm_problem_logs;
+
 DROP TABLE IF EXISTS pm_images;
 DROP TABLE IF EXISTS pm_title_images;
 DROP TABLE IF EXISTS pm_details;
