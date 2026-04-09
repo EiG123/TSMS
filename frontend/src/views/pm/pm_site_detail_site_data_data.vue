@@ -17,9 +17,6 @@ const props = defineProps<{
 const pmId = computed(() => props.id);
 const type = computed(() => props.type);
 
-console.log(pmId.value);
-console.log(type.value);
-
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
 const kwh_meters_list = ref<any[]>([]);
@@ -54,20 +51,35 @@ const handleDelete = async () => {
   }
 };
 
+const getDetailStats = (titleDetails, orderNumber) => {
+  const detail = titleDetails.find((d) => d.order_number === orderNumber);
+  return detail
+    ? `${detail.child_details_count} / ${detail.child_count} items`
+    : "0 / 1 items";
+};
+
+const load_data = async () => {
+  const res = await getPmList.getPmById(pmId.value);
+  pMsiteData.value = res.data.data;
+  kwh_meters_list.value = res.data.data.kwh_meters || [];
+  console.log(kwh_meters_list.value);
+
+  const res_title = await pmTitleManage.getTitleByType({
+    pmId: pmId.value,
+    type: type.value,
+  });
+  title_list.value = res_title.data.result || [];
+  // kwh_meters_list.value = res_title.data.result || [];
+  if (kwh_meters_list.value.length === 0) {
+    kwh_meters_list.value = res_title.data.result || [];
+  }
+  console.log("Title List:", title_list.value);
+};
+
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await getPmList.getPmById(pmId.value);
-    pMsiteData.value = res.data.data;
-    kwh_meters_list.value = res.data.data.kwh_meters || [];
-
-    const res_title = await pmTitleManage.getTitleByType(type.value);
-    title_list.value = res_title.data.result || [];
-    // kwh_meters_list.value = res_title.data.result || [];
-    if (kwh_meters_list.value.length === 0) {
-      kwh_meters_list.value = res_title.data.result || [];
-    }
-    console.log("Title List:", title_list.value);
+    await load_data();
   } catch (error) {
     console.error("Failed to load PM data:", error);
     alert("ไม่เจอ API SiteList");
@@ -108,9 +120,7 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8"
-  >
+  <div class="min-h-screen bg-white dark:bg-slate-900 p-4 md:p-8">
     <!-- Loading State -->
     <div
       v-if="loading"
@@ -153,9 +163,7 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
         class="bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden"
       >
         <div class="relative">
-          <div
-            class="absolute inset-0"
-          ></div>
+          <div class="absolute inset-0"></div>
 
           <div class="relative px-8 py-6">
             <div
@@ -264,7 +272,12 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                   class="flex-1 min-w-0"
                   @click="goEnterData(title.title, title.id, kwh.number)"
                 >
-                  <p class="dark:text-slate-200 font-medium">{{ title.title }}</p>
+                  <p class="dark:text-slate-200 font-medium">
+                    {{ title.title }}
+                  </p>
+                  <p class="text-sm font-semibold dark:text-blue-400 mt-1">
+                    {{ getDetailStats(title.details, kwh.number) }}
+                  </p>
                   <p
                     v-if="title.description"
                     class="text-sm dark:text-slate-400 mt-1"

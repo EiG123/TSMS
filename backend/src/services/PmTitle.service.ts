@@ -177,6 +177,15 @@ export const pmTitleService = {
       RETURNING id
     `;
 
+      if (
+        data.value_status_1 === 'inactive' &&
+        data.value_status_2 === 'inactive' &&
+        data.value_status_3 === 'inactive' &&
+        data.image_status === 'inactive'
+      ) {
+        data.status = 'inactive'
+      }
+
       const { rows } = await client.query(sqlTitleChild, [
         data.title_id,
         data.title_child_name,
@@ -290,16 +299,55 @@ export const pmTitleService = {
 
   async getTitleByType(data: any, pool: any) {
     const client = await pool.connect();
-
+    console.log(data);
     if (data.type == 'ac_power') {
       data.type = 'kwh_meter';
     }
     try {
       const sql = `
-        SELECT * FROM pm_title WHERE key = $1;
+        SELECT 
+            pt.*,
+            JSONB_AGG(
+                JSONB_BUILD_OBJECT(
+                    'order_number', pd_check.order_number,
+                    -- child_count ในที่นี้คือ "จำนวนช่องทั้งหมดที่เปิดให้กรอก (Status active)"
+                    'child_count', pd_check.total_active_slots,
+                    -- child_details_count คือ "จำนวนช่องที่กรอกข้อมูลลงไปแล้วจริง"
+                    'child_details_count', pd_check.filled_values_count
+                )
+                ORDER BY pd_check.order_number
+            ) AS details
+
+        FROM pm_title pt
+        LEFT JOIN LATERAL (
+            SELECT 
+                pd.order_number,
+                -- 1. นับช่องที่สถานะเป็น 'active' ทั้งหมด (ตัวหาร)
+                SUM(
+                    (CASE WHEN ptc.value_status_1 = 'active' THEN 1 ELSE 0 END) +
+                    (CASE WHEN ptc.value_status_2 = 'active' THEN 1 ELSE 0 END) +
+                    (CASE WHEN ptc.value_status_3 = 'active' THEN 1 ELSE 0 END)
+                ) AS total_active_slots,
+                -- 2. นับช่องที่กรอกข้อมูลแล้วจริง (ตัวเศษ)
+                SUM(
+                    (CASE WHEN ptc.value_status_1 = 'active' AND pd.value_1 IS NOT NULL THEN 1 ELSE 0 END) +
+                    (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL THEN 1 ELSE 0 END) +
+                    (CASE WHEN ptc.value_status_3 = 'active' AND pd.value_3 IS NOT NULL THEN 1 ELSE 0 END)
+                ) AS filled_values_count
+            FROM pm_title_child ptc
+            LEFT JOIN pm_details pd 
+                ON pd.title_child_id = ptc.id 
+                AND pd.pm_id = $2
+            WHERE ptc.title_id = pt.id 
+              AND ptc.status = 'active'
+            GROUP BY pd.order_number
+        ) pd_check ON TRUE
+
+        WHERE pt.key = $1
+        GROUP BY pt.id;
       `;
 
-      const result = await client.query(sql, [data.type]);
+      const result = await client.query(sql, [data.type, data.pmId]);
 
       return {
         result: result.rows,
@@ -356,10 +404,12 @@ export const pmTitleService = {
             WHERE pd.pm_id = $2
               AND pd.title_id = ptc.title_id
               AND pd.title_child_id = ptc.id
+              AND pd.order_number = $3
         ) pd ON true
 
-        WHERE ptc.title_id = $1;
+        WHERE ptc.title_id = $1 AND ptc.status = 'active';
       `;
+      console.log(data);
       const result = await client.query(sql, [data.title_id, data.pm_id, data.order_number]);
       return {
         result: result.rows,
@@ -480,6 +530,15 @@ export const pmTitleService = {
       RETURNING id
     `;
 
+      if (
+        data.value_status_1 === 'inactive' &&
+        data.value_status_2 === 'inactive' &&
+        data.value_status_3 === 'inactive' &&
+        data.image_status === 'inactive'
+      ) {
+        data.status = 'inactive'
+      }
+
       const { rows } = await client.query(sql, [
         data.title_id,         // $1
         data.title_child_id,   // $2
@@ -559,10 +618,10 @@ export const pmTitleService = {
     }
   },
 
-  
+
   async getAllTitleInfo(data: any, db: any) {
     const client = await db.connect();
-    try{
+    try {
       console.log(data);
       const sql = `
       WITH status_agg AS (
@@ -614,12 +673,12 @@ export const pmTitleService = {
         result: res.rows,
         success: true
       }
-    }catch (err) {
+    } catch (err) {
       console.log(err);
-      return{
+      return {
         success: false
       }
-    }finally{
+    } finally {
       client.release();
     }
   },
