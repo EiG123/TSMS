@@ -53,6 +53,7 @@ const handleDelete = async () => {
 
 const getDetailStats = (titleDetails, orderNumber) => {
   const detail = titleDetails.find((d) => d.order_number === orderNumber);
+  console.log(detail);
   return detail
     ? `${detail.child_details_count} / ${detail.child_count} items`
     : "0 / 1 items";
@@ -62,11 +63,11 @@ const load_data = async () => {
   const res = await getPmList.getPmById(pmId.value);
   pMsiteData.value = res.data.data;
   kwh_meters_list.value = res.data.data.kwh_meters || [];
-  console.log(kwh_meters_list.value);
 
   const res_title = await pmTitleManage.getTitleByType({
     pmId: pmId.value,
     type: type.value,
+    order_number: kwh_meters_list.value.length,
   });
   title_list.value = res_title.data.result || [];
   // kwh_meters_list.value = res_title.data.result || [];

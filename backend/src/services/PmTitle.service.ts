@@ -309,26 +309,28 @@ export const pmTitleService = {
             pt.*,
             JSONB_AGG(
                 JSONB_BUILD_OBJECT(
-                    'order_number', pd_check.order_number,
-                    -- child_count ในที่นี้คือ "จำนวนช่องทั้งหมดที่เปิดให้กรอก (Status active)"
-                    'child_count', pd_check.total_active_slots,
-                    -- child_details_count คือ "จำนวนช่องที่กรอกข้อมูลลงไปแล้วจริง"
-                    'child_details_count', pd_check.filled_values_count
+                    'order_number', orders.order_no,
+                    'child_count', COALESCE(pd_check.total_active_slots, 0),
+                    'child_details_count', COALESCE(pd_check.filled_values_count, 0)
                 )
-                ORDER BY pd_check.order_number
+                ORDER BY orders.order_no
             ) AS details
 
         FROM pm_title pt
+        -- 1. สร้างชุดตัวเลข order_number ที่เป็นไปได้ทั้งหมดขึ้นมาก่อน
+        CROSS JOIN (
+            SELECT DISTINCT order_number as order_no 
+            FROM pm_details 
+            WHERE pm_id = $2
+        ) orders
+        -- 2. นำเลข order ไปเช็คกับข้อมูลในแต่ละ title
         LEFT JOIN LATERAL (
             SELECT 
-                pd.order_number,
-                -- 1. นับช่องที่สถานะเป็น 'active' ทั้งหมด (ตัวหาร)
                 SUM(
                     (CASE WHEN ptc.value_status_1 = 'active' THEN 1 ELSE 0 END) +
                     (CASE WHEN ptc.value_status_2 = 'active' THEN 1 ELSE 0 END) +
                     (CASE WHEN ptc.value_status_3 = 'active' THEN 1 ELSE 0 END)
                 ) AS total_active_slots,
-                -- 2. นับช่องที่กรอกข้อมูลแล้วจริง (ตัวเศษ)
                 SUM(
                     (CASE WHEN ptc.value_status_1 = 'active' AND pd.value_1 IS NOT NULL THEN 1 ELSE 0 END) +
                     (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL THEN 1 ELSE 0 END) +
@@ -338,9 +340,9 @@ export const pmTitleService = {
             LEFT JOIN pm_details pd 
                 ON pd.title_child_id = ptc.id 
                 AND pd.pm_id = $2
+                AND pd.order_number = orders.order_no -- ล็อกเลข order ไว้ที่นี่
             WHERE ptc.title_id = pt.id 
               AND ptc.status = 'active'
-            GROUP BY pd.order_number
         ) pd_check ON TRUE
 
         WHERE pt.key = $1
