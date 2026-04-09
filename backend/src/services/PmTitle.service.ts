@@ -626,47 +626,43 @@ export const pmTitleService = {
     try {
       console.log(data);
       const sql = `
-      WITH status_agg AS (
-          SELECT 
-              pmt.id,
-              pmt.key,
-              SUM(
-                  (pmtc.value_status_1 = 'active')::int +
-                  (pmtc.value_status_2 = 'active')::int +
-                  (pmtc.value_status_3 = 'active')::int
-              ) AS total_status
-          FROM pm_title pmt
-          LEFT JOIN pm_title_child pmtc 
-              ON pmtc.title_id = pmt.id
-          WHERE pmt.type = $1
-          GROUP BY pmt.id, pmt.key
-      ),
-
-      detail_agg AS (
-          SELECT 
-              pmt.id,
-              SUM(
-                  (pmd.value_1 IS NOT NULL)::int +
-                  (pmd.value_2 IS NOT NULL)::int +
-                  (pmd.value_3 IS NOT NULL)::int
-              ) AS total_detail
-          FROM pm_title pmt
-          LEFT JOIN pm_title_child pmtc 
-              ON pmtc.title_id = pmt.id
-          LEFT JOIN pm_details pmd 
-              ON pmd.title_child_id = pmtc.id 
-              AND pmd.pm_id = $2
-          WHERE pmt.type = $1
-          GROUP BY pmt.id
-      )
-
       SELECT 
-          s.key,
-          COALESCE(s.total_status, 0) AS total_status,
-          COALESCE(d.total_detail, 0) AS total_detail
+    pt.key,
+    -- ส่วนของการนับ Status ทั้งหมด (ตัวหาร)
+    COALESCE(status_data.total_status, 0) AS total_status,
+    -- ส่วนของการนับข้อมูลที่กรอกแล้ว (ตัวเศษ)
+    COALESCE(detail_data.total_detail, 0) AS total_detail
+FROM pm_title pt
 
-      FROM status_agg s
-      LEFT JOIN detail_agg d ON d.id = s.id;
+-- CTE 1: นับจำนวนช่องที่ Active ทั้งหมดภายใต้แต่ละ Title
+LEFT JOIN LATERAL (
+    SELECT 
+        SUM(
+            (ptc.value_status_1 = 'active')::int +
+            (ptc.value_status_2 = 'active')::int +
+            (ptc.value_status_3 = 'active')::int
+        ) AS total_status
+    FROM pm_title_child ptc
+    WHERE ptc.title_id = pt.id 
+      AND ptc.status = 'active'
+) status_data ON TRUE
+
+-- CTE 2: นับจำนวนข้อมูลที่มีอยู่จริงใน pm_details
+LEFT JOIN LATERAL (
+    SELECT 
+        SUM(
+            (CASE WHEN ptc.value_status_1 = 'active' AND pd.value_1 IS NOT NULL THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_3 = 'active' AND pd.value_3 IS NOT NULL THEN 1 ELSE 0 END)
+        ) AS total_detail
+    FROM pm_title_child ptc
+    INNER JOIN pm_details pd ON pd.title_child_id = ptc.id
+    WHERE ptc.title_id = pt.id 
+      AND ptc.status = 'active'
+      AND pd.pm_id = $2
+) detail_data ON TRUE
+
+WHERE pt.type = $1;
       `;
 
       const res = await client.query(sql, [data.type, data.pm_id]);

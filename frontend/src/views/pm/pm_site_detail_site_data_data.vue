@@ -19,7 +19,7 @@ const type = computed(() => props.type);
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
-const kwh_meters_list = ref<any[]>([]);
+const order_list = ref<any[]>([]);
 const title_list = ref<any[]>([]);
 const showModules = ref(true);
 
@@ -56,23 +56,28 @@ const getDetailStats = (titleDetails, orderNumber) => {
   console.log(detail);
   return detail
     ? `${detail.child_details_count} / ${detail.child_count} items`
-    : "0 / 1 items";
+    : "X / X items";
 };
 
 const load_data = async () => {
   const res = await getPmList.getPmById(pmId.value);
   pMsiteData.value = res.data.data;
-  kwh_meters_list.value = res.data.data.kwh_meters || [];
+  
+  if(type.value === 'ac_power'){
+      order_list.value = res.data.data.kwh_meters || [];
+  }else{
+    order_list.value = [];
+  }
 
   const res_title = await pmTitleManage.getTitleByType({
     pmId: pmId.value,
     type: type.value,
-    order_number: kwh_meters_list.value.length,
+    order_number: order_list.value.length,
   });
   title_list.value = res_title.data.result || [];
-  // kwh_meters_list.value = res_title.data.result || [];
-  if (kwh_meters_list.value.length === 0) {
-    kwh_meters_list.value = res_title.data.result || [];
+  // order_list.value = res_title.data.result || [];
+  if (order_list.value.length === 0) {
+    order_list.value = res_title.data.result || [];
   }
   console.log("Title List:", title_list.value);
 };
@@ -190,7 +195,7 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                     <span
                       class="px-3 py-1 dark:bg-yellow-500/20 text-yellow-300 rounded-lg text-sm font-semibold border border-yellow-500/30"
                     >
-                      {{ kwh_meters_list.length }} items
+                      {{ order_list.length }} items
                     </span>
                   </div>
                   <div class="flex items-center gap-2">
@@ -207,9 +212,9 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
       </div>
 
       <!-- AC Power List -->
-      <div v-if="kwh_meters_list.length > 0" class="space-y-4">
+      <div v-if="order_list.length > 0" class="space-y-4">
         <div
-          v-for="(kwh, index) in kwh_meters_list"
+          v-for="(kwh, index) in order_list"
           :key="index"
           class="dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-yellow-500/10 hover:border-yellow-500/40 transition-all duration-300"
         >
@@ -277,7 +282,7 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                     {{ title.title }}
                   </p>
                   <p class="text-sm font-semibold dark:text-blue-400 mt-1">
-                    {{ getDetailStats(title.details, kwh.number) }}
+                    {{ getDetailStats(title.details, kwh?.number || 1) }}
                   </p>
                   <p
                     v-if="title.description"
