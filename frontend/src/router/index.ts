@@ -205,9 +205,20 @@ const routes = [
                 }
             },
             {
+                path: "pm_page",
+                name: "pm_page",
+                component: pm_nodeb,
+                props: route => ({
+                    type: route.query.type,
+                })
+            },
+            {
                 path: "pm_nodeb_new",
                 name: "pm_nodeb_new",
                 component: pm_nodeb_new,
+                props: route => ({
+                    type: route.query.type,
+                }),
                 meta: {
                     permissions: ["create_pm_nodeb"]
                 }

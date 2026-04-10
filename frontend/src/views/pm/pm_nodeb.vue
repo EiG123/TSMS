@@ -6,7 +6,24 @@ import { pmServiceManage } from "../../services/pmServiceManage.api";
 import PmNodebCard from "./pmNodebCard.vue";
 
 const router = useRouter();
-const goNew = () => router.push("/pm_nodeb_new");
+const props = defineProps<{
+  type: string;
+}>();
+
+let type = computed(() => props.type);
+const showType = ref("");
+if(type.value === 'pm_node_b'){
+  showType.value = "NodeB";
+}
+if(type.value === 'pm_small'){
+  showType.value = "Small";
+}
+const goNew = () => router.push({
+  name: `pm_nodeb_new`,
+  query: {
+    type: props.type,
+  },
+});
 const goEdit = (id: string) => router.push(`/pm_nodeb_edit/${id}`);
 const goView = (id: string) => router.push(`/pm_site_detail/${id}`);
 const goBack = () => router.back();
@@ -36,7 +53,7 @@ const currentPage = ref(1);
 const pageSize = 10;
 
 const loadData = async () => {
-  const res = await getPmList.getPmList();
+  const res = await getPmList.getPmList({type: type.value});
   siteList.value = res.data;
   console.log(siteList.value);
 };
@@ -162,7 +179,7 @@ const progressBadge: Record<
     >
       <div>
         <h1 class="page-title text-gray-900 dark:text-slate-100">
-          PM NodeB List
+          PM {{showType}} List
         </h1>
         <p class="page-sub text-gray-600 dark:text-slate-400">
           {{ filteredList.length }} sites · {{ selectedYear }}

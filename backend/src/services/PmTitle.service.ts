@@ -627,42 +627,52 @@ export const pmTitleService = {
       console.log(data);
       const sql = `
       SELECT 
-    pt.key,
-    -- ส่วนของการนับ Status ทั้งหมด (ตัวหาร)
-    COALESCE(status_data.total_status, 0) AS total_status,
-    -- ส่วนของการนับข้อมูลที่กรอกแล้ว (ตัวเศษ)
-    COALESCE(detail_data.total_detail, 0) AS total_detail
-FROM pm_title pt
+          pt.key,
+          -- รวมยอด Status ของทุก Title ที่มี Key เดียวกัน
+          SUM(COALESCE(status_data.total_active_per_title, 0)) AS total_status,
+          -- รวมยอดการกรอกข้อมูลของทุก Title ที่มี Key เดียวกัน
+          SUM(COALESCE(detail_data.total_filled_per_title, 0)) AS total_detail
+      FROM pm_title pt
 
--- CTE 1: นับจำนวนช่องที่ Active ทั้งหมดภายใต้แต่ละ Title
-LEFT JOIN LATERAL (
-    SELECT 
-        SUM(
-            (ptc.value_status_1 = 'active')::int +
-            (ptc.value_status_2 = 'active')::int +
-            (ptc.value_status_3 = 'active')::int
-        ) AS total_status
-    FROM pm_title_child ptc
-    WHERE ptc.title_id = pt.id 
-      AND ptc.status = 'active'
-) status_data ON TRUE
+      -- 1. นับจำนวนช่องที่ Active ของลูก (ต่อ 1 Title) 
+      -- และคูณด้วยจำนวน Order ทั้งหมดเพื่อให้ได้ "ตัวหาร" ที่ถูกต้อง
+      LEFT JOIN LATERAL (
+          SELECT 
+              SUM(
+                  -- 1. นับจำนวนช่องที่ Active ของลูกตัวนั้น (เช่น 1, 2 หรือ 3 ช่อง)
+                  ((ptc.value_status_1 = 'active')::int +
+                  (ptc.value_status_2 = 'active')::int +
+                  (ptc.value_status_3 = 'active')::int)
+                  * -- 2. คูณด้วย Max Order เฉพาะของลูกตัวนั้นๆ
+                  COALESCE((
+                      SELECT MAX(pd_inner.order_number)
+                      FROM pm_details pd_inner
+                      WHERE pd_inner.title_child_id = ptc.id
+                        AND pd_inner.pm_id = $2
+                  ), 0)
+              ) AS total_active_per_title
+          FROM pm_title_child ptc
+          WHERE ptc.title_id = pt.id 
+            AND ptc.status = 'active'
+      ) status_data ON TRUE
 
--- CTE 2: นับจำนวนข้อมูลที่มีอยู่จริงใน pm_details
-LEFT JOIN LATERAL (
-    SELECT 
-        SUM(
-            (CASE WHEN ptc.value_status_1 = 'active' AND pd.value_1 IS NOT NULL THEN 1 ELSE 0 END) +
-            (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL THEN 1 ELSE 0 END) +
-            (CASE WHEN ptc.value_status_3 = 'active' AND pd.value_3 IS NOT NULL THEN 1 ELSE 0 END)
-        ) AS total_detail
-    FROM pm_title_child ptc
-    INNER JOIN pm_details pd ON pd.title_child_id = ptc.id
-    WHERE ptc.title_id = pt.id 
-      AND ptc.status = 'active'
-      AND pd.pm_id = $2
-) detail_data ON TRUE
+      -- 2. นับจำนวนข้อมูลที่กรอกลงไปจริงๆ (แยกตามแต่ละ Title)
+      LEFT JOIN LATERAL (
+          SELECT 
+              SUM(
+                  (CASE WHEN ptc.value_status_1 = 'active' AND pd.value_1 IS NOT NULL THEN 1 ELSE 0 END) +
+                  (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL THEN 1 ELSE 0 END) +
+                  (CASE WHEN ptc.value_status_3 = 'active' AND pd.value_3 IS NOT NULL THEN 1 ELSE 0 END)
+              ) AS total_filled_per_title
+          FROM pm_title_child ptc
+          INNER JOIN pm_details pd ON pd.title_child_id = ptc.id
+          WHERE ptc.title_id = pt.id 
+            AND ptc.status = 'active'
+            AND pd.pm_id = $2
+      ) detail_data ON TRUE
 
-WHERE pt.type = $1;
+      WHERE pt.type = $1
+      GROUP BY pt.key; -- ยุบรวม Key ที่ซ้ำกัน
       `;
 
       const res = await client.query(sql, [data.type, data.pm_id]);

@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { PMApiService } from "../../services/pm_nodeb.api";
 import { useAuthStore } from "../../stores/auth";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const authStore = useAuthStore();
 const username = authStore.currentUser;
+
+const props = defineProps<{
+  type: string;
+}>();
+const type = computed(() => props.type);
 
 // Loading state
 const isSubmitting = ref(false);
@@ -35,6 +43,7 @@ const handlePmNodeB = async () => {
 
     const pmResult = await PMApiService.pre_pm_nodeb({
       site_id: site_id.value,
+      type: type.value,
       region: region.value,
       datetime: datetime.value,
       status: status.value,
@@ -49,7 +58,7 @@ const handlePmNodeB = async () => {
     });
 
     if (pmResult.success) {
-      window.location.href = "/pm_nodeb";
+      router.back();
     } else {
       alert(pmResult.message || "ไม่สามารถลงข้อมูลได้");
     }

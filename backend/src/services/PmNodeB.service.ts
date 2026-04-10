@@ -85,17 +85,19 @@ export const PmService = {
       const query = `
       INSERT INTO pm (
         site_name,
+        type,
         date,
         planwork,
         service_status,
         created_by,
         created_at
-      ) VALUES ($1, $2, $3, $4, $5, NOW())
+      ) VALUES ($1, $2, $3, $4, $5, $6,NOW())
       RETURNING id
     `;
 
       const values = [
         data.site_id,
+        data.type,
         data.datetime,
         data.planwork,
         data.status,

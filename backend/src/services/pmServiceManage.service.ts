@@ -2,10 +2,9 @@ import { success } from "zod";
 
 export const pmServiceManage = {
     async pmGetPmList(
-        db: any
+        data:any, db: any
     ) {
         const client = await db.connect();
-
         try {
             const sql = `
             SELECT
@@ -64,9 +63,11 @@ export const pmServiceManage = {
                 FROM pm_solar_cell pmsc
                 WHERE pmsc.pm_id = p.id 
             ) sc ON true
+
+            WHERE p.type = $1
             `;
 
-            const res = await client.query(sql);
+            const res = await client.query(sql, [data.type]);
             
             return {
                 data: res.rows,

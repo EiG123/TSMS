@@ -27,7 +27,13 @@ const pmCards = [
     title: "PM NodeB",
     subtitle: "NodeB",
     description: "Mobile NodeB",
-    path: "/pm_nodeb",
+    action: () =>
+      router.push({
+        name: `pm_page`,
+        query: {
+          type: "pm_node_b",
+        },
+      }),
     gradient: "from-blue-500 to-cyan-500",
     icon: "M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z",
     stats: "",
@@ -36,7 +42,13 @@ const pmCards = [
     title: "PM Small Exchange",
     subtitle: "AN / PN / DN",
     description: "CX-Node",
-    path: "/small",
+    action: () =>
+      router.push({
+        name: `pm_page`,
+        query: {
+          type: "pm_small",
+        },
+      }),
     gradient: "from-purple-500 to-pink-500",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
     stats: "",
@@ -122,7 +134,7 @@ const pmCards = [
         <div
           v-for="(card, index) in pmCards"
           :key="index"
-          @click="go(card.path)"
+          @click="card.action"
           class="group bg-white dark:bg-slate-800/40 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-slate-700/50 overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400 dark:hover:border-blue-500/40"
         >
           <!-- Gradient Overlay -->

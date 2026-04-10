@@ -164,7 +164,7 @@ CREATE TABLE pm_title_child (
     title_child_name VARCHAR(255) NOT NULL,
     description TEXT,
     rank INTEGER NOT NULL,
-    status VARCHAR(30) NOT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'inactive',
 
     value_status_1 VARCHAR(50) DEFAULT 'inactive',
     value_name_1 TEXT,

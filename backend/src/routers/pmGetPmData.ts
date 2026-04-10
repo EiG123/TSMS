@@ -40,9 +40,10 @@ pmGetPmData.post("/getPmDataById", async (c) => {
     }
 });
 
-pmGetPmData.get("/pmGetPmList", async (c) => {
+pmGetPmData.post("/pmGetPmList", async (c) => {
+    const body = await c.req.json();
     try {
-        const res = await pmServiceManage.pmGetPmList(pool);
+        const res = await pmServiceManage.pmGetPmList(body, pool);
         return c.json({
             data: res.data,
             success: true
