@@ -299,30 +299,33 @@ export const pmTitleService = {
 
   async getTitleByType(data: any, pool: any) {
     const client = await pool.connect();
-    console.log(data);
-    if (data.type == 'ac_power') {
-      data.type = 'kwh_meter';
+    console.log("siuu", data);
+    if (data.key == 'ac_power') {
+      data.key = 'kwh_meter';
     }
     try {
       const sql = `
         SELECT 
-            pt.*,
-            JSONB_AGG(
-                JSONB_BUILD_OBJECT(
-                    'order_number', orders.order_no,
-                    'child_count', COALESCE(pd_check.total_active_slots, 0),
-                    'child_details_count', COALESCE(pd_check.filled_values_count, 0)
-                )
-                ORDER BY orders.order_no
-            ) AS details
-
-        FROM pm_title pt
-        -- 1. สร้างชุดตัวเลข order_number ที่เป็นไปได้ทั้งหมดขึ้นมาก่อน
-        CROSS JOIN (
-            SELECT DISTINCT order_number as order_no 
-            FROM pm_details 
-            WHERE pm_id = $2
-        ) orders
+    pt.*,
+    COALESCE(
+        JSONB_AGG(
+            JSONB_BUILD_OBJECT(
+                'order_number', orders.order_no,
+                'child_count', COALESCE(pd_check.total_active_slots, 0),
+                'child_details_count', COALESCE(pd_check.filled_values_count, 0)
+            )
+            ORDER BY orders.order_no
+        ) FILTER (WHERE orders.order_no IS NOT NULL), 
+        '[]'::jsonb
+    ) AS details
+FROM pm_title pt
+-- เปลี่ยนจาก CROSS JOIN เป็น LEFT JOIN LATERAL เพื่อไม่ให้แถวหาย
+LEFT JOIN LATERAL (
+    SELECT DISTINCT order_number as order_no 
+    FROM pm_details 
+    WHERE pm_id = $3
+      AND title_id = pt.id -- เจาะจงเฉพาะ order ของ title นี้
+) orders ON TRUE 
         -- 2. นำเลข order ไปเช็คกับข้อมูลในแต่ละ title
         LEFT JOIN LATERAL (
             SELECT 
@@ -339,17 +342,17 @@ export const pmTitleService = {
             FROM pm_title_child ptc
             LEFT JOIN pm_details pd 
                 ON pd.title_child_id = ptc.id 
-                AND pd.pm_id = $2
+                AND pd.pm_id = $3
                 AND pd.order_number = orders.order_no -- ล็อกเลข order ไว้ที่นี่
             WHERE ptc.title_id = pt.id 
               AND ptc.status = 'active'
         ) pd_check ON TRUE
 
-        WHERE pt.key = $1
+        WHERE pt.key = $1 AND pt.type = $2
         GROUP BY pt.id;
       `;
 
-      const result = await client.query(sql, [data.type, data.pmId]);
+      const result = await client.query(sql, [data.key, data.type, data.pmId]);
 
       return {
         result: result.rows,

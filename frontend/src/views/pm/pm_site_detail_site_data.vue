@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, compile, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
@@ -10,7 +10,13 @@ import { useAuthStore } from "../../stores/auth";
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
-const pmId = ref(route.params.id as string);
+const props = defineProps<{
+  pmId: string;
+  type: string;
+}>();
+
+const pmId = computed(() => props.pmId);
+const type = computed(() => props.type);
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
@@ -173,7 +179,7 @@ const sections = [
       name: `pm_site_detail_site_data_data`,
       query: {
         id: pmId.value,
-        type: "site_info",
+        key: "site_info",
       },
     },
     count: 0,
@@ -188,7 +194,7 @@ const sections = [
       name: "pm_site_detail_site_data_data",
       query: {
         id: pmId.value,
-        type: "site_facility",
+        key: "site_facility",
       },
     },
     count: 0,
@@ -202,12 +208,12 @@ const sections = [
     route: {
       name: "pm_site_detail_site_data_data",
       query: {
-        id: pmId.value,
-        type: "ac_power",
+        pmId: pmId.value,
+        key: "ac_power",
+        type: type.value,
       },
     },
     count: pMsiteData.value?.kwh_meters?.length || 0,
-    key: "kwh_meter",
   },
   {
     id: "generator",
@@ -218,7 +224,7 @@ const sections = [
       name: "pm_site_detail_site_data_data",
       query: {
         id: pmId.value,
-        type: "generator",
+        key: "generator",
       },
     },
     count: pMsiteData.value?.generators?.length || 0,
@@ -233,7 +239,7 @@ const sections = [
       name: "pm_site_detail_site_data_data",
       query: {
         id: pmId.value,
-        type: "grounding",
+        key: "grounding",
       },
     },
     count: 0,
@@ -248,7 +254,7 @@ const sections = [
       name: "pm_site_detail_site_data_data",
       query: {
         id: pmId.value,
-        type: "external_alarm",
+        key: "external_alarm",
       },
     },
     count: 0,

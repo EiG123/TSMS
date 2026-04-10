@@ -9,9 +9,16 @@ import { useAuthStore } from "../../stores/auth";
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
-const pmId = ref(route.params.id as string);
 const userId = authStore.userId;
 const userRole = authStore.userRole;
+
+const props = defineProps<{
+  pmId: string;
+  type: string;
+}>();
+
+const pmId = computed(() => props.pmId);
+const type = computed(() => props.type);
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
@@ -303,12 +310,26 @@ const navigations = [
   {
     name: "Summary",
     icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-    action: () => router.push(`/pm_site_detail/${pmId.value}`),
+    action: () =>
+      router.push({
+        name: `pm_cabinet_page`,
+        query: {
+          pmId: pmId.value,
+          type: type.value,
+        },
+      }),
   },
   {
     name: "Site Data",
     icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4",
-    action: () => router.push(`/pm_site_detail_site_data/${pmId.value}`),
+    action: () =>
+      router.push({
+        name: `pm_site_detail_site_data`,
+        query: {
+          pmId: pmId.value,
+          type: type.value,
+        },
+      }),
   },
   {
     name: "Cabinets",

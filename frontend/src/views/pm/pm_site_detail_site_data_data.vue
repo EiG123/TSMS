@@ -10,12 +10,14 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const props = defineProps<{
-  id: string;
-  type: string;
+  pmId: string,
+  key: string,
+  type: string,
 }>();
 
-const pmId = computed(() => props.id);
-const type = computed(() => props.type);
+const pmId = computed(() => route.query.pmId as string);
+const key = computed(() => route.query.key as string);
+const type = computed(() => route.query.type as string);
 
 const loading = ref(false);
 const pMsiteData = ref<any>(null);
@@ -53,7 +55,6 @@ const handleDelete = async () => {
 
 const getDetailStats = (titleDetails, orderNumber) => {
   const detail = titleDetails.find((d) => d.order_number === orderNumber);
-  console.log(detail);
   return detail
     ? `${detail.child_details_count} / ${detail.child_count} items`
     : "X / X items";
@@ -62,6 +63,8 @@ const getDetailStats = (titleDetails, orderNumber) => {
 const load_data = async () => {
   const res = await getPmList.getPmById(pmId.value);
   pMsiteData.value = res.data.data;
+
+  console.log(res.data.data);
   
   if(type.value === 'ac_power'){
       order_list.value = res.data.data.kwh_meters || [];
@@ -71,6 +74,7 @@ const load_data = async () => {
 
   const res_title = await pmTitleManage.getTitleByType({
     pmId: pmId.value,
+    key: key.value,
     type: type.value,
     order_number: order_list.value.length,
   });
@@ -104,7 +108,8 @@ const getSectionTitle = () => {
     grounding: "Grounding System",
     external_alarm: "External Alarm",
   };
-  return titles[type.value] || "Site Data";
+  console.log(type.value);
+  return titles[key.value] || "Site Data";
 };
 
 // Handle add new item

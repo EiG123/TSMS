@@ -12,7 +12,7 @@ const props = defineProps<{
 
 let type = computed(() => props.type);
 const showType = ref("");
-if(type.value === 'pm_node_b'){
+if(type.value === 'pm_nodeb'){
   showType.value = "NodeB";
 }
 if(type.value === 'pm_small'){
@@ -25,7 +25,13 @@ const goNew = () => router.push({
   },
 });
 const goEdit = (id: string) => router.push(`/pm_nodeb_edit/${id}`);
-const goView = (id: string) => router.push(`/pm_site_detail/${id}`);
+const goView = (id: string) => router.push({
+  name: `pm_site_detail`,
+  query: {
+    id: id,
+    type: props.type,
+  },
+});
 const goBack = () => router.back();
 
 const handleDelete = async (e: Event, id: number) => {

@@ -10,8 +10,6 @@ const go = (path: string) => {
   router.push(path);
 };
 
-
-
 // Card data with icons
 const pmCards = [
   {
@@ -31,7 +29,7 @@ const pmCards = [
       router.push({
         name: `pm_page`,
         query: {
-          type: "pm_node_b",
+          type: "pm_nodeb",
         },
       }),
     gradient: "from-blue-500 to-cyan-500",

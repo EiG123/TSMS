@@ -20,7 +20,7 @@ import AddPermission from "../views/dev/AddPermission.vue";
 import TitleManagement from "../views/admin/TitleManagement.vue";
 import UserlocationDashboard from "../views/admin/UserlocationDashboard.vue";
 
-import pm_nodeb from "../views/pm/pm_nodeb.vue";
+import pm_nodeb from "../views/pm/pm_page.vue";
 import pm_nodeb_new from "../views/pm/pm_nodeb_new.vue";
 import pm_site_detail from "../views/pm/pm_site_detail.vue";
 import pm_site_detail_site_data from "../views/pm/pm_site_detail_site_data.vue";
@@ -76,13 +76,11 @@ const routes = [
         name: "register",
         component: Register,
     },
-
     {
         path: "/profile",
         name: "profile",
         component: profile,
     },
-
     {
         path: "/dev",
         meta: {
@@ -224,16 +222,22 @@ const routes = [
                 }
             },
             {
-                path: "pm_site_detail/:id",
+                path: "pm_site_detail",
                 name: "pm_site_detail",
                 component: pm_site_detail,
-                props: true
+                props: route => ({
+                    pmId: route.query.id,
+                    type: route.query.type,
+                }),
             },
             {
-                path: "pm_site_detail_site_data/:id",
+                path: "pm_site_detail_site_data",
                 name: "pm_site_detail_site_data",
                 component: pm_site_detail_site_data,
-                props: true
+                props: route => ({
+                    pmId: route.query.pmId,
+                    type: route.query.type,
+                }),
             },
             {
                 path: "pm_site_detail_site_info",
@@ -249,9 +253,11 @@ const routes = [
                 name: "pm_site_detail_site_data_data",
                 component: pm_site_detail_site_data_data,
                 props: route => ({
-                    id: route.query.id,
+                    pmId: route.query.pmId,
+                    key: route.query.key,
                     type: route.query.type,
                 })
+
             },
             {
                 path: "pm_site_detail_site_data_enter_data",
