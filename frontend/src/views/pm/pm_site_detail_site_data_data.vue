@@ -10,9 +10,9 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const props = defineProps<{
-  pmId: string,
-  key: string,
-  type: string,
+  pmId: string;
+  key: string;
+  type: string;
 }>();
 
 const pmId = computed(() => route.query.pmId as string);
@@ -53,21 +53,29 @@ const handleDelete = async () => {
   }
 };
 
-const getDetailStats = (titleDetails, orderNumber) => {
-  const detail = titleDetails.find((d) => d.order_number === orderNumber);
-  return detail
-    ? `${detail.child_details_count} / ${detail.child_count} items`
-    : "X / X items";
+const getDetailStats = (titleDetails, baseActiveSlots, orderNumber) => {
+  // หาข้อมูลตามเลข Order
+  const detail = titleDetails?.find((d) => d.order_number === orderNumber);
+
+  // 1. ถ้าเจอ Order นั้นในตาราง (มีการจองเลขเครื่องไว้แล้ว)
+  if (detail) {
+    // ใช้ child_count จาก db หรือถ้า db เป็น 0 ให้ใช้ baseActiveSlots ที่เราส่งไป
+    const total = detail.child_count || baseActiveSlots;
+    return `${detail.child_details_count} / ${total} items`;
+  }
+
+  // 2. ถ้ายังไม่เคยมีการสร้าง Order นี้เลย (เช่น ยังไม่ได้กดเพิ่มเครื่อง)
+  // แสดงตัวเลขช่องตรวจรอไว้เลย แต่ตัวเศษเป็น 0
+  return `0 / ${baseActiveSlots} items`;
 };
 
 const load_data = async () => {
   const res = await getPmList.getPmById(pmId.value);
   pMsiteData.value = res.data.data;
 
-  
-  if(type.value === 'ac_power'){
-      order_list.value = res.data.data.kwh_meters || [];
-  }else{
+  if (type.value === "ac_power") {
+    order_list.value = res.data.data.kwh_meters || [];
+  } else {
     order_list.value = [];
   }
 
@@ -78,7 +86,7 @@ const load_data = async () => {
     order_number: order_list.value.length,
   });
   title_list.value = res_title.data.result || [];
-
+  console.log(title_list.value);
   // order_list.value = res_title.data.result || [];
   if (order_list.value.length === 0) {
     order_list.value = res.data.data.kwh_meters || [];
@@ -107,7 +115,6 @@ const getSectionTitle = () => {
     grounding: "Grounding System",
     external_alarm: "External Alarm",
   };
-  console.log(type.value);
   return titles[key.value] || "Site Data";
 };
 
@@ -286,7 +293,13 @@ const goEnterData = (title: string, title_id: any, order_number: any) => {
                     {{ title.title }}
                   </p>
                   <p class="text-sm font-semibold dark:text-blue-400 mt-1">
-                    {{ getDetailStats(title.details, kwh?.number || 1) }}
+                    {{
+                      getDetailStats(
+                        title.details,
+                        title.base_active_slots,
+                        kwh?.number || 1
+                      )
+                    }}
                   </p>
                   <p
                     v-if="title.description"

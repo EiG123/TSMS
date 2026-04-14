@@ -307,11 +307,14 @@ export const pmTitleService = {
       const sql = `
         SELECT 
     pt.*,
+    -- จำนวน slot ที่ active ทั้งหมดของ title นี้ (ค่าพื้นฐาน)
+    base_info.base_active_slots,
+    -- รายละเอียดแยกตามแต่ละ order
     COALESCE(
         JSONB_AGG(
             JSONB_BUILD_OBJECT(
                 'order_number', orders.order_no,
-                'child_count', COALESCE(pd_check.total_active_slots, 0),
+                'child_count', COALESCE(pd_check.total_active_slots, base_info.base_active_slots),
                 'child_details_count', COALESCE(pd_check.filled_values_count, 0)
             )
             ORDER BY orders.order_no
@@ -319,37 +322,52 @@ export const pmTitleService = {
         '[]'::jsonb
     ) AS details
 FROM pm_title pt
--- เปลี่ยนจาก CROSS JOIN เป็น LEFT JOIN LATERAL เพื่อไม่ให้แถวหาย
+
+-- 1. หาจำนวน Slot ที่ Active เป็นค่าตั้งต้นของ Title นี้ (ไม่ต้องรอให้มี Detail)
+LEFT JOIN LATERAL (
+    SELECT 
+        SUM(
+            (CASE WHEN ptc.value_status_1 = 'active' THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_2 = 'active' THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_3 = 'active' THEN 1 ELSE 0 END)
+        ) AS base_active_slots
+    FROM pm_title_child ptc
+    WHERE ptc.title_id = pt.id AND ptc.status = 'active'
+) base_info ON TRUE
+
+-- 2. ดึงเลข Order ทั้งหมดที่มี (ถ้าไม่มีผลลัพธ์จะเป็น NULL แต่ออก Title มา)
 LEFT JOIN LATERAL (
     SELECT DISTINCT order_number as order_no 
     FROM pm_details 
     WHERE pm_id = $3
-      AND title_id = pt.id -- เจาะจงเฉพาะ order ของ title นี้
+      AND title_id = pt.id
 ) orders ON TRUE 
-        -- 2. นำเลข order ไปเช็คกับข้อมูลในแต่ละ title
-        LEFT JOIN LATERAL (
-            SELECT 
-                SUM(
-                    (CASE WHEN ptc.value_status_1 = 'active' THEN 1 ELSE 0 END) +
-                    (CASE WHEN ptc.value_status_2 = 'active' THEN 1 ELSE 0 END) +
-                    (CASE WHEN ptc.value_status_3 = 'active' THEN 1 ELSE 0 END)
-                ) AS total_active_slots,
-                SUM(
-                    (CASE WHEN ptc.value_status_1 = 'active' AND pd.value_1 IS NOT NULL THEN 1 ELSE 0 END) +
-                    (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL THEN 1 ELSE 0 END) +
-                    (CASE WHEN ptc.value_status_3 = 'active' AND pd.value_3 IS NOT NULL THEN 1 ELSE 0 END)
-                ) AS filled_values_count
-            FROM pm_title_child AS ptc
-            LEFT JOIN pm_details pd 
-                ON pd.title_child_id = ptc.id 
-                AND pd.pm_id = $3
-                AND pd.order_number = orders.order_no -- ล็อกเลข order ไว้ที่นี่
-            WHERE ptc.title_id = pt.id 
-              AND ptc.status = 'active'
-        ) pd_check ON TRUE
 
-        WHERE pt.key = $1 AND pt.type = $2
-        GROUP BY pt.id;
+-- 3. เช็คยอดกรอกจริงราย Order
+LEFT JOIN LATERAL (
+    SELECT 
+        SUM(
+            (CASE WHEN ptc.value_status_1 = 'active' THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_2 = 'active' THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_3 = 'active' THEN 1 ELSE 0 END)
+        ) AS total_active_slots,
+        SUM(
+            (CASE WHEN ptc.value_status_1 = 'active' AND pd.value_1 IS NOT NULL AND pd.value_1 <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL AND pd.value_2 <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN ptc.value_status_3 = 'active' AND pd.value_3 IS NOT NULL AND pd.value_3 <> '' THEN 1 ELSE 0 END)
+        ) AS filled_values_count
+    FROM pm_title_child ptc
+    LEFT JOIN pm_details pd 
+        ON pd.title_child_id = ptc.id 
+        AND pd.pm_id = $3
+        AND pd.order_number = orders.order_no
+    WHERE ptc.title_id = pt.id 
+      AND ptc.status = 'active'
+      AND orders.order_no IS NOT NULL -- ทำงานเฉพาะเมื่อมีเลข Order เท่านั้น
+) pd_check ON orders.order_no IS NOT NULL
+
+WHERE pt.key = $1 AND pt.type = $2
+GROUP BY pt.id, base_info.base_active_slots;
       `;
 
       const result = await client.query(sql, [data.key, data.type, data.pmId]);
