@@ -339,7 +339,7 @@ LEFT JOIN LATERAL (
                     (CASE WHEN ptc.value_status_2 = 'active' AND pd.value_2 IS NOT NULL THEN 1 ELSE 0 END) +
                     (CASE WHEN ptc.value_status_3 = 'active' AND pd.value_3 IS NOT NULL THEN 1 ELSE 0 END)
                 ) AS filled_values_count
-            FROM pm_title_child ptc
+            FROM pm_title_child AS ptc
             LEFT JOIN pm_details pd 
                 ON pd.title_child_id = ptc.id 
                 AND pd.pm_id = $3

@@ -64,7 +64,6 @@ const load_data = async () => {
   const res = await getPmList.getPmById(pmId.value);
   pMsiteData.value = res.data.data;
 
-  console.log(res.data.data);
   
   if(type.value === 'ac_power'){
       order_list.value = res.data.data.kwh_meters || [];
@@ -79,11 +78,11 @@ const load_data = async () => {
     order_number: order_list.value.length,
   });
   title_list.value = res_title.data.result || [];
+
   // order_list.value = res_title.data.result || [];
   if (order_list.value.length === 0) {
-    order_list.value = res_title.data.result || [];
+    order_list.value = res.data.data.kwh_meters || [];
   }
-  console.log("Title List:", title_list.value);
 };
 
 onMounted(async () => {
