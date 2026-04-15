@@ -31,6 +31,7 @@ export const useAuthStore = defineStore("auth", {
     currentUser: (state) => state.user,
     userRole: (state) => state.user?.role,
     userId: (state) => state.user?.id,
+    userRegion: (state) => state.user?.region,
 
     hasPermission: (state) => {
       // console.log(state.user?.permissions);
@@ -39,7 +40,7 @@ export const useAuthStore = defineStore("auth", {
         return perms.includes('*') || perms.includes(permission);
       };
     }
-    
+
   },
 
   actions: {

@@ -8,7 +8,7 @@ const authStore = useAuthStore();
 const userId = computed(() => authStore.user?.id || "ไม่มี ID");
 const username = computed(() => authStore.user?.username || "User");
 const userEmail = computed(() => authStore.user?.email || "none@none.com");
-const userRegion = ref("");
+const userRegion = computed(() => authStore.user?.region || "none");
 const userPhone = ref("");
 const userCompany = ref("");
 
@@ -28,7 +28,7 @@ const loadData = async () => {
       userId: userId.value,
     });
     NewUsername.value = username.value;
-    userRegion.value = userData.region || "R0";
+    // userRegion.value = userData.region || "R0";
     userPhone.value = userData.phone || "";
     userCompany.value = userData.company || "";
   } catch (error) {

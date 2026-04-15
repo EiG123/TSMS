@@ -16,7 +16,10 @@ const pmCards = [
     title: "PM DashBoard",
     subtitle: "PM",
     description: "DashBoard",
-    path: "/pmDashBoardAI",
+    action: () =>
+      router.push({
+        path: `/pmDashBoardAI`,
+      }),
     gradient: "from-red-500 to-blue-500",
     icon: "M20 14H4m6.5 3L8 20m5.5-3 2.5 3M4.88889 17H19.1111c.4909 0 .8889-.4157.8889-.9286V4.92857C20 4.41574 19.602 4 19.1111 4H4.88889C4.39797 4 4 4.41574 4 4.92857V16.0714c0 .5129.39797.9286.88889.9286ZM13 14v-3h4v3h-4Z",
     stats: "",
@@ -55,7 +58,13 @@ const pmCards = [
     title: "PM Medium Exchange",
     subtitle: "RN / AGN Node",
     description: "TOC Node",
-    path: "/medium",
+    action: () =>
+      router.push({
+        name: `pm_page`,
+        query: {
+          type: "pm_medium",
+        },
+      }),
     gradient: "from-green-500 to-emerald-500",
     icon: "M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01",
     stats: "",
@@ -64,7 +73,13 @@ const pmCards = [
     title: "PM Broadband",
     subtitle: "OLT Indoor / Outdoor",
     description: "NodeB / DSLAM / TVS",
-    path: "/broadband",
+    action: () =>
+      router.push({
+        name: `pm_page`,
+        query: {
+          type: "pm_broadband",
+        },
+      }),
     gradient: "from-orange-500 to-red-500",
     icon: "M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0",
     stats: "",
@@ -74,6 +89,13 @@ const pmCards = [
     subtitle: "ตัดหญ้า NodeB / PN / DN",
     description: "Lawn Maintenance",
     path: "/mowing",
+    action: () =>
+      router.push({
+        name: `pm_page`,
+        query: {
+          type: "pm_mowing",
+        },
+      }),
     gradient: "from-lime-500 to-green-500",
     icon: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z",
     stats: "",
@@ -82,7 +104,13 @@ const pmCards = [
     title: "PM Solar Cell",
     subtitle: "Solar Cell NodeB",
     description: "Mobile NodeB",
-    path: "/solar",
+    action: () =>
+      router.push({
+        name: `pm_page`,
+        query: {
+          type: "/pm_solar",
+        },
+      }),
     gradient: "from-yellow-500 to-orange-500",
     icon: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z",
     stats: "",

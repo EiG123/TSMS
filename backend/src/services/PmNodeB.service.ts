@@ -82,20 +82,29 @@ export const PmService = {
     try {
       await client.query("BEGIN"); // ⭐ เริ่ม transaction
 
+      const query_site = `INSERT INTO sites (
+        site_id,
+        region
+      ) VALUES ($1, $2)`;
+
+      await client.query(query_site, [data.site_id, data.region]);
+
       const query = `
       INSERT INTO pm (
         site_name,
+        site_id,
         type,
         date,
         planwork,
         service_status,
         created_by,
         created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6,NOW())
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
       RETURNING id
     `;
 
       const values = [
+        data.site_id,
         data.site_id,
         data.type,
         data.datetime,

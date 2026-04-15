@@ -21,15 +21,16 @@ export const pmServiceManage = {
                 p.created_at,
                 p.updated_by,
                 p.updated_at,
-
-                COALESCE(c.cabinets, '[]') AS cabinets,
-
-                COALESCE(m.mowing, '[]') AS mowing,
-
-                COALESCE(sc.solar_cell, '[]') AS solar_cell
-
+                s.region,
+                -- ใช้ COALESCE ครอบผลลัพธ์จาก Subquery โดยตรง
+                COALESCE(c.cabinets, '[]'::json) AS cabinets,
+                COALESCE(m.mowing, '[]'::json) AS mowing,
+                COALESCE(sc.solar_cell, '[]'::json) AS solar_cell
             FROM pm p
+            -- ดึงข้อมูล Site
+            LEFT JOIN sites s ON s.site_id = p.site_id
 
+            -- ดึงข้อมูล Cabinets
             LEFT JOIN LATERAL (
                 SELECT json_agg(
                     json_build_object(
@@ -42,6 +43,7 @@ export const pmServiceManage = {
                 WHERE pmc.pm_id = p.id
             ) c ON true
 
+            -- ดึงข้อมูล Mowing
             LEFT JOIN LATERAL (
                 SELECT json_agg(
                     json_build_object(
@@ -53,6 +55,7 @@ export const pmServiceManage = {
                 WHERE pmm.pm_id = p.id 
             ) m ON true
 
+            -- ดึงข้อมูล Solar Cell
             LEFT JOIN LATERAL (
                 SELECT json_agg(
                     json_build_object(
@@ -64,10 +67,12 @@ export const pmServiceManage = {
                 WHERE pmsc.pm_id = p.id 
             ) sc ON true
 
-            WHERE p.type = $1
+            WHERE p.type = $1 AND s.region = $2;
             `;
 
-            const res = await client.query(sql, [data.type]);
+            console.log(data.type);
+
+            const res = await client.query(sql, [data.type, data.region]);
             
             return {
                 data: res.rows,

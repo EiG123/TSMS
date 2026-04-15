@@ -5,6 +5,10 @@ import { getPmList } from "../../services/pm_nodeb_list.api";
 import { pmServiceManage } from "../../services/pmServiceManage.api";
 import PmNodebCard from "./pmNodebCard.vue";
 
+import { useAuthStore } from "./../../stores/auth";
+
+const authStore = useAuthStore();
+
 const router = useRouter();
 const props = defineProps<{
   type: string;
@@ -17,6 +21,9 @@ if(type.value === 'pm_nodeb'){
 }
 if(type.value === 'pm_small'){
   showType.value = "Small";
+}
+if(type.value === 'pm_medium'){
+  showType.value = "Medium";
 }
 const goNew = () => router.push({
   name: `pm_nodeb_new`,
@@ -59,7 +66,10 @@ const currentPage = ref(1);
 const pageSize = 10;
 
 const loadData = async () => {
-  const res = await getPmList.getPmList({type: type.value});
+  const res = await getPmList.getPmList({
+    type: type.value,
+    region: authStore.userRegion,
+  });
   siteList.value = res.data;
   console.log(siteList.value);
 };

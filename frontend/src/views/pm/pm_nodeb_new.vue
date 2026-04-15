@@ -244,13 +244,19 @@ watch(mowingEnabled, (enabled) => {
                 </label>
                 <select
                   v-model="region"
-                  class="w-full px-4 py-3 dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  class="w-full px-4 py-3 bg-white dark:bg-slate-900/40 border border-slate-700/50 rounded-xl dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="" class="bg-slate-800">
                     Select region...
                   </option>
-                  <option value="UPC01" class="bg-slate-800">UPC01</option>
-                  <option value="UPC02" class="bg-slate-800">UPC02</option>
+                  <option value="R1" class="bg-slate-800">R1</option>
+                  <option value="R2" class="bg-slate-800">R2</option>
+                  <option value="R3" class="bg-slate-800">R3</option>
+                  <option value="R4" class="bg-slate-800">R4</option>
+                  <option value="R5" class="bg-slate-800">R5</option>
+                  <option value="R6" class="bg-slate-800">R6</option>
+                  <option value="R7" class="bg-slate-800">R7</option>
+                  <option value="R8" class="bg-slate-800">R8</option>
                 </select>
               </div>
 
