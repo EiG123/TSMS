@@ -2,82 +2,154 @@ import { success } from "zod";
 
 export const pmServiceManage = {
     async pmGetPmList(
-        data:any, db: any
+        data: any, db: any
     ) {
         const client = await db.connect();
         try {
-            const sql = `
-            SELECT
-                p.id, 
-                p.site_id,
-                p.site_name,
-                p.type,
-                p.date,
-                p.planwork,
-                p.service_status,
-                p.progress_status,
-                p.vendor,
-                p.created_by,
-                p.created_at,
-                p.updated_by,
-                p.updated_at,
-                s.region,
-                -- ใช้ COALESCE ครอบผลลัพธ์จาก Subquery โดยตรง
-                COALESCE(c.cabinets, '[]'::json) AS cabinets,
-                COALESCE(m.mowing, '[]'::json) AS mowing,
-                COALESCE(sc.solar_cell, '[]'::json) AS solar_cell
-            FROM pm p
-            -- ดึงข้อมูล Site
-            LEFT JOIN sites s ON s.site_id = p.site_id
+            if (data.region === null) {
+                const sql = `
+                SELECT
+                    p.id, 
+                    p.site_id,
+                    p.type,
+                    p.date,
+                    p.planwork,
+                    p.service_status,
+                    p.progress_status,
+                    p.vendor,
+                    p.created_by,
+                    p.created_at,
+                    p.updated_by,
+                    p.updated_at,
+                    s.region,
+                    s.site_name,
+                    -- ใช้ COALESCE ครอบผลลัพธ์จาก Subquery โดยตรง
+                    COALESCE(c.cabinets, '[]'::json) AS cabinets,
+                    COALESCE(m.mowing, '[]'::json) AS mowing,
+                    COALESCE(sc.solar_cell, '[]'::json) AS solar_cell
+                FROM pm p
+                -- ดึงข้อมูล Site
+                LEFT JOIN sites s ON s.id = p.site_id
 
-            -- ดึงข้อมูล Cabinets
-            LEFT JOIN LATERAL (
-                SELECT json_agg(
-                    json_build_object(
-                        'id', pmc.id,
-                        'cabinet_name', pmc.cabinet_name,
-                        'cabinet_network', pmc.cabinet_network
-                    )
-                ) AS cabinets
-                FROM pm_cabinet pmc
-                WHERE pmc.pm_id = p.id
-            ) c ON true
+                -- ดึงข้อมูล Cabinets
+                LEFT JOIN LATERAL (
+                    SELECT json_agg(
+                        json_build_object(
+                            'id', pmc.id,
+                            'cabinet_name', pmc.cabinet_name,
+                            'cabinet_network', pmc.cabinet_network
+                        )
+                    ) AS cabinets
+                    FROM pm_cabinet pmc
+                    WHERE pmc.pm_id = p.id
+                ) c ON true
 
-            -- ดึงข้อมูล Mowing
-            LEFT JOIN LATERAL (
-                SELECT json_agg(
-                    json_build_object(
-                        'round', pmm.round,
-                        'status', pmm.status
-                    )
-                ) AS mowing
-                FROM pm_mowing pmm
-                WHERE pmm.pm_id = p.id 
-            ) m ON true
+                -- ดึงข้อมูล Mowing
+                LEFT JOIN LATERAL (
+                    SELECT json_agg(
+                        json_build_object(
+                            'round', pmm.round,
+                            'status', pmm.status
+                        )
+                    ) AS mowing
+                    FROM pm_mowing pmm
+                    WHERE pmm.pm_id = p.id 
+                ) m ON true
 
-            -- ดึงข้อมูล Solar Cell
-            LEFT JOIN LATERAL (
-                SELECT json_agg(
-                    json_build_object(
-                        'solar_cell', pmsc.number,
-                        'status', pmsc.status
-                    )
-                ) AS solar_cell
-                FROM pm_solar_cell pmsc
-                WHERE pmsc.pm_id = p.id 
-            ) sc ON true
+                -- ดึงข้อมูล Solar Cell
+                LEFT JOIN LATERAL (
+                    SELECT json_agg(
+                        json_build_object(
+                            'solar_cell', pmsc.number,
+                            'status', pmsc.status
+                        )
+                    ) AS solar_cell
+                    FROM pm_solar_cell pmsc
+                    WHERE pmsc.pm_id = p.id 
+                ) sc ON true
 
-            WHERE p.type = $1 AND s.region = $2;
-            `;
+                WHERE p.type = $1;
+                `;
 
-            console.log(data.type);
+                const res = await client.query(sql, [data.type]);
 
-            const res = await client.query(sql, [data.type, data.region]);
-            
-            return {
-                data: res.rows,
-                success: true
+                return {
+                    data: res.rows,
+                    success: true
+                }
+            }else{
+                const sql = `
+                SELECT
+                    p.id, 
+                    p.site_id,
+                    p.type,
+                    p.date,
+                    p.planwork,
+                    p.service_status,
+                    p.progress_status,
+                    p.vendor,
+                    p.created_by,
+                    p.created_at,
+                    p.updated_by,
+                    p.updated_at,
+                    s.region,
+                    s.site_name,
+                    -- ใช้ COALESCE ครอบผลลัพธ์จาก Subquery โดยตรง
+                    COALESCE(c.cabinets, '[]'::json) AS cabinets,
+                    COALESCE(m.mowing, '[]'::json) AS mowing,
+                    COALESCE(sc.solar_cell, '[]'::json) AS solar_cell
+                FROM pm p
+                -- ดึงข้อมูล Site
+                LEFT JOIN sites s ON s.id = p.site_id
+
+                -- ดึงข้อมูล Cabinets
+                LEFT JOIN LATERAL (
+                    SELECT json_agg(
+                        json_build_object(
+                            'id', pmc.id,
+                            'cabinet_name', pmc.cabinet_name,
+                            'cabinet_network', pmc.cabinet_network
+                        )
+                    ) AS cabinets
+                    FROM pm_cabinet pmc
+                    WHERE pmc.pm_id = p.id
+                ) c ON true
+
+                -- ดึงข้อมูล Mowing
+                LEFT JOIN LATERAL (
+                    SELECT json_agg(
+                        json_build_object(
+                            'round', pmm.round,
+                            'status', pmm.status
+                        )
+                    ) AS mowing
+                    FROM pm_mowing pmm
+                    WHERE pmm.pm_id = p.id 
+                ) m ON true
+
+                -- ดึงข้อมูล Solar Cell
+                LEFT JOIN LATERAL (
+                    SELECT json_agg(
+                        json_build_object(
+                            'solar_cell', pmsc.number,
+                            'status', pmsc.status
+                        )
+                    ) AS solar_cell
+                    FROM pm_solar_cell pmsc
+                    WHERE pmsc.pm_id = p.id 
+                ) sc ON true
+
+                WHERE p.type = $1 AND s.region = $2;
+                `;
+
+                const res = await client.query(sql, [data.type, data.region]);
+
+                return {
+                    data: res.rows,
+                    success: true
+                }
             }
+
         } catch (err) {
             console.log(err);
             return {
@@ -188,7 +260,7 @@ export const pmServiceManage = {
     },
 
 
-    
+
 
     // async valuePmByIdTitleIdTitleChildId(data: any, pool: any) {
     //     const client = await pool.connect();

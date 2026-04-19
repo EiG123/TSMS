@@ -1,0 +1,28 @@
+CREATE TABLE site_improve_log (
+    id SERIAL PRIMARY KEY,
+    site_id INTEGER,
+    root_cause TEXT,
+    solution TEXT,
+    need_improve_date TIMESTAMP,
+    need_improve_text TEXT,
+    need_fiber_optic VARCHAR(50),
+    need_battery_li_on_100_banks VARCHAR(50),
+    need_battery_li_on_50_banks VARCHAR(50),
+    need_battery_li_on_20_banks VARCHAR(50),
+    need_battery_lead_acid_banks VARCHAR(50),
+    need_solar_cell VARCHAR(50),
+    need_cabinet VARCHAR(50),
+    last_improve_date TIMESTAMP,
+    fiber_optic_improve VARCHAR(50),
+    battery_li_on_100_banks_improve VARCHAR(50),
+    battery_li_on_50_banks_improve VARCHAR(50),
+    battery_li_on_20_banks_improve VARCHAR(50),
+    battery_lead_acid_banks_improve VARCHAR(50),
+    solar_cell_improve VARCHAR(50),
+    cabinet_improve VARCHAR(50)
+
+    CONSTRAINT fk_site_improve_log
+        FOREIGN KEY (site_id)
+        REFERENCES sites(id)
+        ON DELETE
+);

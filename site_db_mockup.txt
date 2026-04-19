@@ -2,3 +2,11 @@ INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI000
 INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI0002', 'NodeB', NOW(), 'PW0002', 'onService');
 INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI0003', 'NodeB', NOW(), 'PW0003', 'Cancel');
 INSERT INTO pm (site_name, type, date, planwork, service_status) VALUES ('CMI0004', 'NodeB', NOW(), 'PW0004', 'Cancel');
+
+WITH inserted_sites AS (
+    INSERT INTO sites (site_name, region,latitude, longitude) 
+    VALUES ('CMI6709', 'R4','19.1263', '98.7509') 
+    RETURNING id
+)
+INSERT INTO pm (site_id, type, date, planwork, service_status) 
+SELECT id, 'pm_nodeb', NOW(), 'PW0001', 'onService' FROM inserted_sites

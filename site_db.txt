@@ -1,14 +1,15 @@
 CREATE TABLE sites (
     id SERIAL PRIMARY KEY,
-    site_id VARCHAR(50) UNIQUE,
+    site_name VARCHAR(50) UNIQUE,
     region VARCHAR(50),
-    province VARCHAR(50)
+    province VARCHAR(50),
+    latitude VARCHAR(100),
+    longitude VARCHAR(100)
 );
 
 CREATE TABLE pm (
     id SERIAL PRIMARY KEY,
-    site_id VARCHAR(50),
-    site_name VARCHAR(50),
+    site_id INTEGER NOT NULL,
     type VARCHAR(50),
     date VARCHAR(100),
     round VARCHAR(50),
@@ -30,7 +31,12 @@ CREATE TABLE pm (
     updated_by VARCHAR(50),
     updated_at VARCHAR(50),
     deleted_at VARCHAR(50),
-    deleted_by VARCHAR(50)
+    deleted_by VARCHAR(50),
+
+    CONSTRAINT fk_pm
+        FOREIGN KEY (site_id)
+        REFERENCES sites(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE pm_cabinet (
@@ -78,12 +84,6 @@ CREATE TABLE pm_battery_backup (
         FOREIGN KEY (cabinet_id)
         REFERENCES pm_cabinet(id)
         ON DELETE CASCADE
-);
-
-CREATE TABLE pm_key_manager (
-    id SERIAL PRIMARY KEY,
-    key_id INTEGER NOT NULL,
-    key_name TEXT NOT NULL
 );
 
 CREATE TABLE pm_generator (
@@ -146,6 +146,12 @@ CREATE TABLE pm_mowing (
         FOREIGN KEY (pm_id)
         REFERENCES pm(id)
         ON DELETE CASCADE
+);
+
+CREATE TABLE pm_key_manager (
+    id SERIAL PRIMARY KEY,
+    key_id INTEGER NOT NULL,
+    key_name TEXT NOT NULL
 );
 
 CREATE TABLE pm_title (
