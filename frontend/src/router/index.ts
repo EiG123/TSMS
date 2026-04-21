@@ -52,7 +52,7 @@ import cableslack from "../views/cableslack/cableslack.vue";
 import txt_to_excel from "../views/txt_to_excel/home.vue";
 
 import network_availability_dashboard from "../views/NetworkAvailability/NetworkAvailabilityDashBoard.vue";
-
+import Site_Improvement from "../views/Site Improvement/SiteImprovement.vue";
 
 const routes = [
     // 🔐 Login (ไม่มี layout)
@@ -177,6 +177,18 @@ const routes = [
             requiresAuth: true
         },
         component: pmDashBoardAI,
+    },
+
+    {
+        path: "/Site_Improvement",
+        name: "Site_Improvement",
+        meta: {
+            requiresAuth: true
+        },
+        component: Site_Improvement,
+        props: route => ({
+            region: route.query.region,
+        })
     },
 
     // 🧱 Main layout (ต้อง login)
