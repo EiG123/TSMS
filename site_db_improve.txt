@@ -19,10 +19,10 @@ CREATE TABLE site_improve_log (
     battery_li_on_20_banks_improve VARCHAR(50),
     battery_lead_acid_banks_improve VARCHAR(50),
     solar_cell_improve VARCHAR(50),
-    cabinet_improve VARCHAR(50)
+    cabinet_improve VARCHAR(50),
 
     CONSTRAINT fk_site_improve_log
         FOREIGN KEY (site_id)
         REFERENCES sites(id)
-        ON DELETE
+        ON DELETE CASCADE
 );
