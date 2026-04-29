@@ -51,7 +51,7 @@ const uploadFile = async () => {
     const res = await networkAVAManage.UploadSitesAVA(file.value);
     console.log(res);
 
-    if (!res.ok) {
+    if (!res.success) {
       throw new Error("Upload failed");
     }
 

@@ -26,3 +26,5 @@ CREATE TABLE site_improve_log (
         REFERENCES sites(id)
         ON DELETE CASCADE
 );
+
+DROP TABLE IF EXISTS site_improve_log;

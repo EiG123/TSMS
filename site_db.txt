@@ -340,8 +340,9 @@ CREATE TABLE status_master (
     UNIQUE(module, layer, code)
 );  
 
-DROP TABLE IF EXISTS pm_problem;
+
 DROP TABLE IF EXISTS pm_problem_logs;
+DROP TABLE IF EXISTS pm_problem;
 
 DROP TABLE IF EXISTS pm_images;
 DROP TABLE IF EXISTS pm_title_images;
