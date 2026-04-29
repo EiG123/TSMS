@@ -40,23 +40,27 @@ const handleDragLeave = () => {
   dragActive.value = false;
 };
 
+const success = ref(false);
+
 const uploadFile = async () => {
   if (!file.value) return;
 
   loading.value = true;
   error.value = null;
+  success.value = false;
 
   try {
-
     const res = await networkAVAManage.UploadSitesAVA(file.value);
-    console.log(res);
+    console.log(res.success);
+    console.log(res.data.success);
 
     if (!res.success) {
       throw new Error("Upload failed");
     }
 
-    const data = await res.json();
-    result.value = data;
+    result.value = res.data;
+    file.value = null;
+    success.value = true;
   } catch (err: any) {
     error.value = err.message;
   } finally {
@@ -325,6 +329,23 @@ const formatFileSize = (bytes: number) => {
               <h3 class="font-medium text-red-800 dark:text-red-300">Error</h3>
               <p class="text-sm text-red-700 dark:text-red-400 mt-1">
                 {{ error }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-if="success"
+          class="bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/30 rounded-xl p-4 animate-fade-in"
+        >
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <div class="flex-1">
+              <h3 class="font-medium text-green-800 dark:text-green-300">Upload Successful</h3>
+              <p class="text-sm text-green-700 dark:text-green-400 mt-1">
+                File uploaded successfully. You can now validate or import the data below.
               </p>
             </div>
           </div>
