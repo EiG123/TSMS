@@ -1,0 +1,91 @@
+CREATE TABLE sites (
+    id SERIAL PRIMARY KEY,
+    site_code TEXT UNIQUE NOT NULL,
+    site_name VARCHAR(50),
+    region VARCHAR(50),
+    province VARCHAR(50),
+    amphur VARCHAR(50),
+    tambol VARCHAR(50),
+    latitude  NUMERIC(10,7),
+    longitude NUMERIC(10,7)
+);
+
+CREATE TABLE systems (
+    system_id   SERIAL PRIMARY KEY,
+    system_name TEXT UNIQUE NOT NULL -- เช่น 2G, 3G, 4G, 5G
+);
+
+CREATE TABLE operators (
+    operator_id   SERIAL PRIMARY KEY,
+    operator_name TEXT UNIQUE NOT NULL -- AIS, TRUE, NT
+);
+
+CREATE TABLE site_config (
+    id           BIGSERIAL PRIMARY KEY,
+    site_id      BIGINT NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
+    system_id    INT NOT NULL REFERENCES systems(system_id),
+    operator_id  INT NOT NULL REFERENCES operators(operator_id),
+
+    created_at   TIMESTAMPTZ DEFAULT NOW(),
+
+    CONSTRAINT uq_site_system_operator
+    UNIQUE (site_id, system_id, operator_id)
+);
+CREATE INDEX idx_site_config_site
+ON site_config (site_id);
+
+CREATE TABLE site_availability_daily (
+    id              BIGSERIAL PRIMARY KEY,
+    site_config_id  BIGINT NOT NULL,
+
+    snapshot_date   DATE NOT NULL,
+    avg_availability NUMERIC(5,2) NOT NULL
+        CHECK (avg_availability >= 0 AND avg_availability <= 100),
+
+    created_at      TIMESTAMPTZ DEFAULT NOW(),
+
+    CONSTRAINT uq_config_day UNIQUE (site_config_id, snapshot_date),
+
+    CONSTRAINT fk_site_config
+        FOREIGN KEY (site_config_id)
+        REFERENCES site_config(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_availability_config_date
+ON site_availability_daily (site_config_id, snapshot_date DESC);
+
+CREATE TABLE incident_site_impact (
+    id                BIGSERIAL PRIMARY KEY,
+    incident_id       BIGINT NOT NULL REFERENCES incidents(incident_id),
+
+    site_id           BIGINT REFERENCES sites(id) ON DELETE CASCADE,
+    site_config_id    BIGINT REFERENCES site_config(id) ON DELETE CASCADE,
+
+    impact_start      TIMESTAMPTZ,
+    impact_end        TIMESTAMPTZ,
+
+    created_at        TIMESTAMPTZ DEFAULT NOW(),
+
+    CHECK (
+        site_id IS NOT NULL OR site_config_id IS NOT NULL
+    ),
+
+    CHECK (
+        impact_end IS NULL OR impact_start <= impact_end
+    )
+);
+CREATE INDEX idx_incident_time
+ON incident_site_impact (impact_start, impact_end);
+
+CREATE INDEX idx_incident_site
+ON incident_site_impact (site_id);
+
+CREATE INDEX idx_incident_config
+ON incident_site_impact (site_config_id);
+
+CREATE INDEX idx_incident_time_range
+ON incident_site_impact
+USING GIST (
+    tstzrange(impact_start, COALESCE(impact_end, NOW()))
+);

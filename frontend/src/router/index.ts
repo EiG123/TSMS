@@ -54,6 +54,8 @@ import txt_to_excel from "../views/txt_to_excel/home.vue";
 import network_availability_dashboard from "../views/NetworkAvailability/NetworkAvailabilityDashBoard.vue";
 import Site_Improvement from "../views/Site Improvement/SiteImprovement.vue";
 
+import network_availability_upload_sites_ava from "../views/NetworkAvailability/UploadSiteAVA.vue";
+
 const routes = [
     // 🔐 Login (ไม่มี layout)
     {
@@ -161,6 +163,14 @@ const routes = [
                 component: UserlocationDashboard
             }
         ]
+    },
+
+    {
+        path: "/network_availability_upload_sites_ava",
+        meta: {
+            requiresAuth: true
+        },
+        component: network_availability_upload_sites_ava,
     },
 
     {

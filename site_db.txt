@@ -1,10 +1,13 @@
 CREATE TABLE sites (
     id SERIAL PRIMARY KEY,
-    site_name VARCHAR(50) UNIQUE,
+    site_code TEXT UNIQUE NOT NULL,
+    site_name VARCHAR(50),
     region VARCHAR(50),
     province VARCHAR(50),
-    latitude VARCHAR(100),
-    longitude VARCHAR(100)
+    amphur VARCHAR(50),
+    tambol VARCHAR(50),
+    latitude  NUMERIC(10,7),
+    longitude NUMERIC(10,7)
 );
 
 CREATE TABLE pm (

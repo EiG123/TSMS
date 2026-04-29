@@ -24,6 +24,8 @@ import pmCheckInOutManage from "./routers/pmCheckInOutManage.js";
 import pmCabinetRouter from "./routers/pmCabinetRouter.js";
 import UserLocationRouter from "./routers/user/UserLocationRouter.js";
 
+import NetworkAVA from "./routers/NetworkAVA/NetworkAVARouter.js";
+
 const app = new Hono();
 
 // CORS middleware
@@ -57,6 +59,8 @@ app.route("/api/pmCheckInOut", pmCheckInOutManage);
 app.route("/api/pmCabinet", pmCabinetRouter);
 
 app.route("/api/pmGetPmData", pmGetPmData);
+
+app.route("/api/NetworkAVA", NetworkAVA)
 
 //Txt To Excel
 app.route("/api/txt-to-excel", txt_to_excelRouter);

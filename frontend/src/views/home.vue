@@ -15,6 +15,10 @@ const goCableSlack = () => router.push("/CableSlack");
 const goTxTtoExcel = () => router.push("/txt_to_excel");
 const goNetworkAvailability = () =>
   router.push("/network_availability_dashboard");
+
+const goNetworkAvailabilitySitesAVAUpload = () => {
+    router.push("/network_availability_upload_sites_ava");
+}
 const goToImprovement = () =>
   router.push({
     name: `Site_Improvement`,
@@ -70,6 +74,14 @@ const cards = [
     icon: "📈",
     color: "from-pink-500 to-pink-600",
     onclick: goNetworkAvailability,
+  },
+  {
+    id: 7,
+    title: "Network Availability Sites AVA Upload",
+    value: "",
+    icon: "📈",
+    color: "from-red-500 to-blue-600",
+    onclick: goNetworkAvailabilitySitesAVAUpload,
   },
 ];
 </script>
