@@ -79,4 +79,25 @@ NetworkAVARouter.post("/UploadIncidentTT", async (c) => {
   }
 });
 
+NetworkAVARouter.post("/AVAChart", async (c) => {
+  try {
+    const body = await c.req.json(); // 👈 สำคัญ
+
+    const res = await NetworkAVAService.AVAChart(body, pool);
+
+    return c.json({
+      data: res,
+      success: true,
+    });
+
+  } catch (error: any) {
+    console.error("Upload error:", error);
+
+    return c.json({
+      success: false,
+      message: error.message,
+    }, 500);
+  }
+});
+
 export default NetworkAVARouter;

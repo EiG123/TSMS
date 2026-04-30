@@ -8,12 +8,6 @@ export const networkAVAManage = {
     const response = await axios.post(
       "http://localhost:3000/api/NetworkAVA/UploadSitesAVA",
       formData
-    //   ,
-    //   {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   }
     );
 
     return response.data;
@@ -26,14 +20,16 @@ export const networkAVAManage = {
     const response = await axios.post(
       "http://localhost:3000/api/NetworkAVA/UploadIncidentTT",
       formData
-    //   ,
-    //   {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   }
     );
 
     return response.data;
   },
+
+  async AVAChart(data: any) {
+    const response = await axios.post(
+      "http://localhost:3000/api/NetworkAVA/AVAChart", data
+    );
+
+    return response.data;
+  }
 };

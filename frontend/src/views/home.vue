@@ -23,6 +23,10 @@ const goNetworkAvailabilitySitesAVAUpload = () => {
 const goNetworkIncidentTicketSitesAVAUpload = () => {
   router.push("/network_availability_upload_incident_ticket");
 };
+
+const goNetworkAVASitesAVAandIncident = () => {
+  router.push("/network_availability_sites_and_incident");
+}
 const goToImprovement = () =>
   router.push({
     name: `Site_Improvement`,
@@ -88,12 +92,20 @@ const cards = [
     onclick: goNetworkAvailabilitySitesAVAUpload,
   },
   {
-    id: 7,
+    id: 8,
     title: "Incident Ticket Upload",
     value: "",
     icon: "M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z",
     color: "from-red-500 to-blue-600",
     onclick: goNetworkIncidentTicketSitesAVAUpload,
+  },
+  {
+    id: 9,
+    title: "NetWork AVA Site AVA and Incident DashBoard",
+    value: "",
+    icon: "M8 0a.5.5 0 0 1 .473.337L9.046 2H14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1.85l1.323 3.837a.5.5 0 1 1-.946.326L11.092 11H8.5v3a.5.5 0 0 1-1 0v-3H4.908l-1.435 4.163a.5.5 0 1 1-.946-.326L3.85 11H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4.954L7.527.337A.5.5 0 0 1 8 0M2 3v7h12V3z",
+    color: "from-red-500 to-blue-600",
+    onclick: goNetworkAVASitesAVAandIncident,
   },
 ];
 </script>

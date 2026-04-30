@@ -56,6 +56,7 @@ import Site_Improvement from "../views/Site Improvement/SiteImprovement.vue";
 
 import network_availability_upload_sites_ava from "../views/NetworkAvailability/UploadSiteAVA.vue";
 import network_availability_upload_incident_ticket from "../views/NetworkAvailability/UploadIncidentTT.vue";
+import network_availability_sites_and_incident from "../views/NetworkAvailability/DashBoardNetworkAVA.vue";
 
 const routes = [
     // 🔐 Login (ไม่มี layout)
@@ -164,6 +165,14 @@ const routes = [
                 component: UserlocationDashboard
             }
         ]
+    },
+
+    {
+        path: "/network_availability_sites_and_incident",
+        meta: {
+            requiresAuth: true
+        },
+        component: network_availability_sites_and_incident,
     },
 
     {
