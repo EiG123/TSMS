@@ -55,6 +55,7 @@ import network_availability_dashboard from "../views/NetworkAvailability/Network
 import Site_Improvement from "../views/Site Improvement/SiteImprovement.vue";
 
 import network_availability_upload_sites_ava from "../views/NetworkAvailability/UploadSiteAVA.vue";
+import network_availability_upload_incident_ticket from "../views/NetworkAvailability/UploadIncidentTT.vue";
 
 const routes = [
     // 🔐 Login (ไม่มี layout)
@@ -171,6 +172,14 @@ const routes = [
             requiresAuth: true
         },
         component: network_availability_upload_sites_ava,
+    },
+
+    {
+        path: "/network_availability_upload_incident_ticket",
+        meta: {
+            requiresAuth: true
+        },
+        component: network_availability_upload_incident_ticket,
     },
 
     {

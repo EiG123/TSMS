@@ -50,7 +50,7 @@ const uploadFile = async () => {
   success.value = false;
 
   try {
-    const res = await networkAVAManage.UploadSitesAVA(file.value);
+    const res = await networkAVAManage.UploadIncidentTT(file.value);
     console.log(res.success);
     console.log(res.data.success);
 
@@ -123,10 +123,10 @@ const formatFileSize = (bytes: number) => {
         <h1
           class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-400 mb-3"
         >
-          Import Sites AVA Data
+          Import Incident Ticket Data
         </h1>
         <p class="text-gray-600 dark:text-slate-400 text-lg">
-          Upload your availability data (Excel or CSV)
+          Upload your Incident Ticket (Excel or CSV)
         </p>
       </div>
 

@@ -17,13 +17,17 @@ const goNetworkAvailability = () =>
   router.push("/network_availability_dashboard");
 
 const goNetworkAvailabilitySitesAVAUpload = () => {
-    router.push("/network_availability_upload_sites_ava");
-}
+  router.push("/network_availability_upload_sites_ava");
+};
+
+const goNetworkIncidentTicketSitesAVAUpload = () => {
+  router.push("/network_availability_upload_incident_ticket");
+};
 const goToImprovement = () =>
   router.push({
     name: `Site_Improvement`,
     query: {
-      region: authStore.userRegion
+      region: authStore.userRegion,
     },
   });
 
@@ -32,7 +36,7 @@ const cards = [
     id: 1,
     title: "PM",
     value: "",
-    icon: "📊",
+    icon: "M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z",
     color: "from-blue-500 to-blue-600",
     onclick: goPM,
   },
@@ -40,7 +44,7 @@ const cards = [
     id: 2,
     title: "เก็บตกยกสาย",
     value: "",
-    icon: "🎯",
+    icon: "M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z",
     color: "from-purple-500 to-purple-600",
     onclick: goCableSlack,
   },
@@ -79,9 +83,17 @@ const cards = [
     id: 7,
     title: "Network Availability Sites AVA Upload",
     value: "",
-    icon: "📈",
+    icon: "M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z",
     color: "from-red-500 to-blue-600",
     onclick: goNetworkAvailabilitySitesAVAUpload,
+  },
+  {
+    id: 7,
+    title: "Incident Ticket Upload",
+    value: "",
+    icon: "M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z",
+    color: "from-red-500 to-blue-600",
+    onclick: goNetworkIncidentTicketSitesAVAUpload,
   },
 ];
 </script>
@@ -165,7 +177,19 @@ const cards = [
           <div
             :class="`w-14 h-14 bg-gradient-to-br ${card.color} rounded-lg flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`"
           >
-            {{ card.icon }}
+            <svg
+              class="w-7 h-7 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                :d="card.icon"
+              />
+            </svg>
           </div>
         </div>
 

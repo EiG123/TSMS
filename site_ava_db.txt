@@ -60,51 +60,61 @@ ON site_availability_daily (snapshot_date);
 CREATE INDEX idx_availability_config_date
 ON site_availability_daily (site_config_id, snapshot_date DESC);
 
+-- =========================
+-- INCIDENTS
+-- =========================
 CREATE TABLE incidents (
-    incident_id             BIGSERIAL PRIMARY KEY,
+    incident_id               BIGSERIAL PRIMARY KEY,
 
-    -- external/global reference
-    global_id               TEXT,   -- Related to Global ID
-    incident_number         TEXT NOT NULL, -- หมายเลข incident/ticket หลัก
+    global_id                 TEXT,
+    incident_number           TEXT NOT NULL,
 
-    ticket_type             TEXT,
-    urgency                 TEXT,
-    severity                TEXT,
-    subject                 TEXT,
-    classification          TEXT,
-    status                  TEXT,
+    ticket_type               TEXT,
+    urgency                   TEXT,
+    severity                  TEXT,
+    subject                   TEXT,
+    classification            TEXT,
+    status                    TEXT,
 
-    creator_id              TEXT,
-    creator_name            TEXT,
-    department              TEXT,
-    activity_owner          TEXT,
-    activity_status         TEXT,
-    external_ticket         TEXT,
+    creator_id                TEXT,
+    creator_name              TEXT,
+    department                TEXT,
+    activity_owner            TEXT,
+    activity_status           TEXT,
+    external_ticket           TEXT,
 
-    owner                   TEXT,
-    owner_group             TEXT,
+    owner                     TEXT,
+    owner_group               TEXT,
 
-    failure_class           TEXT,
-    problem                 TEXT,
-    cause                   TEXT,
-    remedy                  TEXT,
-    external_system         TEXT,
+    failure_class             TEXT,
+    problem                   TEXT,
+    cause                     TEXT,
+    remedy                    TEXT,
+    external_system           TEXT,
 
-    -- timestamps
-    fault_datetime          TIMESTAMPTZ,  -- Fault Date
-    create_datetime         TIMESTAMPTZ,  -- Create Date
-    expected_finish_datetime TIMESTAMPTZ, -- Expected Finish
-    actual_start_datetime   TIMESTAMPTZ,  -- Actual Start Date
-    actual_finish_datetime  TIMESTAMPTZ,  -- Actual Finish Date
-    restoration_datetime    TIMESTAMPTZ,  -- Restoration Date
+    fault_datetime            TIMESTAMPTZ,
+    create_datetime           TIMESTAMPTZ,
+    expected_finish_datetime  TIMESTAMPTZ,
+    actual_start_datetime     TIMESTAMPTZ,
+    actual_finish_datetime    TIMESTAMPTZ,
+    restoration_datetime      TIMESTAMPTZ,
 
-    raw_payload             JSONB,        -- เก็บข้อมูลต้นทางเผื่อ audit/debug
-    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()    
+    raw_payload               JSONB,
+
+    created_at                TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at                TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    -- 🔥 KEY FIX: generated column สำหรับ dedup
+    dedup_key TEXT GENERATED ALWAYS AS (
+        COALESCE(NULLIF(global_id, ''), incident_number)
+    ) STORED,
+
+    CONSTRAINT uq_incident_dedup UNIQUE (dedup_key)
 );
-CREATE UNIQUE INDEX uq_incident_global_not_null
-        ON incidents (global_id)
-        WHERE global_id IS NOT NULL;
+
+-- indexes สำหรับ query
+CREATE INDEX idx_incident_number
+ON incidents (incident_number);
 
 CREATE INDEX idx_incidents_fault_datetime
 ON incidents (fault_datetime);
@@ -112,26 +122,28 @@ ON incidents (fault_datetime);
 CREATE INDEX idx_incidents_status
 ON incidents (status);
 
+CREATE INDEX idx_incidents_time_range
+ON incidents (fault_datetime, restoration_datetime);
+
+-- =========================
+-- INCIDENT IMPACT
+-- =========================
 CREATE TABLE incident_site_impact (
-    id                BIGSERIAL PRIMARY KEY,
-    incident_id       BIGINT NOT NULL REFERENCES incidents(incident_id) ON DELETE CASCADE,
+    id             BIGSERIAL PRIMARY KEY,
+    incident_id    BIGINT NOT NULL REFERENCES incidents(incident_id) ON DELETE CASCADE,
 
-    site_id           BIGINT REFERENCES sites(id) ON DELETE CASCADE,
-    site_config_id    BIGINT REFERENCES site_config(id) ON DELETE CASCADE,
+    site_id        BIGINT REFERENCES sites(id) ON DELETE CASCADE,
+    site_config_id BIGINT REFERENCES site_config(id) ON DELETE CASCADE,
 
-    impact_start      TIMESTAMPTZ,
-    impact_end        TIMESTAMPTZ,
+    impact_start   TIMESTAMPTZ,
+    impact_end     TIMESTAMPTZ,
 
-    created_at        TIMESTAMPTZ DEFAULT NOW(),
+    created_at     TIMESTAMPTZ DEFAULT NOW(),
 
-    CHECK (
-        site_id IS NOT NULL OR site_config_id IS NOT NULL
-    ),
-
-    CHECK (
-        impact_end IS NULL OR impact_start <= impact_end
-    )
+    CHECK (site_id IS NOT NULL OR site_config_id IS NOT NULL),
+    CHECK (impact_end IS NULL OR impact_start <= impact_end)
 );
+
 CREATE INDEX idx_incident_time
 ON incident_site_impact (impact_start, impact_end);
 
@@ -141,13 +153,34 @@ ON incident_site_impact (site_id);
 CREATE INDEX idx_incident_config
 ON incident_site_impact (site_config_id);
 
+-- 🔥 range index (ไม่ใช้ NOW() เพื่อให้ planner optimize ได้)
 CREATE INDEX idx_incident_time_range
 ON incident_site_impact
 USING GIST (tstzrange(impact_start, impact_end));
 
+-- =========================
+-- TRIGGER: auto update updated_at
+-- =========================
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_update_incidents_updated_at
+BEFORE UPDATE ON incidents
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at();
+
+
+DROP TABLE IF EXISTS incident_site_impact;
+DROP TABLE IF EXISTS site_availability_daily;
+DROP TABLE IF EXISTS site_config;
+DROP TABLE IF EXISTS operators;
 DROP TABLE IF EXISTS incidents;
 DROP TABLE IF EXISTS systems;
-DROP TABLE IF EXISTS operators;
-DROP TABLE IF EXISTS site_config;
-DROP TABLE IF EXISTS site_availability_daily;
-DROP TABLE IF EXISTS incident_site_impact;
+
+
+
