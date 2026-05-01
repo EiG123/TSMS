@@ -147,15 +147,14 @@ export const NetworkAVAService = {
   async UploadIncidentTT(file: File, pool: any) {
     const client = await pool.connect();
 
-    const extractSiteCode = (subject: string): string | null => {
-      if (!subject) return null;
+    const extractSiteCodes = (subject: string): string[] => {
+      if (!subject) return [];
 
-      // ปรับ pattern ตาม naming จริงของคุณ
-      const match = subject.match(/[A-Z]{2,}\d{2,}/);
+      const regex = /[A-Z]{2,}\d{3,}/gi;
 
-      console.log(match);
+      const matches = [...subject.matchAll(regex)];
 
-      return match ? match[0] : null;
+      return [...new Set(matches.map((m) => m[0].toUpperCase()))];
     };
 
     try {
@@ -163,8 +162,10 @@ export const NetworkAVAService = {
 
       // 1) parse excel
       const buffer = await file.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const workbook = XLSX.read(buffer, {
+        type: "array",
+        cellDates: true, // 🔥 สำคัญ
+      }); const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
       const rawData: any[] = XLSX.utils.sheet_to_json(sheet, {
         defval: null,
@@ -172,14 +173,11 @@ export const NetworkAVAService = {
 
       // 2) helper parse date
       const parseDate = (val: any) => {
+        console.log(val);
         if (!val) return null;
 
-        // ถ้าเป็น Date แล้ว
-        if (val instanceof Date) {
-          return val;
-        }
+        if (val instanceof Date) return val;
 
-        // fallback string
         const d = new Date(val);
         return isNaN(d.getTime()) ? null : d;
       };
@@ -239,15 +237,17 @@ export const NetworkAVAService = {
         remedy: row.remedy,
         external_system: row.external_system,
 
-        fault_datetime: parseDate(row.fault_date),
-        create_datetime: parseDate(row.create_date),
-        expected_finish_datetime: parseDate(row.expected_finish),
-        actual_start_datetime: parseDate(row.actual_start),
-        actual_finish_datetime: parseDate(row.actual_finish),
-        restoration_datetime: parseDate(row.restoration_date),
+
+        fault_datetime: parseDate(pick(row, ["Fault Date", "Fault_Date", "fault date", "fault_date"])),
+        create_datetime: parseDate(pick(row, ["Create Date", "Create_Date", "create date", "create_date"])),
+        expected_finish_datetime: parseDate(pick(row, ["Expected Finish", "Expected_Finish", "expected finish", "expected_finish"])),
+        actual_start_datetime: parseDate(pick(row, ["Actual Start Date", "Actual_Start_Date", "actual start date", "actual_start_date"])),
+        actual_finish_datetime: parseDate(pick(row, ["Actual Finish Date", "Actual_Finish_Date", "actual finish date", "actual_finish_date"])),
+        restoration_datetime: parseDate(pick(row, ["Restoration Date", "Restoration_Date", "Restoration_Date", "restoration_date"])),
 
         raw_payload: row,
       }));
+
 
       // 4) validate
       const validRows = data.filter((r) => r.incident_number);
@@ -330,45 +330,49 @@ export const NetworkAVAService = {
           ]
         );
       }
+
       for (const row of validRows) {
-        const siteCode = extractSiteCode(row.subject);
+        const siteCodes = extractSiteCodes(row.subject);
 
-        if (!siteCode) continue;
+        console.log(siteCodes);
 
-        const siteRes = await client.query(
-          `SELECT id FROM sites WHERE site_code = $1`,
-          [siteCode]
-        );
+        if (!siteCodes.length) continue;
 
-        if (siteRes.rows.length === 0) continue;
+        for (const code of siteCodes) {
+          const siteRes = await client.query(
+            `SELECT id FROM sites WHERE site_code = $1`,
+            [code]
+          );
 
-        const siteId = siteRes.rows[0].id;
+          if (siteRes.rows.length === 0) continue;
 
-        // insert impact
-        await client.query(
-          `
-          INSERT INTO incident_site_impact (
-            incident_id,
-            site_id,
-            impact_start,
-            impact_end
-          )
-          SELECT
-            i.incident_id,
-            $2,
-            $3,
-            $4
-          FROM incidents i
-          WHERE i.incident_number = $1
-          LIMIT 1
-          `,
-          [
-            row.incident_number,
-            siteId,
-            row.fault_datetime,
-            row.restoration_datetime,
-          ]
-        );
+          const siteId = siteRes.rows[0].id;
+
+          await client.query(
+            `
+            INSERT INTO incident_site_impact (
+              incident_id,
+              site_id,
+              impact_start,
+              impact_end
+            )
+            SELECT
+              i.incident_id,
+              $2,
+              $3,
+              $4
+            FROM incidents i
+            WHERE i.incident_number = $1
+            LIMIT 1
+            `,
+            [
+              row.incident_number,
+              siteId,
+              row.fault_datetime,
+              row.restoration_datetime,
+            ]
+          );
+        }
       }
 
       await client.query("COMMIT");
@@ -427,9 +431,14 @@ export const NetworkAVAService = {
           SELECT
             isi.site_id,
             i.incident_id,
+            i.incident_number,
             i.subject,
             i.fault_datetime,
-            i.restoration_datetime
+            i.restoration_datetime,
+            i.severity,
+            i.problem,
+            i.cause,
+            i.remedy
           FROM incidents i
           JOIN incident_site_impact isi
             ON isi.incident_id = i.incident_id
@@ -445,7 +454,12 @@ export const NetworkAVAService = {
           COALESCE(
             json_agg(
               json_build_object(
+                'ticket', inc.incident_number,
+                'severity', inc.severity,
                 'subject', inc.subject,
+                'problem', inc.problem,
+                'cause', inc.cause,
+                'remedy', inc.remedy,
                 'start', inc.fault_datetime,
                 'end', inc.restoration_datetime
               )
