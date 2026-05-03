@@ -57,6 +57,7 @@ function useAVAChart() {
 
     try {
       const res = await networkAVAManage.AVAChart(params);
+      console.log(res);
       chartData.value = res.data as AVADay[];
     } catch (err: any) {
       if (err.name !== "AbortError") {
@@ -290,6 +291,14 @@ const exportCSV = () => {
   a.click();
   URL.revokeObjectURL(url);
 };
+
+const formatToReadable = (isoString) => {
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat("th-TH", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+  }).format(date);
+};
 </script>
 
 <template>
@@ -511,12 +520,16 @@ const exportCSV = () => {
               <thead>
                 <tr
                   class="text-xs uppercase tracking-widest text-slate-400 bg-slate-50"
-                  
                 >
                   <th class="px-5 py-3 text-left font-semibold">Date</th>
+                  <th class="px-5 py-3 text-left font-semibold">Ticket</th>
+                  <th class="px-5 py-3 text-left font-semibold">Severity</th>
                   <th class="px-5 py-3 text-left font-semibold">Subject</th>
-                  <th class="px-5 py-3 text-left font-semibold">Start</th>
-                  <th class="px-5 py-3 text-left font-semibold">End</th>
+                  <th class="px-5 py-3 text-left font-semibold">Cause</th>
+                  <th class="px-5 py-3 text-left font-semibold">Problem</th>
+                  <th class="px-5 py-3 text-left font-semibold">Remedy</th>
+                  <th class="px-5 py-3 text-left font-semibold">Fault Date</th>
+                  <th class="px-5 py-3 text-left font-semibold">Restoration Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -545,12 +558,23 @@ const exportCSV = () => {
                       {{ row.date }}
                     </span>
                   </td>
+                  <td class="px-5 py-3 text-slate-700">{{ row.ticket }}</td>
+
+                  <td class="px-5 py-3 text-slate-700">{{ row.severity }}</td>
+
                   <td class="px-5 py-3 text-slate-700">{{ row.subject }}</td>
+
+                  <td class="px-5 py-3 text-slate-700">{{ row.cause }}</td>
+
+                  <td class="px-5 py-3 text-slate-700">{{ row.problem }}</td>
+
+                  <td class="px-5 py-3 text-slate-700">{{ row.remedy }}</td>
+
                   <td class="px-5 py-3 text-slate-500 text-xs">
-                    {{ row.start }}
+                    {{ formatToReadable(row.fault_datetime) }}
                   </td>
                   <td class="px-5 py-3 text-slate-500 text-xs">
-                    {{ row.end }}
+                    {{ formatToReadable(row.restoration_datetime) }}
                   </td>
                 </tr>
               </tbody>

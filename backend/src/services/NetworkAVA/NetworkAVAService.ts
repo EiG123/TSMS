@@ -401,6 +401,93 @@ export const NetworkAVAService = {
 
     console.log(data);
     try {
+      // const res = await client.query(
+      //   `
+      //   WITH date_series AS (
+      //     SELECT generate_series(
+      //       $2::date,
+      //       $3::date,
+      //       interval '1 day'
+      //     )::date AS d
+      //   ),
+
+      //   site_configs AS (
+      //     SELECT sc.id
+      //     FROM sites s
+      //     JOIN site_config sc ON sc.site_id = s.id
+      //     WHERE s.site_code = $1
+      //   ),
+
+      //   ava AS (
+      //     SELECT
+      //       sad.snapshot_date,
+      //       AVG(sad.avg_availability) AS availability
+      //     FROM site_availability_daily sad
+      //     JOIN site_configs sc ON sc.id = sad.site_config_id
+      //     GROUP BY sad.snapshot_date
+      //   ),
+
+      //   inc AS (
+      //     SELECT
+      //       isi.site_id,
+      //       i.incident_id,
+      //       i.incident_number,
+      //       i.subject,
+      //       i.fault_datetime,
+      //       i.create_datetime,
+      //       i.actual_start_datetime,
+      //       i.actual_finish_datetime,
+      //       i.restoration_datetime,
+      //       i.severity,
+      //       i.problem,
+      //       i.cause,
+      //       i.remedy
+      //     FROM incidents i
+      //     JOIN incident_site_impact isi
+      //       ON isi.incident_id = i.incident_id
+      //     JOIN sites s
+      //       ON s.id = isi.site_id
+      //     WHERE s.site_code = $1
+      //   )
+
+      //   SELECT
+      //     to_char(ds.d, 'YYYY-MM-DD') AS date,
+      //     COALESCE(a.availability, 0) AS availability,
+
+      //     COALESCE(
+      //       json_agg(
+      //         json_build_object(
+      //           'id', inc.incident_id,
+      //           'ticket', inc.incident_number,
+      //           'severity', inc.severity,
+      //           'subject', inc.subject,
+      //           'problem', inc.problem,
+      //           'cause', inc.cause,
+      //           'remedy', inc.remedy,
+      //           'fault_datetime', inc.fault_datetime,
+      //           'create_datetime', inc.create_datetime,
+      //           'actual_start_datetime', inc.actual_start_datetime,
+      //           'actual_finish_datetime', inc.actual_finish_datetime,
+      //           'restoration_datetime', inc.restoration_datetime
+      //         )
+      //       ) FILTER (WHERE inc.incident_id IS NOT NULL),
+      //       '[]'
+      //     ) AS incidents
+
+      //   FROM date_series ds
+
+      //   LEFT JOIN ava a
+      //     ON a.snapshot_date = ds.d
+
+      //   LEFT JOIN inc
+      //     ON inc.fault_datetime::date <= ds.d
+      //     AND (inc.restoration_datetime IS NULL OR inc.restoration_datetime::date >= ds.d)
+
+      //   GROUP BY ds.d, a.availability
+      //   ORDER BY ds.d;
+      // `,
+      //   [site_code, start_date, end_date]
+      // );
       const res = await client.query(
         `
         WITH date_series AS (
@@ -434,6 +521,9 @@ export const NetworkAVAService = {
             i.incident_number,
             i.subject,
             i.fault_datetime,
+            i.create_datetime,
+            i.actual_start_datetime,
+            i.actual_finish_datetime,
             i.restoration_datetime,
             i.severity,
             i.problem,
@@ -453,15 +543,19 @@ export const NetworkAVAService = {
 
           COALESCE(
             json_agg(
-              json_build_object(
+              DISTINCT jsonb_build_object(
+                'id', inc.incident_id,
                 'ticket', inc.incident_number,
                 'severity', inc.severity,
                 'subject', inc.subject,
                 'problem', inc.problem,
                 'cause', inc.cause,
                 'remedy', inc.remedy,
-                'start', inc.fault_datetime,
-                'end', inc.restoration_datetime
+                'fault_datetime', inc.fault_datetime,
+                'create_datetime', inc.create_datetime,
+                'actual_start_datetime', inc.actual_start_datetime,
+                'actual_finish_datetime', inc.actual_finish_datetime,
+                'restoration_datetime', inc.restoration_datetime
               )
             ) FILTER (WHERE inc.incident_id IS NOT NULL),
             '[]'
@@ -473,8 +567,7 @@ export const NetworkAVAService = {
           ON a.snapshot_date = ds.d
 
         LEFT JOIN inc
-          ON inc.fault_datetime::date <= ds.d
-          AND (inc.restoration_datetime IS NULL OR inc.restoration_datetime::date >= ds.d)
+          ON inc.fault_datetime::date = ds.d
 
         GROUP BY ds.d, a.availability
         ORDER BY ds.d;
