@@ -71,8 +71,19 @@ function useAVAChart() {
   const stats = computed(() => {
     if (!chartData.value.length) return null;
     const vals = chartData.value.map((d) => d.availability);
+    let cal_avg = 0;
+    console.log(vals);
+    for (let x in vals) {
+      // ใช้ parseFloat เพื่อแปลง string ให้เป็นตัวเลขก่อนนำมาบวก
+      cal_avg += parseFloat(vals[x]);
+      console.log("ผลรวมย่อย:", cal_avg);
+    }
+
+    // หารเฉลี่ยหากต้องการหาค่าเฉลี่ย
+    cal_avg = cal_avg / Object.keys(vals).length;
+
     return {
-      avg: (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2),
+      avg: cal_avg,
       min: Math.min(...vals).toFixed(2),
       max: Math.max(...vals).toFixed(2),
     };
@@ -529,7 +540,9 @@ const formatToReadable = (isoString) => {
                   <th class="px-5 py-3 text-left font-semibold">Problem</th>
                   <th class="px-5 py-3 text-left font-semibold">Remedy</th>
                   <th class="px-5 py-3 text-left font-semibold">Fault Date</th>
-                  <th class="px-5 py-3 text-left font-semibold">Restoration Date</th>
+                  <th class="px-5 py-3 text-left font-semibold">
+                    Restoration Date
+                  </th>
                 </tr>
               </thead>
               <tbody>
