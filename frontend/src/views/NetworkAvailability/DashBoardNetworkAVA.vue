@@ -83,9 +83,9 @@ function useAVAChart() {
     cal_avg = cal_avg / Object.keys(vals).length;
 
     return {
-      avg: cal_avg,
-      min: Math.min(...vals).toFixed(2),
-      max: Math.max(...vals).toFixed(2),
+      avg: cal_avg.toFixed(3),
+      min: Math.min(...vals).toFixed(3),
+      max: Math.max(...vals).toFixed(3),
     };
   });
 
