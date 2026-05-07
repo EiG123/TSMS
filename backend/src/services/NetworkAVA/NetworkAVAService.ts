@@ -764,6 +764,7 @@ export const NetworkAVAService = {
               DISTINCT jsonb_build_object(
                 'id', inc.incident_id,
                 'ticket', inc.incident_number,
+                'site', inc.site_code,
                 'severity', inc.severity,
                 'subject', inc.subject,
                 'problem', inc.problem,
@@ -808,5 +809,121 @@ export const NetworkAVAService = {
     } finally {
       client.release();
     }
+  },
+
+  async AVAChartALL_graph(data: any, pool: any) {
+    const { site_codes, start_date, end_date } = data;
+
+    console.log(data);
+
+    if (!site_codes) {
+      throw new Error("list site_code is required");
+    }
+
+    const client = await pool.connect();
+    try {
+      const sql = `
+      WITH date_series AS (
+        SELECT generate_series(
+          $2::date,
+          $3::date,
+          interval '1 day'
+        )::date AS d
+      ),
+
+      site_configs AS (
+        SELECT
+          sc.id
+        FROM sites s
+        JOIN site_config sc
+          ON sc.site_id = s.id
+        WHERE s.site_code = ANY($1)
+      ),
+
+      ava AS (
+        SELECT
+          sad.snapshot_date,
+          AVG(sad.avg_availability) AS availability
+        FROM site_availability_daily sad
+        JOIN site_configs sc
+          ON sc.id = sad.site_config_id
+        GROUP BY sad.snapshot_date
+      )
+
+      SELECT
+        to_char(ds.d, 'YYYY-MM-DD') AS date,
+
+        ROUND(
+          COALESCE(a.availability, 0)::numeric,
+          3
+        ) AS availability
+
+      FROM date_series ds
+
+      LEFT JOIN ava a
+        ON a.snapshot_date = ds.d
+
+      ORDER BY ds.d;
+      `;
+      const res = await client.query(sql, [site_codes, start_date, end_date]);
+      return res.rows;
+    } catch (err) {
+      throw err;
+    } finally {
+      client.release();
+    }
+
+  },
+
+  async AVAChartALL_incident(data: any, pool: any) {
+    const { site_codes, date } = data;
+
+    console.log(data);
+
+    if (!site_codes) {
+      throw new Error("list site_code is required");
+    }
+
+    const client = await pool.connect();
+    try {
+      const sql = `
+      SELECT DISTINCT
+        i.incident_id,
+        i.incident_number AS ticket,
+        s.site_code AS site,
+        i.severity,
+        i.subject,
+        i.problem,
+        i.cause,
+        i.remedy,
+        i.fault_datetime,
+        i.create_datetime,
+        i.actual_start_datetime,
+        i.actual_finish_datetime,
+        i.restoration_datetime
+
+      FROM incidents i
+
+      JOIN incident_site_impact isi
+        ON isi.incident_id = i.incident_id
+
+      JOIN sites s
+        ON s.id = isi.site_id
+
+      WHERE s.site_code = ANY($1)
+
+      AND i.fault_datetime::date = $2::date
+
+      ORDER BY
+        i.fault_datetime ASC;
+      `;
+      const res = await client.query(sql, [site_codes, date]);
+      return res.rows;
+    } catch (err) {
+      throw err;
+    } finally {
+      client.release();
+    }
+
   }
 };

@@ -120,4 +120,44 @@ NetworkAVARouter.post("/AVAChartALL", async (c) => {
   }
 });
 
+NetworkAVARouter.post("/AVAChartALL_graph", async (c) => {
+  try {
+    const body = await c.req.json(); // 👈 สำคัญ
+    const res = await NetworkAVAService.AVAChartALL_graph(body, pool);
+
+    return c.json({
+      data: res,
+      success: true,
+    });
+
+  } catch (error: any) {
+    console.error("Upload error:", error);
+
+    return c.json({
+      success: false,
+      message: error.message,
+    }, 500);
+  }
+});
+
+NetworkAVARouter.post("/AVAChartALL_incident", async (c) => {
+  try {
+    const body = await c.req.json(); // 👈 สำคัญ
+    const res = await NetworkAVAService.AVAChartALL_incident(body, pool);
+
+    return c.json({
+      data: res,
+      success: true,
+    });
+
+  } catch (error: any) {
+    console.error("Upload error:", error);
+
+    return c.json({
+      success: false,
+      message: error.message,
+    }, 500);
+  }
+});
+
 export default NetworkAVARouter;

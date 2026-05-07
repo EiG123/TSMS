@@ -12,7 +12,7 @@ export const networkAVAManage = {
 
     return response.data;
   },
- 
+
   async UploadIncidentTT(file: File) {
     const formData = new FormData();
     formData.append("file", file);
@@ -39,5 +39,21 @@ export const networkAVAManage = {
     );
 
     return response.data;
-  }
+  },
+
+  async AVAChartALL_graph(data: any) {
+    const response = await axios.post(
+      "http://localhost:3000/api/NetworkAVA/AVAChartALL_graph", data
+    );
+
+    return response.data;
+  },
+  
+  async AVAChartALL_incident(data: any) {
+    const response = await axios.post(
+      "http://localhost:3000/api/NetworkAVA/AVAChartALL_incident", data
+    );
+
+    return response.data;
+  },
 };
