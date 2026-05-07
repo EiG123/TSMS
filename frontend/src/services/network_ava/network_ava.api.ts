@@ -31,5 +31,13 @@ export const networkAVAManage = {
     );
 
     return response.data;
+  },
+
+  async AVAChartALL(data: any) {
+    const response = await axios.post(
+      "http://localhost:3000/api/NetworkAVA/AVAChartALL", data
+    );
+
+    return response.data;
   }
 };

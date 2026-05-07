@@ -36,11 +36,7 @@ interface AVADay {
   incidents: Incident[];
 }
 
-const ALL_site = [
-  "CMI1000",
-  "CMI0010",
-  "CMI0097",
-]
+const ALL_site = ["CMI1000", "CMI0010", "CMI0097"];
 
 // ─── Composable: useAVAChart ──────────────────────────────────────────────────
 
@@ -50,13 +46,11 @@ function useAVAChart() {
   const error = ref<string | null>(null);
   let abortController: AbortController | null = null;
 
-  const fetchData = async (
-    params: {
-      site_code: string;
-      start_date: string;
-      end_date: string;
-    },
-  ) => {
+  const fetchData = async (params: {
+    site_codes: string[]; // ✅ เปลี่ยนเป็น array
+    start_date: string;
+    end_date: string;
+  }) => {
     if (abortController) abortController.abort();
     abortController = new AbortController();
 
@@ -64,9 +58,9 @@ function useAVAChart() {
     error.value = null;
 
     try {
-      const res = await networkAVAManage.AVAChart(params);
-      console.log(res);
+      const res = await networkAVAManage.AVAChartALL(params);
       chartData.value = res.data as AVADay[];
+      console.log(res);
     } catch (err: any) {
       if (err.name !== "AbortError") {
         error.value = err.message ?? "Unknown error";
@@ -80,16 +74,10 @@ function useAVAChart() {
     if (!chartData.value.length) return null;
     const vals = chartData.value.map((d) => d.availability);
     let cal_avg = 0;
-    console.log(vals);
     for (let x in vals) {
-      // ใช้ parseFloat เพื่อแปลง string ให้เป็นตัวเลขก่อนนำมาบวก
       cal_avg += parseFloat(vals[x]);
-      console.log("ผลรวมย่อย:", cal_avg);
     }
-
-    // หารเฉลี่ยหากต้องการหาค่าเฉลี่ย
     cal_avg = cal_avg / Object.keys(vals).length;
-
     return {
       avg: cal_avg.toFixed(3),
       min: Math.min(...vals).toFixed(3),
@@ -109,19 +97,50 @@ const { chartData, loading, error, fetchData, stats } = useAVAChart();
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 let chart: Chart | null = null;
 
-// Filters
-const siteCode = ref(localStorage.getItem("ava_site_code") ?? "");
+// ─── Filters ──────────────────────────────────────────────────────────────────
+
+// ✅ Multi-select sites
+const savedSites = localStorage.getItem("ava_site_codes");
+const selectedSites = ref<string[]>(savedSites ? JSON.parse(savedSites) : []);
+const dropdownOpen = ref(false);
+
 const startDate = ref(localStorage.getItem("ava_start_date") ?? "");
 const endDate = ref(localStorage.getItem("ava_end_date") ?? "");
 const selectedDate = ref<string | null>(null);
 const hoveredRow = ref<string | null>(null);
 
+// ✅ Toggle site selection
+function toggleSite(site: string) {
+  const idx = selectedSites.value.indexOf(site);
+  if (idx === -1) {
+    selectedSites.value.push(site);
+  } else {
+    selectedSites.value.splice(idx, 1);
+  }
+}
+
+function selectAll() {
+  selectedSites.value = [...ALL_site];
+}
+
+function clearAll() {
+  selectedSites.value = [];
+}
+
+// ✅ Label แสดงใน dropdown button
+const siteLabel = computed(() => {
+  if (selectedSites.value.length === 0) return "Select site(s)";
+  if (selectedSites.value.length === ALL_site.length) return "All sites";
+  if (selectedSites.value.length === 1) return selectedSites.value[0];
+  return `${selectedSites.value.length} sites selected`;
+});
+
 // ─── Availability color helpers ───────────────────────────────────────────────
 
 function getAvailabilityColor(value: number): string {
-  if (value < 95) return "#ef4444"; // red-500
-  if (value < 99.5) return "#f97316"; // orange-500
-  return "#22c55e"; // green-500
+  if (value < 95) return "#ef4444";
+  if (value < 99.5) return "#f97316";
+  return "#22c55e";
 }
 
 function getAvailabilityBadgeClass(value: number): string {
@@ -144,14 +163,14 @@ function setDateRange(days: number) {
 // ─── Fetch + persist ──────────────────────────────────────────────────────────
 
 const handleFetch = async () => {
-  if (!siteCode.value) return;
-  localStorage.setItem("ava_site_code", siteCode.value);
+  if (!selectedSites.value.length) return;
+  localStorage.setItem("ava_site_codes", JSON.stringify(selectedSites.value));
   localStorage.setItem("ava_start_date", startDate.value);
   localStorage.setItem("ava_end_date", endDate.value);
   selectedDate.value = null;
 
   await fetchData({
-    site_code: siteCode.value,
+    site_codes: selectedSites.value, // ✅ ส่ง array ไปเลย
     start_date: startDate.value,
     end_date: endDate.value,
   });
@@ -161,33 +180,30 @@ const handleFetch = async () => {
 
 // ─── Chart ────────────────────────────────────────────────────────────────────
 
-// คำนวณ y-axis range แบบ dynamic — ขยาย padding รอบ min/max จริง
 function calcYRange(values: number[]): { min: number; max: number } {
   const dataMin = Math.min(...values);
   const dataMax = Math.max(...values);
   const spread = dataMax - dataMin;
-
-  // ถ้าข้อมูลเกาะกัน (spread < 1) ให้ขยาย padding ออก ±0.5 อย่างน้อย
   const padding = Math.max(spread * 0.4, 0.5);
-
   const yMin = Math.max(0, Math.floor((dataMin - padding) * 10) / 10);
   const yMax = Math.min(100, Math.ceil((dataMax + padding) * 10) / 10);
-
   return { min: yMin, max: yMax };
 }
 
-const dynamicHeight = Math.min(500, Math.max(300, chartData.value.length * 20));
+const dynamicHeight = computed(() =>
+  Math.min(500, Math.max(300, chartData.value.length * 20))
+);
 
 const buildChartConfig = (): Chart["config"] => {
   const labels = chartData.value.map((d) => d.date);
   const values = chartData.value.map((d) => d.availability);
   const { min: yMin, max: yMax } = calcYRange(values);
 
-  const pointColors = chartData.value.map((d) => {
-    if (d.date === selectedDate.value) return "#6366f1";
-    return getAvailabilityColor(d.availability);
-  });
-
+  const pointColors = chartData.value.map((d) =>
+    d.date === selectedDate.value
+      ? "#6366f1"
+      : getAvailabilityColor(d.availability)
+  );
   const pointRadius = chartData.value.map((d) =>
     d.date === selectedDate.value ? 8 : 4
   );
@@ -213,7 +229,7 @@ const buildChartConfig = (): Chart["config"] => {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // 🔥 สำคัญมาก
+      maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       scales: {
         y: {
@@ -222,7 +238,6 @@ const buildChartConfig = (): Chart["config"] => {
           ticks: {
             callback: (v) => `${v}%`,
             font: { family: "monospace" },
-            // จำนวน tick สูงสุด ป้องกัน tick ถี่เกินไปตอน range แคบ
             maxTicksLimit: 6,
           },
           grid: { color: "rgba(0,0,0,0.05)" },
@@ -258,14 +273,7 @@ const buildChartConfig = (): Chart["config"] => {
   } as unknown as Chart["config"];
 };
 
-// ─── Clear filter ─────────────────────────────────────────────────────────────
-
 const clearIncidentFilter = () => {
-  selectedDate.value = null;
-  renderChart();
-};
-
-const clearFilter = () => {
   selectedDate.value = null;
   renderChart();
 };
@@ -306,7 +314,7 @@ const exportCSV = () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `incidents_${siteCode.value}_${Date.now()}.csv`;
+  a.download = `incidents_${selectedSites.value.join("-")}_${Date.now()}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 };
@@ -344,17 +352,64 @@ const formatToReadable = (isoString) => {
         class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4"
       >
         <div class="flex flex-wrap gap-3 items-end">
-          <!-- Site Code -->
-          <div class="flex flex-col gap-1">
+          <!-- ✅ Multi-select Site Code Dropdown -->
+          <div class="flex flex-col gap-1 relative">
             <label
               class="text-xs text-slate-500 font-semibold uppercase tracking-wide"
-              >Site Code</label
             >
-            <input
-              v-model="siteCode"
-              placeholder="e.g. CNX123"
-              class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-36"
-            />
+              Site Code
+            </label>
+            <button
+              type="button"
+              @click="dropdownOpen = !dropdownOpen"
+              class="border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48 text-left flex items-center justify-between"
+              :class="
+                selectedSites.length ? 'text-slate-700' : 'text-slate-400'
+              "
+            >
+              <span>{{ siteLabel }}</span>
+              <span class="text-slate-400 ml-2">{{
+                dropdownOpen ? "▲" : "▼"
+              }}</span>
+            </button>
+
+            <!-- Dropdown panel -->
+            <div
+              v-if="dropdownOpen"
+              class="absolute top-full mt-1 left-0 z-50 bg-white border border-slate-200 rounded-xl shadow-lg w-48 py-1"
+            >
+              <!-- Select All / Clear -->
+              <div class="flex gap-2 px-3 py-1.5 border-b border-slate-100">
+                <button
+                  @click="selectAll"
+                  class="text-xs text-indigo-600 hover:underline"
+                >
+                  All
+                </button>
+                <span class="text-slate-300">|</span>
+                <button
+                  @click="clearAll"
+                  class="text-xs text-slate-400 hover:underline"
+                >
+                  Clear
+                </button>
+              </div>
+
+              <!-- Site checkboxes -->
+              <label
+                v-for="site in ALL_site"
+                :key="site"
+                class="flex items-center gap-2 px-3 py-2 hover:bg-indigo-50 cursor-pointer transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  :checked="selectedSites.includes(site)"
+                  @change="toggleSite(site)"
+                  class="accent-indigo-600"
+                />
+                <span class="text-sm text-slate-700 font-mono">{{ site }}</span>
+              </label>
+            </div>
           </div>
 
           <!-- Start Date -->
@@ -386,11 +441,28 @@ const formatToReadable = (isoString) => {
           <!-- Load button -->
           <button
             @click="handleFetch"
-            :disabled="loading || !siteCode"
+            :disabled="loading || !selectedSites.length"
             class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors font-semibold"
           >
             {{ loading ? "Loading..." : "Load" }}
           </button>
+        </div>
+
+        <!-- Selected tags -->
+        <div v-if="selectedSites.length" class="flex flex-wrap gap-2">
+          <span
+            v-for="site in selectedSites"
+            :key="site"
+            class="text-xs bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded-full flex items-center gap-1"
+          >
+            {{ site }}
+            <button
+              @click="toggleSite(site)"
+              class="hover:text-indigo-900 font-bold"
+            >
+              ×
+            </button>
+          </span>
         </div>
 
         <!-- Date shortcut buttons -->
@@ -407,6 +479,9 @@ const formatToReadable = (isoString) => {
         </div>
       </div>
 
+      <!-- ── (ส่วนที่เหลือเหมือนเดิมทุกอย่าง) ── -->
+      <!-- Error, Skeleton, Empty state, Stats, Chart, Incident table -->
+      <!-- ... คงไว้เหมือนเดิม ... -->
       <!-- ── Error ── -->
       <div
         v-if="error"
