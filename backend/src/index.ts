@@ -3,6 +3,8 @@ dotenv.config();
 console.log('🔍 Environment variables loaded:');
 console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
 
+import { authMiddleware } from "./middlewares/auth.middleware.js";
+
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono';
 import { cors } from 'hono/cors'
@@ -60,7 +62,7 @@ app.route("/api/pmCabinet", pmCabinetRouter);
 
 app.route("/api/pmGetPmData", pmGetPmData);
 
-app.route("/api/NetworkAVA", NetworkAVA)
+app.route("/api/NetworkAVA", NetworkAVA);
 
 //Txt To Excel
 app.route("/api/txt-to-excel", txt_to_excelRouter);
@@ -79,8 +81,10 @@ db.connect()
   .then(() => console.log('✅ Database connected successfully'))
   .catch(err => console.error('❌ Database connection error:', err));
 
+
+
 // Login endpoint
-app.post("/api/login", async (c) => {
+app.post("/api/login" ,async (c) => {
   try {
     const body = await c.req.json();
     const { email, password } = body;

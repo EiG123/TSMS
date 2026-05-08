@@ -1,0 +1,38 @@
+CREATE TABLE audit_logs (
+    id BIGSERIAL PRIMARY KEY,
+
+    -- User Info
+    user_id INTEGER,
+    username TEXT,
+    email TEXT,
+
+    -- Action
+    action TEXT NOT NULL, 
+    -- เช่น CREATE / UPDATE / DELETE / LOGIN / APPROVE
+
+    module TEXT,
+    -- เช่น USER_MANAGEMENT / SITE / TICKET / PM
+
+    target_table TEXT,
+    -- table ที่ถูกแก้
+
+    target_id TEXT,
+    -- id ของ row ที่ถูกกระทำ
+
+    description TEXT,
+
+    -- Data Before / After
+    old_data JSONB,
+    new_data JSONB,
+
+    -- Request Info
+    method TEXT,
+    endpoint TEXT,
+    ip_address TEXT,
+    user_agent TEXT,
+
+    -- Status
+    success BOOLEAN DEFAULT true,
+
+    created_at TIMESTAMP DEFAULT NOW()
+);

@@ -1,10 +1,10 @@
 // NetworkAVAService.ts
 import * as XLSX from "xlsx";
+import { logService } from "../LOG/log.service.js";
 
 export const NetworkAVAService = {
   async UploadSitesAVA(file: File, pool: any) {
     const client = await pool.connect();
-
     try {
       await client.query("BEGIN");
 

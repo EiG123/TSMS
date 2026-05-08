@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { authMiddleware } from "../../middlewares/auth.middleware.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "DEV_SECRET_PLEASE_CHANGE_IN_PRODUCTION";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "3h";
@@ -91,8 +92,12 @@ export const AuthService = {
       const token = jwt.sign(
         {
           sub: user.id,
+
           email: user.email,
-          permissions, // ใส่ permission ลง token
+          username: user.username,
+          role: user.role,
+
+          permissions,
         },
         JWT_SECRET,
         {

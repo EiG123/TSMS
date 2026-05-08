@@ -1,5 +1,3 @@
-import { success } from "zod";
-
 export const pmCabinetService = {
     async getPmCabinetById(data: any, db: any) {
         const client = await db.connect();

@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import pool from "../../services/db.js";
 import { NetworkAVAService } from "../../services/NetworkAVA/NetworkAVAService.js";
+import { authMiddleware } from "../../middlewares/auth.middleware.js";
 
 
 
@@ -44,10 +45,13 @@ NetworkAVARouter.post("/UploadSitesAVA", async (c) => {
 
 
 // 👇 ใช้ middleware ของ multer
-NetworkAVARouter.post("/UploadIncidentTT", async (c) => {
+NetworkAVARouter.post("/UploadIncidentTT", authMiddleware, async (c) => {
   try {
-    const body = await c.req.parseBody(); // 👈 สำคัญ
+    const body = await c.req.parseBody();
+    
+    const authUser = c.get("user");
 
+    console.log("AUTH USER:", authUser);
     //LOG CHECK
     console.log(body);
 

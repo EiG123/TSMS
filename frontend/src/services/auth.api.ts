@@ -3,15 +3,13 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
   timeout: 10000, // 10 วินาที
-  headers: {
-    'Content-Type': 'application/json',
-  }
 });
 
 // Request interceptor - เพิ่ม token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+    console.log("TOKEN:", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -47,7 +45,7 @@ export const AuthApiService = {
         email,
         password: pass
       });
-      console.log(response.data.user);
+      console.log(response.data);
       // เก็บ token และ user data
       if (response.data.success && response.data.token) {
         localStorage.setItem('token', response.data.token);
