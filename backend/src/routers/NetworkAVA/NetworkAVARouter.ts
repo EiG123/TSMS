@@ -8,7 +8,7 @@ import { logService } from "../../services/LOG/log.service.js";
 const NetworkAVARouter = new Hono();
 
 // 👇 ใช้ middleware ของ multer
-NetworkAVARouter.post("/UploadSitesAVA", async (c) => {
+NetworkAVARouter.post("/UploadSitesAVA", authMiddleware, async (c) => {
   try {
     const body = await c.req.parseBody(); // 👈 สำคัญ
 
@@ -27,6 +27,21 @@ NetworkAVARouter.post("/UploadSitesAVA", async (c) => {
     console.log("File received:", file.name, file.size);
 
     const res = await NetworkAVAService.UploadSitesAVA(file, pool);
+
+    const authUser = c.get('user');
+
+    // 2️⃣ สำเร็จแล้วค่อย log
+    await logService.createAuditLog({
+      user_id: authUser.id,
+      username: authUser.username,
+      email: authUser.email,
+
+      action: "UploadSitesAVA",
+
+      detail: file.name,
+
+      success: res.success,
+    });
 
     return c.json({
       data: res,
@@ -69,16 +84,17 @@ NetworkAVARouter.post("/UploadIncidentTT", authMiddleware, async (c) => {
     const res = await NetworkAVAService.UploadIncidentTT(file, pool);
 
     // 2️⃣ สำเร็จแล้วค่อย log
-      await logService.createAuditLog({
-        user_id: authUser.id,
-        username: authUser.username,
+    await logService.createAuditLog({
+      user_id: authUser.id,
+      username: authUser.username,
+      email: authUser.email,
 
-        action: "UPLOAD_INCIDENT_TT",
+      action: "UPLOAD_INCIDENT_TT",
 
-        detail: file.name,
+      detail: file.name,
 
-        success: true,
-      });
+      success: res.success,
+    });
 
     return c.json({
       data: res,

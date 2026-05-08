@@ -90,7 +90,7 @@ const routes = [
         path: "/dev",
         meta: {
             requiresAuth: true,
-            permission: ["dev"]
+            permissions: ["dev"]
         },
         children: [
             {
@@ -134,7 +134,7 @@ const routes = [
         path: "/admin",
         meta: {
             requiresAuth: true,
-            permission: ["admin"]
+            permissions: ["admin"]
         },
         children: [
             {
@@ -467,6 +467,8 @@ router.beforeEach(async (to, from, next) => {
         const hasAll = required.every(p =>
             authStore.hasPermission(p)
         );
+
+        console.log(hasAll);
 
         if (!hasAll) {
             return next({ name: "forbidden" });
