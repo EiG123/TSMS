@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import pool from "../../services/db.js";
 import { NetworkAVAService } from "../../services/NetworkAVA/NetworkAVAService.js";
 import { authMiddleware } from "../../middlewares/auth.middleware.js";
-
+import { logService } from "../../services/LOG/log.service.js";
 
 
 const NetworkAVARouter = new Hono();
@@ -48,8 +48,8 @@ NetworkAVARouter.post("/UploadSitesAVA", async (c) => {
 NetworkAVARouter.post("/UploadIncidentTT", authMiddleware, async (c) => {
   try {
     const body = await c.req.parseBody();
-    
-    const authUser = c.get("user");
+
+    const authUser = c.get('user');
 
     console.log("AUTH USER:", authUser);
     //LOG CHECK
@@ -67,6 +67,18 @@ NetworkAVARouter.post("/UploadIncidentTT", authMiddleware, async (c) => {
     console.log("File received:", file.name, file.size);
 
     const res = await NetworkAVAService.UploadIncidentTT(file, pool);
+
+    // 2️⃣ สำเร็จแล้วค่อย log
+      await logService.createAuditLog({
+        user_id: authUser.id,
+        username: authUser.username,
+
+        action: "UPLOAD_INCIDENT_TT",
+
+        detail: file.name,
+
+        success: true,
+      });
 
     return c.json({
       data: res,

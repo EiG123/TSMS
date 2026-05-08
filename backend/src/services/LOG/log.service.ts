@@ -11,7 +11,7 @@ interface AuditLogPayload {
     target_table?: string;
     target_id?: string;
 
-    description?: string;
+    detail?: string;
 
     old_data?: any;
     new_data?: any;
@@ -78,7 +78,7 @@ export const logService = {
                 payload.target_table || null,
                 payload.target_id || null,
 
-                payload.description || null,
+                payload.detail || null,
 
                 payload.old_data
                     ? JSON.stringify(payload.old_data)
