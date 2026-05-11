@@ -1,9 +1,28 @@
 import { Hono } from "hono";
 import { DevManageService } from "../../services/dev/DevManageService.service.js";
+import { logService } from "../../services/LOG/log.service.js";
 import pool from "../../services/db.js";
 
 
 const DevManageRouter = new Hono();
+
+DevManageRouter.post("/getLogs", async (c) => {
+    const body = await c.req.json();
+    try {
+        const res = await logService.getLogs(body, pool);
+        return c.json({
+            data: res.data,
+            success: true
+        })
+
+    } catch (error) {
+        return c.json({
+            success: false
+        })
+    } finally {
+
+    }
+});
 
 DevManageRouter.get("/getAllRole", async (c) => {
     try {

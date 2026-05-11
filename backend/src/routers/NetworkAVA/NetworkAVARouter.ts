@@ -38,6 +38,8 @@ NetworkAVARouter.post("/UploadSitesAVA", authMiddleware, async (c) => {
 
       action: "UploadSitesAVA",
 
+      method: "NetworkAVA",
+
       detail: file.name,
 
       success: res.success,
@@ -90,6 +92,8 @@ NetworkAVARouter.post("/UploadIncidentTT", authMiddleware, async (c) => {
       email: authUser.email,
 
       action: "UPLOAD_INCIDENT_TT",
+
+      method: "NetworkAVA",
 
       detail: file.name,
 

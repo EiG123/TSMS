@@ -10,7 +10,8 @@ export const authMiddleware = async (
 
     const authHeader = c.req.header("Authorization");
 
-    console.log(authHeader);
+    console.log("AuthHeader :", authHeader);
+
     if (!authHeader) {
       return c.json(
         {

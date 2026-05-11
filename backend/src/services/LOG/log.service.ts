@@ -26,6 +26,157 @@ interface AuditLogPayload {
 }
 
 export const logService = {
+    async getLogs(filters: any, db: any) {
+
+        let whereSql = `
+    WHERE 1=1
+  `;
+
+        const values: any[] = [];
+
+        let index = 1;
+
+        // user_id
+        if (filters.user_id) {
+            whereSql += `
+      AND user_id = $${index++}
+    `;
+
+            values.push(filters.user_id);
+        }
+
+        // username
+        if (filters.username) {
+            whereSql += `
+      AND LOWER(username)
+      LIKE LOWER($${index++})
+    `;
+
+            values.push(
+                `%${filters.username}%`
+            );
+        }
+
+        // email
+        if (filters.email) {
+            whereSql += `
+      AND LOWER(email)
+      LIKE LOWER($${index++})
+    `;
+
+            values.push(
+                `%${filters.email}%`
+            );
+        }
+
+        // action
+        if (filters.action) {
+            whereSql += `
+      AND LOWER(action)
+      LIKE LOWER($${index++})
+    `;
+
+            values.push(
+                `%${filters.action}%`
+            );
+        }
+
+        // start date
+        if (filters.start_date) {
+            whereSql += `
+      AND created_at >= $${index++}
+    `;
+
+            values.push(filters.start_date);
+        }
+
+        // end date
+        if (filters.end_date) {
+
+            // 👇 เพิ่ม 23:59:59
+            whereSql += `
+      AND created_at <= $${index++}
+    `;
+
+            values.push(
+                filters.end_date + " 23:59:59"
+            );
+        }
+
+        // pagination
+        const limit =
+            Number(filters.limit) || 50;
+
+        const page =
+            Number(filters.page) || 1;
+
+        const offset =
+            (page - 1) * limit;
+
+        // =========================
+        // COUNT QUERY
+        // =========================
+
+        const countSql = `
+    SELECT COUNT(*) AS total
+    FROM audit_logs
+    ${whereSql}
+  `;
+
+        const countResult =
+            await db.query(
+                countSql,
+                values
+            );
+
+        const total =
+            Number(
+                countResult.rows[0].total
+            );
+
+        // =========================
+        // MAIN QUERY
+        // =========================
+
+        const dataSql = `
+    SELECT *
+    FROM audit_logs
+
+    ${whereSql}
+
+    ORDER BY created_at DESC
+
+    LIMIT $${index++}
+    OFFSET $${index++}
+  `;
+
+        const dataValues = [
+            ...values,
+            limit,
+            offset,
+        ];
+
+        const result =
+            await db.query(
+                dataSql,
+                dataValues
+            );
+
+        return {
+
+            data: result.rows,
+
+            pagination: {
+                total,
+                page,
+                limit,
+
+                total_pages:
+                    Math.ceil(total / limit),
+            },
+        };
+    },
+
     async createAuditLog(
         payload: AuditLogPayload
     ) {

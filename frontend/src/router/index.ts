@@ -10,6 +10,7 @@ import profile from "../views/profile.vue";
 import devDashboard from "../views/dev/DevManage.vue";
 import DevUserManage from "../views/dev/UserManage.vue";
 import DevUserEdit from "../views/dev/userEdit.vue";
+import logMornitor from "../views/dev/logMornitor.vue";
 
 import AdminManage from "../views/admin/AdminManage.vue";
 import userManage from "../views/admin/UserManage.vue";
@@ -93,6 +94,11 @@ const routes = [
             permissions: ["dev"]
         },
         children: [
+            {
+                path: "logMornitor",
+                name: "logMornitor",
+                component: logMornitor,
+            },
             {
                 path: "devDashboard",
                 name: "devDashboard",

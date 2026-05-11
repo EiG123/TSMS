@@ -27,6 +27,7 @@ import pmCabinetRouter from "./routers/pmCabinetRouter.js";
 import UserLocationRouter from "./routers/user/UserLocationRouter.js";
 
 import NetworkAVA from "./routers/NetworkAVA/NetworkAVARouter.js";
+import { logService } from "./services/LOG/log.service.js";
 
 const app = new Hono();
 
@@ -98,6 +99,18 @@ app.post("/api/login" ,async (c) => {
     }
 
     const result = await AuthService.validateLogin(email, password, db);
+
+    await logService.createAuditLog({
+      user_id: result.user.id || "none",
+      username: result.user.username || "none",
+      email: result.user.email || email,
+
+      action: "Login",
+
+      detail: "Login",
+
+      success: result.success,
+    })
 
     if (result.success) {
       return c.json(result);
