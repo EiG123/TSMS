@@ -584,42 +584,34 @@ const openJsonModal = (title: string, data: any) => {
       </div>
     </div>
     <!-- JSON MODAL -->
-<div
-  v-if="selectedJson"
-  class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
->
-
-  <div
-    class="bg-white w-[900px] max-h-[80vh] rounded-xl shadow-xl overflow-hidden"
-  >
-
-    <!-- HEADER -->
     <div
-      class="flex items-center justify-between px-5 py-4 border-b"
+      v-if="selectedJson"
+      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
     >
-      <h2 class="font-bold text-lg">
-        {{ modalTitle }}
-      </h2>
-
-      <button
-        @click="selectedJson = null"
-        class="text-gray-500 hover:text-black"
+      <div
+        class="bg-white w-[900px] max-h-[80vh] rounded-xl shadow-xl overflow-hidden"
       >
-        ✕
-      </button>
-    </div>
+        <!-- HEADER -->
+        <div class="flex items-center justify-between px-5 py-4 border-b">
+          <h2 class="font-bold text-lg">
+            {{ modalTitle }}
+          </h2>
 
-    <!-- CONTENT -->
-    <div
-      class="p-5 overflow-auto max-h-[70vh]"
-    >
-      <pre
-        class="text-xs bg-gray-100 p-4 rounded-lg overflow-auto"
-      >{{ JSON.stringify(selectedJson, null, 2) }}</pre>
-    </div>
+          <button
+            @click="selectedJson = null"
+            class="text-gray-500 hover:text-black"
+          >
+            ✕
+          </button>
+        </div>
 
+        <!-- CONTENT -->
+        <div class="p-5 overflow-auto max-h-[70vh]">
+          <pre class="text-xs bg-gray-100 p-4 rounded-lg overflow-auto">{{
+            JSON.stringify(selectedJson, null, 2)
+          }}</pre>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-  </div>
-  
 </template>

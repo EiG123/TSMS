@@ -27,6 +27,8 @@ import pmCabinetRouter from "./routers/pmCabinetRouter.js";
 import UserLocationRouter from "./routers/user/UserLocationRouter.js";
 
 import NetworkAVA from "./routers/NetworkAVA/NetworkAVARouter.js";
+import CableFiberOpticRouter from "./routers/CableFiberOptic/CableFiberOpticRouter.js";
+
 import { logService } from "./services/LOG/log.service.js";
 
 const app = new Hono();
@@ -64,6 +66,8 @@ app.route("/api/pmCabinet", pmCabinetRouter);
 app.route("/api/pmGetPmData", pmGetPmData);
 
 app.route("/api/NetworkAVA", NetworkAVA);
+
+app.route("/api/CalbleFiberOptic", CableFiberOpticRouter);
 
 //Txt To Excel
 app.route("/api/txt-to-excel", txt_to_excelRouter);

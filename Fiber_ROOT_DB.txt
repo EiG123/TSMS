@@ -1,0 +1,16 @@
+CREATE TABLE cables (
+    id BIGSERIAL PRIMARY KEY,
+    cable_code VARCHAR(100) UNIQUE,
+    cable_type VARCHAR(50),
+    status VARCHAR(30) DEFAULT 'observed',
+    source VARCHAR(50),
+    survey_date DATE,
+    note TEXT,
+    geom geometry(LineString, 4326),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_cables_geom
+ON cables
+USING GIST (geom);
