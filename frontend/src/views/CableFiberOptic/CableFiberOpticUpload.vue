@@ -1,35 +1,44 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import {CableFiberOpticManage} from "../../services/CableFiberOptic/CableFiberOpticManage.api";
+import { CableFiberOpticManage } from "../../services/CableFiberOptic/CableFiberOpticManage.api";
 
-const selectedFile = ref<File | null>(null)
+const selectedFiles = ref<File[]>([])
+
+const uploading = ref(false)
 
 const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement
 
-    if (target.files && target.files.length > 0) {
-        selectedFile.value = target.files[0]
+    if (target.files) {
+        selectedFiles.value = Array.from(target.files)
     }
 }
 
 const uploadFile = async () => {
-    if (!selectedFile.value) {
-        alert('Please select KML/KMZ file')
+    if (selectedFiles.value.length === 0) {
+        alert('Please select KML/KMZ files')
         return
     }
 
     try {
-        // TODO: replace API URL
-        const response = await CableFiberOpticManage.UploadCalbe(selectedFile.value);
+        uploading.value = true
 
-        if (!response.ok) {
-            throw new Error('Upload failed')
+        for (const file of selectedFiles.value) {
+            console.log('Uploading:', file.name)
+
+            await CableFiberOpticManage.UploadCalbe(file)
         }
 
         alert('Upload success')
+
+        selectedFiles.value = []
+
     } catch (error) {
         console.error(error)
+
         alert('Upload error')
+    } finally {
+        uploading.value = false
     }
 }
 </script>
@@ -37,26 +46,46 @@ const uploadFile = async () => {
 <template>
     <div class="container">
         <div class="card">
-            <h1>Cable Fiber Optic Upload</h1>
+
+            <h1>
+                Cable Fiber Optic Upload
+            </h1>
 
             <p class="description">
-                Upload KML / KMZ file into GIS Database
+                Upload multiple KML / KMZ files
             </p>
 
             <input
                 type="file"
                 accept=".kml,.kmz"
+                multiple
                 @change="handleFileChange"
             >
 
-            <div v-if="selectedFile" class="file-info">
-                Selected File:
-                <strong>{{ selectedFile.name }}</strong>
+            <div
+                v-if="selectedFiles.length > 0"
+                class="file-list"
+            >
+                <div
+                    v-for="file in selectedFiles"
+                    :key="file.name"
+                    class="file-item"
+                >
+                    {{ file.name }}
+                </div>
             </div>
 
-            <button @click="uploadFile">
-                Upload
+            <button
+                @click="uploadFile"
+                :disabled="uploading"
+            >
+                {{
+                    uploading
+                        ? 'Uploading...'
+                        : 'Upload'
+                }}
             </button>
+
         </div>
     </div>
 </template>
@@ -69,7 +98,7 @@ const uploadFile = async () => {
 }
 
 .card {
-    width: 500px;
+    width: 600px;
     padding: 24px;
     border: 1px solid #ddd;
     border-radius: 12px;
@@ -89,12 +118,31 @@ input {
     margin-bottom: 16px;
 }
 
-.file-info {
-    margin-bottom: 16px;
+.file-list {
+    margin-bottom: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.file-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.file-item:last-child {
+    border-bottom: none;
 }
 
 button {
     padding: 10px 16px;
     cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 </style>

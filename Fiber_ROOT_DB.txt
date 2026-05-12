@@ -4,6 +4,7 @@ CREATE TABLE cables (
     cable_type VARCHAR(50),
     status VARCHAR(30) DEFAULT 'observed',
     source VARCHAR(50),
+    region VARCHAR(50),
     survey_date DATE,
     note TEXT,
     geom geometry(LineString, 4326),

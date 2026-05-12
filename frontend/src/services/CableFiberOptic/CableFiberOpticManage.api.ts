@@ -50,4 +50,12 @@ export const CableFiberOpticManage = {
 
     return response.data;
   },
+
+  async getAllCable() {
+    const response = await api.post(
+      "http://localhost:3000/api/CalbleFiberOptic/getAllCable"
+    );
+
+    return response.data.data;
+  }
 };

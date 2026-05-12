@@ -2,14 +2,21 @@ import { parseStringPromise } from "xml2js";
 import JSZip from "jszip";
 
 export const CableFiberOpticService = {
-  async getALLCable(db: any) {
+  async getAllCable(db: any) {
     const client = await db.connect();
     try {
-      const sql = `SELECT * FORM cable`;
+      const sql = `
+      SELECT
+        id,
+        cable_code,
+        ST_AsGeoJSON(geom)::json AS geom
+      FROM cables;
+      `;
       const res = await client.query(sql);
-      console.log(res);
+      console.log(res.rows);
 
       return {
+        data: res.rows,
         success: true
       }
     } catch (err) {
@@ -20,52 +27,150 @@ export const CableFiberOpticService = {
 
     }
   },
+  
+  async bulkInsert(
+    client: any,
+    rows: any[]
+  ) {
+
+    const values: string[] = [];
+
+    const params: any[] = [];
+
+    let index = 1;
+
+    for (const row of rows) {
+
+      values.push(`
+      (
+        $${index++},
+        $${index++},
+        $${index++},
+        $${index++},
+        CURRENT_DATE,
+        $${index++},
+        ST_GeomFromText(
+          $${index++},
+          4326
+        )
+      )
+    `);
+
+      params.push(
+        row.cable_code,
+        row.cable_type,
+        row.status,
+        row.source,
+        row.note,
+        row.wkt
+      );
+    }
+
+    const query = `
+    INSERT INTO cables (
+      cable_code,
+      cable_type,
+      status,
+      source,
+      survey_date,
+      note,
+      geom
+    )
+    VALUES
+    ${values.join(",")}
+  `;
+
+    await client.query(query, params);
+  },
 
   async UploadCable(file: File, db: any) {
+
     const client = await db.connect();
+
     try {
+
       let kmlText = "";
 
       // =========================
       // KML
       // =========================
-      if (file.name.toLowerCase().endsWith(".kml")) {
+      if (
+        file.name
+          .toLowerCase()
+          .endsWith(".kml")
+      ) {
+
         kmlText = await file.text();
+
       }
 
       // =========================
       // KMZ
       // =========================
-      else if (file.name.toLowerCase().endsWith(".kmz")) {
-        const buffer = await file.arrayBuffer();
+      else if (
+        file.name
+          .toLowerCase()
+          .endsWith(".kmz")
+      ) {
 
-        const zip = await JSZip.loadAsync(buffer);
+        const buffer =
+          await file.arrayBuffer();
 
-        // หาไฟล์ .kml ใน zip
-        const kmlFileName = Object.keys(zip.files).find(
-          (name) => name.toLowerCase().endsWith(".kml")
-        );
+        const zip =
+          await JSZip.loadAsync(buffer);
+
+        const kmlFileName =
+          Object.keys(zip.files).find(
+            (name) =>
+              name
+                .toLowerCase()
+                .endsWith(".kml")
+          );
 
         if (!kmlFileName) {
-          throw new Error("KML file not found inside KMZ");
+          throw new Error(
+            "KML file not found inside KMZ"
+          );
         }
 
-        kmlText = await zip.files[kmlFileName].async("text");
+        kmlText =
+          await zip.files[
+            kmlFileName
+          ].async("text");
+
       } else {
-        throw new Error("Unsupported file type");
+
+        throw new Error(
+          "Unsupported file type"
+        );
+
       }
 
       // =========================
       // Parse XML
       // =========================
-      const result = await parseStringPromise(kmlText);
+      const result =
+        await parseStringPromise(kmlText);
 
       const placemarks =
-        result?.kml?.Document?.[0]?.Placemark || [];
+        result?.kml?.Document?.[0]
+          ?.Placemark || [];
+
+      // =========================
+      // Begin Transaction
+      // =========================
+      await client.query("BEGIN");
 
       let insertedCount = 0;
 
+      // batch size
+      const batchSize = 1000;
+
+      // temp rows
+      let rows: any[] = [];
+
       for (const placemark of placemarks) {
+
         const name =
           placemark?.name?.[0] || null;
 
@@ -80,68 +185,94 @@ export const CableFiberOpticService = {
         if (!coordinatesText) continue;
 
         // =========================
-        // Convert coordinates
+        // Convert Coordinates
         // =========================
-        const coordinates = coordinatesText
-          .trim()
-          .split(/\s+/)
-          .map((coord: string) => {
-            const [lng, lat] = coord.split(",");
+        const coordinates =
+          coordinatesText
+            .trim()
+            .split(/\s+/)
+            .map((coord: string) => {
 
-            return `${lng} ${lat}`;
-          });
+              const [lng, lat] =
+                coord.split(",");
 
-        const wkt = `LINESTRING(${coordinates.join(", ")})`;
+              return `${lng} ${lat}`;
+
+            });
+
+        const wkt =
+          `LINESTRING(${coordinates.join(", ")})`;
+
+        rows.push({
+          cable_code: name,
+          cable_type: "fiber_optic",
+          status: "observed",
+          source: file.name,
+          note: "Imported from KML/KMZ",
+          wkt,
+        });
 
         // =========================
-        // Insert Database
+        // Batch Insert
         // =========================
-        await client.query(
-          `
-          INSERT INTO cables (
-            cable_code,
-            cable_type,
-            status,
-            source,
-            survey_date,
-            note,
-            geom
-          )
-          VALUES (
-            $1,
-            $2,
-            $3,
-            $4,
-            CURRENT_DATE,
-            $5,
-            ST_GeomFromText($6, 4326)
-          )
-          `,
-          [
-            name,
-            "fiber_optic",
-            "observed",
-            file.name,
-            "Imported from KML/KMZ",
-            wkt,
-          ]
+        if (rows.length >= batchSize) {
+
+          await this.bulkInsert(
+            client,
+            rows
+          );
+
+          insertedCount += rows.length;
+
+          console.log(
+            `Inserted ${insertedCount}`
+          );
+
+          rows = [];
+        }
+      }
+
+      // =========================
+      // Insert Remaining Rows
+      // =========================
+      if (rows.length > 0) {
+
+        await this.bulkInsert(
+          client,
+          rows
         );
 
-        insertedCount++;
+        insertedCount += rows.length;
       }
+
+      // =========================
+      // Commit
+      // =========================
+      await client.query("COMMIT");
 
       return {
         success: true,
         inserted: insertedCount,
         message: "Upload success",
       };
+
     } catch (error: any) {
+
+      await client.query("ROLLBACK");
+
       console.error(error);
 
       return {
         success: false,
-        message: error.message || "Upload failed",
+        message:
+          error.message ||
+          "Upload failed",
       };
+
+    } finally {
+
+      client.release();
+
     }
   },
 

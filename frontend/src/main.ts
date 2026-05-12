@@ -5,6 +5,7 @@ import router from './router';
 import { useAuthStore } from './stores/auth';
 import { useThemeStore } from './stores/theme';
 import './style.css';
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 const app = createApp(App);
 const pinia = createPinia();
