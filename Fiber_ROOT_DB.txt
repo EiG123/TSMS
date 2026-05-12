@@ -1,6 +1,6 @@
 CREATE TABLE cables (
     id BIGSERIAL PRIMARY KEY,
-    cable_code VARCHAR(100) UNIQUE,
+    cable_code VARCHAR(100),
     cable_type VARCHAR(50),
     status VARCHAR(30) DEFAULT 'observed',
     source VARCHAR(50),
@@ -15,3 +15,6 @@ CREATE TABLE cables (
 CREATE INDEX idx_cables_geom
 ON cables
 USING GIST (geom);
+
+DROP TABLE IF EXISTS cables;
+

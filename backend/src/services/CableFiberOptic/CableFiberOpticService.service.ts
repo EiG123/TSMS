@@ -27,7 +27,7 @@ export const CableFiberOpticService = {
 
     }
   },
-  
+
   async bulkInsert(
     client: any,
     rows: any[]
@@ -84,6 +84,34 @@ export const CableFiberOpticService = {
   },
 
   async UploadCable(file: File, db: any) {
+
+    const extractPlacemarks = (
+      node: any
+    ): any[] => {
+
+      let placemarks: any[] = [];
+
+      // Placemark
+      if (node?.Placemark) {
+
+        placemarks.push(
+          ...node.Placemark
+        );
+      }
+
+      // Folder
+      if (node?.Folder) {
+
+        for (const folder of node.Folder) {
+
+          placemarks.push(
+            ...extractPlacemarks(folder)
+          );
+        }
+      }
+
+      return placemarks;
+    };
 
     const client = await db.connect();
 
@@ -152,9 +180,11 @@ export const CableFiberOpticService = {
       const result =
         await parseStringPromise(kmlText);
 
+      const document =
+        result?.kml?.Document?.[0];
+
       const placemarks =
-        result?.kml?.Document?.[0]
-          ?.Placemark || [];
+        extractPlacemarks(document);
 
       // =========================
       // Begin Transaction
