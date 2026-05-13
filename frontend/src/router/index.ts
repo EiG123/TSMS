@@ -62,6 +62,8 @@ import network_availability_sites_and_incident_ALL from "../views/NetworkAvailab
 
 import CableFiberOpticUpload from "../views/CableFiberOptic/CableFiberOpticUpload.vue";
 import CableFiberOpticViews from "../views/CableFiberOptic/CableFiberOpticViews.vue";
+import CableFiberOpticDetail from "../views/CableFiberOptic/CableFiberOpticDetail.vue";
+
 
 const routes = [
     // 🔐 Login (ไม่มี layout)
@@ -175,6 +177,18 @@ const routes = [
                 component: UserlocationDashboard
             }
         ]
+    },
+    {
+        
+        path: "/CableFiberOpticDetail",
+        name: "CableFiberOpticDetail",
+        meta: {
+            requiresAuth: true
+        },
+        component: CableFiberOpticDetail,
+        props: route => ({
+            id: route.query.id,
+        })
     },
     {
         

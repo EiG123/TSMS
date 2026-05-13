@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { CableFiberOpticManage } from "../../services/CableFiberOptic/CableFiberOpticManage.api";
@@ -11,11 +12,12 @@ interface CableProperties {
 }
 
 interface Cable {
+  id?: number | string;
   geom: GeoJSON.LineString | GeoJSON.MultiLineString | null;
   cable_code: string;
+  [key: string]: unknown;
 }
 
-// ✅ แยก type ออกมาก่อน แทนที่จะเขียน generic inline ใน .ts
 type CableFeature = GeoJSON.Feature<
   GeoJSON.LineString | GeoJSON.MultiLineString,
   CableProperties
@@ -23,23 +25,56 @@ type CableFeature = GeoJSON.Feature<
 
 type CableGeom = GeoJSON.LineString | GeoJSON.MultiLineString;
 
+// ── Router ─────────────────────────────────────────────
+const router = useRouter();
+
 // ── State ──────────────────────────────────────────────
 let map: maplibregl.Map | null = null;
 let popup: maplibregl.Popup | null = null;
 
 const isLoading = ref(true);
 const error = ref<string | null>(null);
-const cableCount = ref(0);
+const cables = ref<Cable[]>([]);
+
+// ── Pagination ─────────────────────────────────────────
+const PAGE_SIZE = 20;
+const currentPage = ref(1);
+
+const totalPages = computed(() => Math.ceil(cables.value.length / PAGE_SIZE));
+
+const pagedCables = computed(() => {
+  const start = (currentPage.value - 1) * PAGE_SIZE;
+  return cables.value.slice(start, start + PAGE_SIZE);
+});
+
+// Show max 7 page buttons with ellipsis
+const pageButtons = computed(() => {
+  const total = totalPages.value;
+  const cur = currentPage.value;
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const pages: (number | "…")[] = [1];
+  if (cur > 3) pages.push("…");
+  for (let p = Math.max(2, cur - 1); p <= Math.min(total - 1, cur + 1); p++) {
+    pages.push(p);
+  }
+  if (cur < total - 2) pages.push("…");
+  pages.push(total);
+  return pages;
+});
+
+const goToPage = (page: number | "…") => {
+  if (typeof page !== "number") return;
+  currentPage.value = page;
+};
 
 // ── Map init ───────────────────────────────────────────
 const initMap = () => {
   map = new maplibregl.Map({
     container: "map",
-    // style: "https://tiles.openfreemap.org/styles/liberty"
-    // style: "https://tiles.openfreemap.org/styles/bright"
     style: "https://tiles.openfreemap.org/styles/positron",
-    center: [98.9853, 18.7883], // เชียงใหม่
-    zoom: 13, // เห็นภาคเหนือ
+    center: [98.9853, 18.7883],
+    zoom: 13,
   });
 
   map.addControl(new maplibregl.NavigationControl(), "top-right");
@@ -62,18 +97,15 @@ const loadCables = async () => {
     error.value = null;
 
     const response = await CableFiberOpticManage.getAllCable();
-    const cables = (response.data ?? []) as Cable[];
+    cables.value = (response.data ?? []) as Cable[];
 
-    // ✅ ใช้ type alias แทน inline generic → Vue template compiler ไม่สับสน
-    const features: CableFeature[] = cables
+    const features: CableFeature[] = cables.value
       .filter((c): c is Cable & { geom: CableGeom } => Boolean(c.geom))
       .map((c) => ({
         type: "Feature" as const,
         geometry: c.geom,
         properties: { cable_code: c.cable_code },
       }));
-
-    cableCount.value = features.length;
 
     map.addSource("cables", {
       type: "geojson",
@@ -130,13 +162,9 @@ const setupInteractions = () => {
 
   map.on("mousemove", "cables-layer", (e) => {
     if (!map || !popup || !e.features?.length) return;
-
     map.getCanvas().style.cursor = "pointer";
-
     const props = e.features[0].properties as CableProperties;
-
     map.setPaintProperty("cables-hover", "line-opacity", 1);
-
     popup
       .setLngLat(e.lngLat)
       .setHTML(
@@ -156,25 +184,17 @@ const setupInteractions = () => {
 
   map.on("click", "cables-layer", (e) => {
     if (!map || !e.features?.length) return;
+    const props = e.features[0].properties as CableProperties;
+    const cable = cables.value.find((c) => c.cable_code === props.cable_code);
+    if (cable) goToDetail(cable);
+  });
+};
 
-    const geometry = e.features[0].geometry;
-    if (geometry.type !== "LineString" && geometry.type !== "MultiLineString")
-      return;
-
-    const coords =
-      geometry.type === "LineString"
-        ? geometry.coordinates
-        : geometry.coordinates.flat();
-
-    const bounds = coords.reduce(
-      (b, coord) => b.extend(coord as [number, number]),
-      new maplibregl.LngLatBounds(
-        coords[0] as [number, number],
-        coords[0] as [number, number]
-      )
-    );
-
-    map.fitBounds(bounds, { padding: 80, maxZoom: 16, duration: 800 });
+// ── Navigate ───────────────────────────────────────────
+const goToDetail = (cable: Cable) => {
+  router.push({
+    name: "CableFiberOpticDetail",
+    query: { id: cable.id ?? cable.cable_code },
   });
 };
 
@@ -200,7 +220,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 p-4">
+  <div class="flex flex-col gap-4 p-4">
     <!-- Header -->
     <header class="flex items-center gap-3">
       <h1 class="m-0 text-2xl font-semibold">Cable Fiber Optic GIS</h1>
@@ -208,12 +228,12 @@ onUnmounted(() => {
         v-if="!isLoading && !error"
         class="rounded-full border border-sky-500/40 bg-sky-500/10 px-3 py-0.5 text-xs text-sky-400"
       >
-        {{ cableCount.toLocaleString() }} cables
+        {{ cables.length.toLocaleString() }} cables
       </span>
     </header>
 
     <!-- Map wrapper -->
-    <div class="relative h-[700px] w-full overflow-hidden rounded-xl">
+    <div class="relative h-[500px] w-full overflow-hidden rounded-xl">
       <div id="map" class="h-full w-full" />
 
       <!-- Loading overlay -->
@@ -227,7 +247,6 @@ onUnmounted(() => {
           v-if="isLoading"
           class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-slate-900/65 backdrop-blur-sm"
         >
-          <!-- Spinner -->
           <div
             class="h-9 w-9 animate-spin rounded-full border-[3px] border-slate-700 border-t-sky-400"
           />
@@ -255,6 +274,161 @@ onUnmounted(() => {
           </button>
         </div>
       </Transition>
+    </div>
+
+    <!-- ── Table section ── -->
+    <div
+      class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900"
+    >
+      <!-- Table header bar -->
+      <div
+        class="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-700"
+      >
+        <p class="text-sm font-medium text-slate-700 dark:text-slate-300">
+          รายการ Cable
+        </p>
+        <p class="text-xs text-slate-400">
+          หน้า {{ currentPage }} / {{ totalPages || 1 }}
+          &nbsp;·&nbsp; ทั้งหมด {{ cables.length.toLocaleString() }} รายการ
+        </p>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr
+              class="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-400"
+            >
+              <th class="w-14 px-4 py-3">#</th>
+              <th class="px-4 py-3">ID</th>
+              <th class="px-4 py-3">Cable Code</th>
+              <th class="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- Loading skeleton rows -->
+            <template v-if="isLoading">
+              <tr
+                v-for="i in PAGE_SIZE"
+                :key="i"
+                class="border-b border-slate-100 dark:border-slate-800"
+              >
+                <td class="px-4 py-3">
+                  <div
+                    class="h-3 w-6 animate-pulse rounded bg-slate-200 dark:bg-slate-700"
+                  />
+                </td>
+                <td class="px-4 py-3">
+                  <div
+                    class="h-3 w-16 animate-pulse rounded bg-slate-200 dark:bg-slate-700"
+                  />
+                </td>
+                <td class="px-4 py-3">
+                  <div
+                    class="h-3 w-48 animate-pulse rounded bg-slate-200 dark:bg-slate-700"
+                  />
+                </td>
+                <td class="px-4 py-3" />
+              </tr>
+            </template>
+
+            <!-- Actual data -->
+            <template v-else>
+              <tr
+                v-for="(cable, i) in pagedCables"
+                :key="cable.id ?? cable.cable_code"
+                class="border-b border-slate-100 transition-colors hover:bg-sky-50/60 dark:border-slate-800 dark:hover:bg-sky-900/10"
+              >
+                <!-- Row number -->
+                <td class="px-4 py-3 text-xs text-slate-400">
+                  {{ (currentPage - 1) * PAGE_SIZE + i + 1 }}
+                </td>
+
+                <!-- ID -->
+                <td
+                  class="px-4 py-3 font-mono text-xs text-slate-500 dark:text-slate-400"
+                >
+                  {{ cable.id ?? "—" }}
+                </td>
+
+                <!-- Cable Code -->
+                <td
+                  class="px-4 py-3 font-medium text-slate-800 dark:text-slate-200"
+                >
+                  {{ cable.cable_code }}
+                </td>
+
+                <!-- Action button -->
+                <td class="px-4 py-3 text-right">
+                  <button
+                    class="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-xs font-medium text-sky-600 transition hover:bg-sky-500/20 dark:text-sky-400"
+                    @click="goToDetail(cable)"
+                  >
+                    ดูรายละเอียด
+                    <span class="text-[10px] opacity-70">→</span>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Empty state -->
+              <tr v-if="cables.length === 0">
+                <td
+                  colspan="4"
+                  class="px-4 py-12 text-center text-sm text-slate-400"
+                >
+                  ไม่พบข้อมูล cable
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── Pagination bar ── -->
+      <div
+        v-if="totalPages > 1"
+        class="flex items-center justify-between border-t border-slate-200 px-4 py-3 dark:border-slate-700"
+      >
+        <!-- Prev -->
+        <button
+          :disabled="currentPage === 1"
+          class="flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-600 transition hover:bg-slate-100 disabled:pointer-events-none disabled:opacity-40 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+          @click="currentPage--"
+        >
+          ← ก่อนหน้า
+        </button>
+
+        <!-- Page number buttons -->
+        <div class="flex items-center gap-1">
+          <button
+            v-for="(page, idx) in pageButtons"
+            :key="idx"
+            :disabled="page === '…'"
+            class="min-w-[32px] rounded-lg border px-2 py-1.5 text-xs transition"
+            :class="
+              page === currentPage
+                ? 'border-sky-500 bg-sky-500 font-semibold text-white'
+                : page === '…'
+                  ? 'cursor-default border-transparent text-slate-400'
+                  : 'border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800'
+            "
+            @click="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <!-- Next -->
+        <button
+          :disabled="currentPage === totalPages"
+          class="flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-600 transition hover:bg-slate-100 disabled:pointer-events-none disabled:opacity-40 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+          @click="currentPage++"
+        >
+          ถัดไป →
+        </button>
+      </div>
     </div>
   </div>
 </template>
