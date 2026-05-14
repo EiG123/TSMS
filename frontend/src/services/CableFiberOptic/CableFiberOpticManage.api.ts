@@ -57,5 +57,13 @@ export const CableFiberOpticManage = {
     );
 
     return response.data.data;
-  }
+  },
+
+  async getCableById(data: any) {
+    const response = await api.post(
+      "http://localhost:3000/api/CalbleFiberOptic/getCableById", data
+    );
+
+    return response.data.data;
+  },
 };

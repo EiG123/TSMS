@@ -24,7 +24,33 @@ export const CableFiberOpticService = {
         success: false
       }
     } finally {
+      client.release();
+    }
+  },
 
+  async getCableById(data: any, db: any) {
+    const client = await db.connect();
+    try {
+      const sql = `
+      SELECT 
+        id,
+        cable_code,
+        ST_AsGeoJSON(geom)::json AS geom
+      FROM cables WHERE id = $1;
+      `;
+      const res = await client.query(sql, [data]);
+      console.log(res.rows);
+
+      return {
+        data: res.rows,
+        success: true
+      }
+    } catch (err) {
+      return {
+        success: false
+      }
+    } finally {
+      client.release();
     }
   },
 
@@ -305,6 +331,8 @@ export const CableFiberOpticService = {
 
     }
   },
+
+
 
 
 };

@@ -83,4 +83,26 @@ CableFiberOpticRouter.post("/getAllCable", async (c) => {
   }
 });
 
+
+CableFiberOpticRouter.post("/getCableById", async (c) => {
+  try {
+    const body = await c.req.json(); // 👈 สำคัญ
+
+    const res = await CableFiberOpticService.getCableById(body, pool);
+
+    return c.json({
+      data: res,
+      success: true,
+    });
+
+  } catch (error: any) {
+    console.error("Upload error:", error);
+
+    return c.json({
+      success: false,
+      message: error.message,
+    }, 500);
+  }
+});
+
 export default CableFiberOpticRouter;
