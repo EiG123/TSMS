@@ -54,24 +54,243 @@ export const CableFiberOpticService = {
     }
   },
 
-  async updateCable(data: any, db: any) {
+  async updateCable(
+    id: any,
+    cable_code: any,
+    file: any,
+    db: any
+  ) {
+    console.log(file);
     const client = await db.connect();
+
     try {
+
+      await client.query("BEGIN");
+
+      // =========================
+      // Base update
+      // =========================
       const sql_update = `
-      UPDATE cables SET cable_code = $2 WHERE id = $1
-      `;
-      console.log(data);
-      await client.query(sql_update, [data.id, data.cable_code]);
+      UPDATE cables
+      SET
+        cable_code = $2,
+        updated_at = NOW()
+      WHERE id = $1
+    `;
+
+      await client.query(
+        sql_update,
+        [
+          id,
+          cable_code
+        ]
+      );
+
+      // =========================
+      // If upload file
+      // =========================
+      if (file) {
+
+        let kmlText = "";
+
+        // =========================
+        // KML
+        // =========================
+        const arrayBuffer =
+          await file.arrayBuffer();
+        const buffer =
+          Buffer.from(arrayBuffer);
+        if (
+          file.name
+            .toLowerCase()
+            .endsWith(".kml")
+        ) {
+
+          kmlText =
+            await file.text();
+
+        }
+
+        // =========================
+        // KMZ
+        // =========================
+        else if (
+          file.name
+            .toLowerCase()
+            .endsWith(".kmz")
+        ) {
+
+          const arrayBuffer =
+            await file.arrayBuffer();
+
+          const buffer =
+            Buffer.from(arrayBuffer);
+
+          const zip =
+            await JSZip.loadAsync(buffer);
+
+          const kmlFileName =
+            Object.keys(zip.files)
+              .find(
+                (name) =>
+                  name
+                    .toLowerCase()
+                    .endsWith(".kml")
+              );
+
+          if (!kmlFileName) {
+
+            throw new Error(
+              "KML file not found inside KMZ"
+            );
+          }
+
+          kmlText =
+            await zip.files[
+              kmlFileName
+            ].async("text");
+        }
+
+        // =========================
+        // Parse XML
+        // =========================
+        const result =
+          await parseStringPromise(
+            kmlText
+          );
+
+        const document =
+          result?.kml?.Document?.[0];
+
+        // =========================
+        // Extract placemarks
+        // =========================
+        const extractPlacemarks =
+          (node: any): any[] => {
+
+            let placemarks: any[] = [];
+
+            if (node?.Placemark) {
+
+              placemarks.push(
+                ...node.Placemark
+              );
+            }
+
+            if (node?.Folder) {
+
+              for (
+                const folder
+                of node.Folder
+              ) {
+
+                placemarks.push(
+                  ...extractPlacemarks(
+                    folder
+                  )
+                );
+              }
+            }
+
+            return placemarks;
+          };
+
+        const placemarks =
+          extractPlacemarks(
+            document
+          );
+
+        // =========================
+        // Use first geometry
+        // =========================
+        const placemark =
+          placemarks[0];
+
+        if (placemark) {
+
+          const lineString =
+            placemark
+              ?.LineString?.[0];
+
+          if (lineString) {
+
+            const coordinatesText =
+              lineString
+                ?.coordinates?.[0];
+
+            if (
+              coordinatesText
+            ) {
+
+              const coordinates =
+                coordinatesText
+                  .trim()
+                  .split(/\s+/)
+                  .map(
+                    (
+                      coord: string
+                    ) => {
+
+                      const [
+                        lng,
+                        lat
+                      ] =
+                        coord.split(
+                          ","
+                        );
+
+                      return `
+                      ${lng} ${lat}
+                    `;
+                    }
+                  );
+
+              const wkt =
+                `LINESTRING(${coordinates.join(", ")})`;
+
+              // =========================
+              // Update geometry
+              // =========================
+              await client.query(
+                `
+              UPDATE cables
+              SET
+                geom = ST_GeomFromText($2, 4326),
+                updated_at = NOW()
+              WHERE id = $1
+              `,
+                [
+                  id,
+                  wkt
+                ]
+              );
+            }
+          }
+        }
+      }
+
+      await client.query(
+        "COMMIT"
+      );
 
       return {
         success: true
-      }
+      };
+
     } catch (err) {
+
+      await client.query(
+        "ROLLBACK"
+      );
+
       console.log(err);
+
       return {
         success: false
-      }
+      };
+
     } finally {
+
       client.release();
     }
   },
@@ -372,8 +591,4 @@ export const CableFiberOpticService = {
 
     }
   },
-
-
-
-
 };

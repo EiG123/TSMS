@@ -129,7 +129,7 @@ CableFiberOpticRouter.post("/deleteCable", authMiddleware, async (c) => {
 
 CableFiberOpticRouter.post("/updateCable", authMiddleware, async (c) => {
   try {
-    const body = await c.req.json(); // 👈 สำคัญ
+    const body = await c.req.parseBody(); // 👈 สำคัญ
 
     console.log(body);
 
@@ -139,7 +139,7 @@ CableFiberOpticRouter.post("/updateCable", authMiddleware, async (c) => {
 
     const oldCable = await CableFiberOpticService.getCableById(body.id, pool);
 
-    const res = await CableFiberOpticService.updateCable(body, pool);
+    const res = await CableFiberOpticService.updateCable(body.id, body.cable_code, body.file, pool);
 
     const newCable = await CableFiberOpticService.getCableById(body.id, pool);
 
@@ -152,8 +152,7 @@ CableFiberOpticRouter.post("/updateCable", authMiddleware, async (c) => {
 
       action: "UPDATE CableFiberOptic",
 
-      detail: `UPDATE cable ${body}`,
-
+      detail: `UPDATE cable ID ${body.id}`,
       method: "UPDATE",
 
       old_data: JSON.stringify(oldCable),

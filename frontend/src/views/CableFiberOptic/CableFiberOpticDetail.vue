@@ -204,34 +204,38 @@ const clearFile = () => {
 
 const saveEdit = async () => {
   if (!cable.value) return;
+
   if (!editCableCode.value.trim()) {
     editError.value = "กรุณากรอก Cable Code";
+
     return;
   }
 
   isSaving.value = true;
+
   editError.value = null;
 
   try {
     const formData = new FormData();
-    formData.append("cable_code", editCableCode.value.trim());
+
+    formData.append("id", String(cable.value.id));
+    formData.append("cable_code", editCableCode.value);
+
+    // IMPORTANT
     if (editFile.value) {
       formData.append("file", editFile.value);
     }
 
-    await CableFiberOpticManage.updateCable({
-      id: cable.value.id,
-      cable_code: editCableCode.value,
-      formData: formData,
-    });
+    await CableFiberOpticManage.updateCable(formData);
 
-    // Reload to get updated geom
     closeEdit();
+
     await loadCable();
   } catch (err) {
     editError.value =
       err instanceof Error ? err.message : "บันทึกข้อมูลไม่สำเร็จ";
-    console.error("[CableDetail] saveEdit error:", err);
+
+    console.error(err);
   } finally {
     isSaving.value = false;
   }
