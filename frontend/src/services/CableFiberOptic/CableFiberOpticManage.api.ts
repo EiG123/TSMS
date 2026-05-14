@@ -74,4 +74,12 @@ export const CableFiberOpticManage = {
 
     return response.data.data;
   },
+
+  async updateCable(data: any) {
+    const response = await api.post(
+      "http://localhost:3000/api/CalbleFiberOptic/updateCable", data
+    );
+
+    return response.data.data;
+  },
 };

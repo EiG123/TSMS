@@ -54,6 +54,28 @@ export const CableFiberOpticService = {
     }
   },
 
+  async updateCable(data: any, db: any) {
+    const client = await db.connect();
+    try {
+      const sql_update = `
+      UPDATE cables SET cable_code = $2 WHERE id = $1
+      `;
+      console.log(data);
+      await client.query(sql_update, [data.id, data.cable_code]);
+
+      return {
+        success: true
+      }
+    } catch (err) {
+      console.log(err);
+      return {
+        success: false
+      }
+    } finally {
+      client.release();
+    }
+  },
+
   async deleteCable(data: any, db: any) {
     const client = await db.connect();
     try {

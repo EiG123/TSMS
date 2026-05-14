@@ -57,9 +57,7 @@ const initMap = () => {
 const fitToGeom = (geom: GeoJSON.LineString | GeoJSON.MultiLineString) => {
   if (!map) return;
   const coords =
-    geom.type === "LineString"
-      ? geom.coordinates
-      : geom.coordinates.flat(1);
+    geom.type === "LineString" ? geom.coordinates : geom.coordinates.flat(1);
   if (!coords.length) return;
   const bounds = coords.reduce(
     (b, c) => b.extend(c as [number, number]),
@@ -101,7 +99,12 @@ const renderCable = (c: Cable) => {
     id: "cables-glow",
     type: "line",
     source: "cables",
-    paint: { "line-color": "#38bdf8", "line-width": 10, "line-opacity": 0.18, "line-blur": 5 },
+    paint: {
+      "line-color": "#38bdf8",
+      "line-width": 10,
+      "line-opacity": 0.18,
+      "line-blur": 5,
+    },
   });
   map.addLayer({
     id: "cables-layer",
@@ -117,7 +120,10 @@ const renderCable = (c: Cable) => {
   });
 
   // Hover tooltip
-  const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+  const popup = new maplibregl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+  });
   map.on("mousemove", "cables-layer", (e) => {
     map!.getCanvas().style.cursor = "pointer";
     map!.setPaintProperty("cables-hover", "line-opacity", 0.8);
@@ -213,13 +219,18 @@ const saveEdit = async () => {
       formData.append("file", editFile.value);
     }
 
-    await CableFiberOpticManage.updateCable(cable.value.id ?? cable.value.cable_code, formData);
+    await CableFiberOpticManage.updateCable({
+      id: cable.value.id,
+      cable_code: editCableCode.value,
+      formData: formData,
+    });
 
     // Reload to get updated geom
     closeEdit();
     await loadCable();
   } catch (err) {
-    editError.value = err instanceof Error ? err.message : "บันทึกข้อมูลไม่สำเร็จ";
+    editError.value =
+      err instanceof Error ? err.message : "บันทึกข้อมูลไม่สำเร็จ";
     console.error("[CableDetail] saveEdit error:", err);
   } finally {
     isSaving.value = false;
@@ -231,7 +242,9 @@ const confirmDelete = async () => {
   if (!cable.value) return;
   isDeleting.value = true;
   try {
-    await CableFiberOpticManage.deleteCable(cable.value.id ?? cable.value.cable_code);
+    await CableFiberOpticManage.deleteCable(
+      cable.value.id ?? cable.value.cable_code
+    );
     router.back();
   } catch (err) {
     console.error("[CableDetail] confirmDelete error:", err);
@@ -261,7 +274,6 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 
 <template>
   <div class="flex min-h-screen flex-col gap-0 bg-slate-50 dark:bg-slate-950">
-
     <!-- ── Top Bar ── -->
     <header
       class="flex shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-5 py-3 dark:border-slate-800 dark:bg-slate-900"
@@ -275,7 +287,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 
       <span class="text-slate-300 dark:text-slate-700">/</span>
 
-      <span class="text-sm text-slate-500 dark:text-slate-400">Cable Fiber Optic GIS</span>
+      <span class="text-sm text-slate-500 dark:text-slate-400"
+        >Cable Fiber Optic GIS</span
+      >
 
       <span class="text-slate-300 dark:text-slate-700">/</span>
 
@@ -310,15 +324,15 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 
     <!-- ── Body ── -->
     <div class="flex flex-1 flex-col gap-4 p-5 lg:flex-row">
-
       <!-- Left: info card -->
       <aside class="flex w-full flex-col gap-4 lg:w-72 lg:shrink-0">
-
         <!-- Cable info -->
         <div
           class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900"
         >
-          <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <p
+            class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+          >
             ข้อมูล Cable
           </p>
 
@@ -326,8 +340,12 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
           <template v-if="isLoading">
             <div class="space-y-3">
               <div v-for="i in 4" :key="i" class="flex flex-col gap-1">
-                <div class="h-2.5 w-20 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
-                <div class="h-4 w-36 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
+                <div
+                  class="h-2.5 w-20 animate-pulse rounded bg-slate-200 dark:bg-slate-700"
+                />
+                <div
+                  class="h-4 w-36 animate-pulse rounded bg-slate-200 dark:bg-slate-700"
+                />
               </div>
             </div>
           </template>
@@ -337,7 +355,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
             <dl class="space-y-3 text-sm">
               <div>
                 <dt class="text-xs text-slate-400">Cable Code</dt>
-                <dd class="mt-0.5 font-mono font-semibold text-slate-800 dark:text-slate-100">
+                <dd
+                  class="mt-0.5 font-mono font-semibold text-slate-800 dark:text-slate-100"
+                >
                   {{ cable.cable_code }}
                 </dd>
               </div>
@@ -387,7 +407,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
                   :key="key"
                 >
                   <dt class="text-xs capitalize text-slate-400">{{ key }}</dt>
-                  <dd class="mt-0.5 truncate text-slate-600 dark:text-slate-300">
+                  <dd
+                    class="mt-0.5 truncate text-slate-600 dark:text-slate-300"
+                  >
                     {{ cable[key] ?? "—" }}
                   </dd>
                 </div>
@@ -401,8 +423,11 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
       </aside>
 
       <!-- Right: map -->
-      <div class="relative flex-1 overflow-hidden rounded-xl border border-slate-200 shadow-sm dark:border-slate-700" style="min-height: 420px;">
-        <div id="map" class="h-full w-full" style="min-height: 420px;" />
+      <div
+        class="relative flex-1 overflow-hidden rounded-xl border border-slate-200 shadow-sm dark:border-slate-700"
+        style="min-height: 420px"
+      >
+        <div id="map" class="h-full w-full" style="min-height: 420px" />
 
         <!-- Loading overlay -->
         <Transition
@@ -415,7 +440,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
             v-if="isLoading"
             class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-slate-900/60 backdrop-blur-sm"
           >
-            <div class="h-9 w-9 animate-spin rounded-full border-[3px] border-slate-700 border-t-sky-400" />
+            <div
+              class="h-9 w-9 animate-spin rounded-full border-[3px] border-slate-700 border-t-sky-400"
+            />
             <p class="text-sm text-slate-300">กำลังโหลด…</p>
           </div>
         </Transition>
@@ -448,7 +475,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
         >
           <span class="text-3xl">📍</span>
           <p class="text-sm text-slate-300">ไม่มีข้อมูล Geometry</p>
-          <p class="text-xs text-slate-400">อัปโหลดไฟล์ KML/KMZ เพื่อเพิ่มเส้นทาง</p>
+          <p class="text-xs text-slate-400">
+            อัปโหลดไฟล์ KML/KMZ เพื่อเพิ่มเส้นทาง
+          </p>
           <button
             class="mt-1 rounded-lg border border-sky-400/40 bg-sky-400/10 px-3 py-1.5 text-xs text-sky-400 transition hover:bg-sky-400/20"
             @click="openEdit"
@@ -478,7 +507,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
           @click.stop
         >
           <!-- Dialog header -->
-          <div class="flex items-center justify-between border-b border-slate-700/60 px-5 py-4">
+          <div
+            class="flex items-center justify-between border-b border-slate-700/60 px-5 py-4"
+          >
             <h2 class="text-sm font-semibold text-slate-100">✏️ แก้ไข Cable</h2>
             <button
               class="rounded-md p-1 text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
@@ -507,7 +538,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-medium text-slate-400">
                 อัปโหลดไฟล์ KML / KMZ
-                <span class="ml-1 text-slate-500">(ถ้าต้องการอัปเดต Geometry)</span>
+                <span class="ml-1 text-slate-500"
+                  >(ถ้าต้องการอัปเดต Geometry)</span
+                >
               </label>
 
               <!-- Drop zone -->
@@ -565,7 +598,10 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
             </div>
 
             <!-- Error message -->
-            <p v-if="editError" class="rounded-lg bg-red-900/40 px-3 py-2 text-xs text-red-400">
+            <p
+              v-if="editError"
+              class="rounded-lg bg-red-900/40 px-3 py-2 text-xs text-red-400"
+            >
               ⚠️ {{ editError }}
             </p>
           </div>

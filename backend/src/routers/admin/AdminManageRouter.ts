@@ -66,8 +66,7 @@ AdminManageRouter.post("/userEdit", authMiddleware, async (c) => {
 
             method: "PUT",
 
-            detail:
-                `Edited user ${body.id}`,
+            detail: `Edited user ${body.id}`,
             
             old_data: JSON.stringify(oldUser),
 

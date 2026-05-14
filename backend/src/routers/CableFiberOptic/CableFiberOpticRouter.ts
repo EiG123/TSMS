@@ -37,9 +37,9 @@ CableFiberOpticRouter.post("/UploadCable", authMiddleware, async (c) => {
       username: authUser.username,
       email: authUser.email,
 
-      action: "UPLOAD_INCIDENT_TT",
+      action: "UPLOAD CableFiberOptic",
 
-      method: "NetworkAVA",
+      method: "PUT",
 
       detail: file.name,
 
@@ -92,7 +92,7 @@ CableFiberOpticRouter.post("/deleteCable", authMiddleware, async (c) => {
     console.log("AUTH USER:", authUser);
 
     const oldCable = await CableFiberOpticService.getCableById(body, pool);
-    
+
     const res = await CableFiberOpticService.deleteCable(body, pool);
 
     // 2️⃣ สำเร็จแล้วค่อย log
@@ -102,6 +102,8 @@ CableFiberOpticRouter.post("/deleteCable", authMiddleware, async (c) => {
       email: authUser.email,
 
       action: "DELETE CableFiberOptic",
+
+      detail: `Delete cable ${body}`,
 
       method: "DELETE",
 
@@ -125,6 +127,56 @@ CableFiberOpticRouter.post("/deleteCable", authMiddleware, async (c) => {
   }
 });
 
+CableFiberOpticRouter.post("/updateCable", authMiddleware, async (c) => {
+  try {
+    const body = await c.req.json(); // 👈 สำคัญ
+
+    console.log(body);
+
+    const authUser = c.get('user');
+
+    console.log("AUTH USER:", authUser);
+
+    const oldCable = await CableFiberOpticService.getCableById(body.id, pool);
+
+    const res = await CableFiberOpticService.updateCable(body, pool);
+
+    const newCable = await CableFiberOpticService.getCableById(body.id, pool);
+
+
+    // 2️⃣ สำเร็จแล้วค่อย log
+    await logService.createAuditLog({
+      user_id: authUser.id,
+      username: authUser.username,
+      email: authUser.email,
+
+      action: "UPDATE CableFiberOptic",
+
+      detail: `UPDATE cable ${body}`,
+
+      method: "UPDATE",
+
+      old_data: JSON.stringify(oldCable),
+
+      new_data: JSON.stringify(newCable),
+
+      success: res.success,
+    });
+
+    return c.json({
+      data: res,
+      success: true,
+    });
+
+  } catch (error: any) {
+    console.error("Upload error:", error);
+
+    return c.json({
+      success: false,
+      message: error.message,
+    }, 500);
+  }
+});
 
 CableFiberOpticRouter.post("/getCableById", async (c) => {
   try {
