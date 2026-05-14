@@ -156,6 +156,8 @@ const loadCable = async () => {
     const raw = response.data;
     cable.value = (Array.isArray(raw) ? raw[0] : raw) as Cable;
 
+    console.log(response);
+
     if (cable.value) renderCable(cable.value);
   } catch (err) {
     error.value = err instanceof Error ? err.message : "Failed to load cable";
@@ -274,6 +276,8 @@ const onKeydown = (e: KeyboardEvent) => {
 };
 onMounted(() => window.addEventListener("keydown", onKeydown));
 onUnmounted(() => window.removeEventListener("keydown", onKeydown));
+
+const formatDate = (date: string) => new Date(date).toLocaleString("th-TH");
 </script>
 
 <template>
@@ -412,10 +416,14 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
                 >
                   <dt class="text-xs capitalize text-slate-400">{{ key }}</dt>
                   <dd
+                    v-if="key != 'survey_date' && key != 'created_at' && key != 'updated_at'"
                     class="mt-0.5 truncate text-slate-600 dark:text-slate-300"
                   >
                     {{ cable[key] ?? "—" }}
                   </dd>
+                  <div v-if="key === 'survey_date' || key === 'created_at' || key === 'updated_at'">
+                    {{formatDate(cable[key])}}
+                  </div>
                 </div>
               </dl>
             </template>

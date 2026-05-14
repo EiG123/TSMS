@@ -35,6 +35,12 @@ export const CableFiberOpticService = {
       SELECT 
         id,
         cable_code,
+        cable_type,
+        fiber_core,
+        status,
+        survey_date,
+        created_at,
+        updated_at,
         ST_AsGeoJSON(geom)::json AS geom
       FROM cables WHERE id = $1;
       `;
@@ -46,6 +52,7 @@ export const CableFiberOpticService = {
         success: true
       }
     } catch (err) {
+      console.log(err);
       return {
         success: false
       }
@@ -333,6 +340,7 @@ export const CableFiberOpticService = {
         $${index++},
         $${index++},
         $${index++},
+        $${index++},
         CURRENT_DATE,
         $${index++},
         ST_GeomFromText(
@@ -345,6 +353,7 @@ export const CableFiberOpticService = {
       params.push(
         row.cable_code,
         row.cable_type,
+        row.fiber_core,
         row.status,
         row.source,
         row.note,
@@ -356,6 +365,7 @@ export const CableFiberOpticService = {
     INSERT INTO cables (
       cable_code,
       cable_type,
+      fiber_core,
       status,
       source,
       survey_date,
@@ -490,6 +500,19 @@ export const CableFiberOpticService = {
         const name =
           placemark?.name?.[0] || null;
 
+        const simpleData =
+          placemark
+            ?.ExtendedData?.[0]
+            ?.SchemaData?.[0]
+            ?.SimpleData || [];
+
+        const fiber_core =
+          simpleData.find(
+            (item: any) =>
+              item?.$?.name ===
+              "FIBER_CORE"
+          )?._ || null;
+        
         const lineString =
           placemark?.LineString?.[0];
 
@@ -522,6 +545,7 @@ export const CableFiberOpticService = {
         rows.push({
           cable_code: name,
           cable_type: "fiber_optic",
+          fiber_core: fiber_core,
           status: "observed",
           source: file.name,
           note: "Imported from KML/KMZ",
