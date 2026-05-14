@@ -39,12 +39,12 @@ api.interceptors.response.use(
 );
 
 export const CableFiberOpticManage = {
-  async UploadCalbe(file: File) {
+  async UploadCable(file: File) {
     const formData = new FormData();
     formData.append("file", file);
 
     const response = await api.post(
-      "http://localhost:3000/api/CalbleFiberOptic/UploadCalbe",
+      "http://localhost:3000/api/CalbleFiberOptic/UploadCable",
       formData
     );
 
@@ -62,6 +62,14 @@ export const CableFiberOpticManage = {
   async getCableById(data: any) {
     const response = await api.post(
       "http://localhost:3000/api/CalbleFiberOptic/getCableById", data
+    );
+
+    return response.data.data;
+  },
+
+  async deleteCable(data: any) {
+    const response = await api.post(
+      "http://localhost:3000/api/CalbleFiberOptic/deleteCable", data
     );
 
     return response.data.data;

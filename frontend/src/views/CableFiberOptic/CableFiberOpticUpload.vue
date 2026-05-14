@@ -26,7 +26,7 @@ const uploadFile = async () => {
         for (const file of selectedFiles.value) {
             console.log('Uploading:', file.name)
 
-            await CableFiberOpticManage.UploadCalbe(file)
+            await CableFiberOpticManage.UploadCable(file)
         }
 
         alert('Upload success')

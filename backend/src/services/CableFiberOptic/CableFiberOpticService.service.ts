@@ -54,6 +54,25 @@ export const CableFiberOpticService = {
     }
   },
 
+  async deleteCable(data: any, db: any) {
+    const client = await db.connect();
+    try {
+      const sql = `
+      DELETE FROM cables WHERE id = $1
+      `;
+      await client.query(sql, [data]);
+      return {
+        success: true
+      }
+    } catch (err) {
+      return {
+        success: false
+      }
+    } finally {
+      client.release();
+    }
+  },
+
   async bulkInsert(
     client: any,
     rows: any[]

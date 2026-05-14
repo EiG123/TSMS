@@ -8,7 +8,7 @@ import { CableFiberOpticService } from "../../services/CableFiberOptic/CableFibe
 const CableFiberOpticRouter = new Hono();
 
 // 👇 ใช้ middleware ของ multer
-CableFiberOpticRouter.post("/UploadCalbe", authMiddleware, async (c) => {
+CableFiberOpticRouter.post("/UploadCable", authMiddleware, async (c) => {
   try {
     const body = await c.req.parseBody();
 
@@ -67,6 +67,48 @@ CableFiberOpticRouter.post("/getAllCable", async (c) => {
     // const body = await c.req.json(); // 👈 สำคัญ
 
     const res = await CableFiberOpticService.getAllCable(pool);
+
+    return c.json({
+      data: res,
+      success: true,
+    });
+
+  } catch (error: any) {
+    console.error("Upload error:", error);
+
+    return c.json({
+      success: false,
+      message: error.message,
+    }, 500);
+  }
+});
+
+CableFiberOpticRouter.post("/deleteCable", authMiddleware, async (c) => {
+  try {
+    const body = await c.req.json(); // 👈 สำคัญ
+
+    const authUser = c.get('user');
+
+    console.log("AUTH USER:", authUser);
+
+    const oldCable = await CableFiberOpticService.getCableById(body, pool);
+    
+    const res = await CableFiberOpticService.deleteCable(body, pool);
+
+    // 2️⃣ สำเร็จแล้วค่อย log
+    await logService.createAuditLog({
+      user_id: authUser.id,
+      username: authUser.username,
+      email: authUser.email,
+
+      action: "DELETE CableFiberOptic",
+
+      method: "DELETE",
+
+      old_data: JSON.stringify(oldCable),
+
+      success: res.success,
+    });
 
     return c.json({
       data: res,
