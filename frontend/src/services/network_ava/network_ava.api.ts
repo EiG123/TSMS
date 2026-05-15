@@ -43,7 +43,7 @@ export const networkAVAManage = {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3000/api/NetworkAVA/UploadSitesAVA",
       formData
     );
@@ -64,7 +64,7 @@ export const networkAVAManage = {
   },
 
   async AVAChart(data: any) {
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3000/api/NetworkAVA/AVAChart", data
     );
 
@@ -72,7 +72,7 @@ export const networkAVAManage = {
   },
 
   async AVAChartALL(data: any) {
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3000/api/NetworkAVA/AVAChartALL", data
     );
 
@@ -80,7 +80,7 @@ export const networkAVAManage = {
   },
 
   async AVAChartALL_graph(data: any) {
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3000/api/NetworkAVA/AVAChartALL_graph", data
     );
 
@@ -88,7 +88,7 @@ export const networkAVAManage = {
   },
 
   async AVAChartALL_incident(data: any) {
-    const response = await axios.post(
+    const response = await api.post(
       "http://localhost:3000/api/NetworkAVA/AVAChartALL_incident", data
     );
 

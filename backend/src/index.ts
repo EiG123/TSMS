@@ -30,6 +30,7 @@ import NetworkAVA from "./routers/NetworkAVA/NetworkAVARouter.js";
 import CableFiberOpticRouter from "./routers/CableFiberOptic/CableFiberOpticRouter.js";
 
 import { logService } from "./services/LOG/log.service.js";
+import sitesManageRouter from "./routers/sites/SitesManageRouter.js";
 
 const app = new Hono();
 
@@ -68,6 +69,8 @@ app.route("/api/pmGetPmData", pmGetPmData);
 app.route("/api/NetworkAVA", NetworkAVA);
 
 app.route("/api/CalbleFiberOptic", CableFiberOpticRouter);
+
+app.route("/api/siteManage", sitesManageRouter);
 
 //Txt To Excel
 app.route("/api/txt-to-excel", txt_to_excelRouter);

@@ -64,6 +64,7 @@ import CableFiberOpticUpload from "../views/CableFiberOptic/CableFiberOpticUploa
 import CableFiberOpticViews from "../views/CableFiberOptic/CableFiberOpticViews.vue";
 import CableFiberOpticDetail from "../views/CableFiberOptic/CableFiberOpticDetail.vue";
 
+import siteLocationView from "../views/Sites/sitesLocationView.vue";
 
 const routes = [
     // 🔐 Login (ไม่มี layout)
@@ -177,6 +178,14 @@ const routes = [
                 component: UserlocationDashboard
             }
         ]
+    },
+    {
+        path: "/siteLocationView",
+        name: "siteLocationView",
+        meta: {
+            requiresAuth: true
+        },
+        component: siteLocationView
     },
     {
         

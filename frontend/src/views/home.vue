@@ -50,6 +50,12 @@ const goToCableFiberOpticViews = () =>
   router.push({
     path: `/CableFiberOpticViews`,
   }); 
+
+
+const goToSitesLocationView = () =>
+  router.push({
+    path: `/siteLocationView`,
+  });
   
 const cards = [
   {
@@ -143,9 +149,17 @@ const cards = [
     id: 12,
     title: "Cable Fiber Optic Views",
     value: "",
-    icon: "M8 0a.5.5 0 0 1 .473.337L9.046 2H14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1.85l1.323 3.837a.5.5 0 1 1-.946.326L11.092 11H8.5v3a.5.5 0 0 1-1 0v-3H4.908l-1.435 4.163a.5.5 0 1 1-.946-.326L3.85 11H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4.954L7.527.337A.5.5 0 0 1 8 0M2 3v7h12V3z",
+    icon: "M16 .5a.5.5 0 0 0-.598-.49L10.5.99 5.598.01a.5.5 0 0 0-.196 0l-5 1A.5.5 0 0 0 0 1.5v14a.5.5 0 0 0 .598.49l4.902-.98 4.902.98a.5.5 0 0 0 .196 0l5-1A.5.5 0 0 0 16 14.5zM5 14.09V1.11l.5-.1.5.1v12.98l-.402-.08a.5.5 0 0 0-.196 0zm5 .8V1.91l.402.08a.5.5 0 0 0 .196 0L11 1.91v12.98l-.5.1z",
     color: "from-red-500 to-blue-600",
     onclick: goToCableFiberOpticViews,
+  },
+  {
+    id: 13,
+    title: "Sites Location Views",
+    value: "",
+    icon: "M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6",
+    color: "from-red-500 to-blue-600",
+    onclick: goToSitesLocationView,
   },
 ];
 </script>

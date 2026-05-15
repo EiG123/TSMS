@@ -24,6 +24,12 @@ export const NetworkAVAService = {
         site_code: String(row.site_code || "").trim(),
         system: String(row.system || "").trim().toUpperCase(),
         operator: String(row.operator || "").trim().toUpperCase(),
+        region: String(row.REGION || "").trim(),
+        province: String(row.PROVINCE || "").trim().toLocaleUpperCase(),
+        amphur: String(row.AMPHUR || "").trim().toLocaleUpperCase(),
+        tambol: String(row.TAMBOL || "").trim().toLocaleUpperCase(),
+        latitude: row.latitude,
+        longitude: row.longitude,
         date: row.date,
         avg_availability: Number(row.avg_availability),
       }));
@@ -36,7 +42,13 @@ export const NetworkAVAService = {
           r.site_code &&
           r.system &&
           r.operator &&
+          r.region &&
+          r.province &&
+          r.amphur &&
+          r.tambol &&
           r.date &&
+          r.latitude &&
+          r.longitude &&
           !isNaN(r.avg_availability)
       );
 
@@ -64,12 +76,35 @@ export const NetworkAVAService = {
 
       // 6) insert sites
       await client.query(`
-        INSERT INTO sites (site_code)
-        SELECT DISTINCT site_code FROM (
-          SELECT UNNEST($1::text[]) AS site_code
+        INSERT INTO sites (site_code, latitude, longitude, region, province, amphur, tambol)
+        SELECT DISTINCT site_code, latitude, longitude, region, province, amphur, tambol 
+        FROM (
+            SELECT 
+                UNNEST($1::text[]) AS site_code,
+                UNNEST($2::numeric[]) AS latitude,
+                UNNEST($3::numeric[]) AS longitude,
+                UNNEST($4::text[]) AS region,
+                UNNEST($5::text[]) AS province,
+                UNNEST($6::text[]) AS amphur,
+                UNNEST($7::text[]) AS tambol
         ) t
-        ON CONFLICT DO NOTHING
-      `, [validRows.map(r => r.site_code)]);
+        ON CONFLICT (site_code) 
+        DO UPDATE SET 
+            latitude = EXCLUDED.latitude,
+            longitude = EXCLUDED.longitude,
+            region = EXCLUDED.region,
+            province = EXCLUDED.province,
+            amphur = EXCLUDED.amphur,
+            tambol = EXCLUDED.tambol;
+      `, [
+        validRows.map(r => r.site_code),
+        validRows.map(r => r.latitude),
+        validRows.map(r => r.longitude),
+        validRows.map(r => r.region),
+        validRows.map(r => r.province),
+        validRows.map(r => r.amphur),
+        validRows.map(r => r.tambol)
+      ]);
 
       // 7) create site_config
       await client.query(`

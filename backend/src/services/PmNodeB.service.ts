@@ -83,7 +83,7 @@ export const PmService = {
       await client.query("BEGIN"); // ⭐ เริ่ม transaction
 
       const query_site = `INSERT INTO sites (
-        site_id,
+        site_code,
         region
       ) VALUES ($1, $2)`;
 
@@ -92,7 +92,7 @@ export const PmService = {
       const query = `
       INSERT INTO pm (
         site_name,
-        site_id,
+        site_code,
         type,
         date,
         planwork,
